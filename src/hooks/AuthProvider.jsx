@@ -1,6 +1,7 @@
 import { createContext, useState ,useEffect} from 'react'
 import { authService } from '../services/api'
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(null)
 
 function getInitialUser() {
@@ -30,6 +31,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem("user", JSON.stringify(updatedUser))
       setUser(updatedUser)
 
+    // eslint-disable-next-line no-unused-vars
     } catch (err)
     {
       console.error("User refresh failed")

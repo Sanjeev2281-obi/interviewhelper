@@ -48,6 +48,249 @@ const PRODUCT_QUESTIONS = [
   { id:13, free:false, category:'Real-time', icon:MessageSquare, iconColor:'#8b5cf6', iconBg:'rgba(139,92,246,0.12)', companies:['Meta','Google'], question:'Google Docs lets 100 people edit the same document simultaneously without conflicts. How?', difficulty:'Hard', tag:'CRDT / OT', answer:{ headline:'Operational Transformation resolves concurrent edits by transforming operations before applying.', keyPoints:[{title:'Operational Transformation',detail:'Two people type at same position simultaneously — OT adjusts second edit\'s position. INSERT at pos 5 by A shifts B\'s INSERT to pos 6.'},{title:'Operations, Not State',detail:'Not document state — operations: INSERT("H", pos:5), DELETE(pos:10). Sent to server, broadcast to all clients.'},{title:'Server Ordering',detail:'Server assigns global sequence number to every operation. All clients apply in this order. Conflicts resolved deterministically.'},{title:'CRDTs (Modern Alternative)',detail:'Conflict-free Replicated Data Types — mathematical structures that merge without conflicts regardless of order.'},{title:'Cursor Awareness',detail:'Each user\'s cursor broadcast via WebSocket every 500ms. Rendered as colored cursors on all other clients.'}], techStack:['WebSockets','OT algorithm','Google Spanner (storage)','gRPC (operations)','Redis (presence)'], interviewTip:'"Operational Transformation" is the answer. CRDT is the modern answer. Mention both and explain tradeoffs.' } },
   { id:14, free:false, category:'CDN', icon:Globe, iconColor:'#06b6d4', iconBg:'rgba(6,182,212,0.12)', companies:['Netflix'], question:'Netflix serves 15% of global internet traffic. What is Open Connect and how does it work?', difficulty:'Hard', tag:'CDN Architecture', answer:{ headline:'Netflix\'s own CDN with servers physically inside ISPs — eliminating internet transit entirely.', keyPoints:[{title:'Open Connect Appliances',detail:'Netflix ships custom servers to ISPs like Airtel, Jio. Servers sit inside ISP\'s data center. Video comes from inside Airtel, not Netflix HQ.'},{title:'Proactive Caching',detail:'Every night at 2AM, Netflix pushes next day\'s predicted popular content to all OCAs. 95% of popular content cached at ISP by morning.'},{title:'No Internet Transit',detail:'Airtel customer watching Netflix never crosses public internet. Phone → Airtel network → Airtel OCA → Phone.'},{title:'Popularity Prediction',detail:'ML predicts what each region will watch next day. "Squid Game" pre-cached at Jio servers before you search for it.'},{title:'Fallback Chain',detail:'OCA miss → Regional Netflix CDN → Netflix Origin. 95%+ served from OCA, <1% from origin.'}], techStack:['Open Connect Appliances','BGP Routing','FreeBSD (OCA OS)','NGINX','Netflix MSL (encryption)'], interviewTip:'"Bring content to users, not users to content. Negotiate with ISPs directly — bypass the public internet entirely."' } },
   { id:15, free:false, category:'Rate Limiting', icon:Cpu, iconColor:'#f59e0b', iconBg:'rgba(245,158,11,0.12)', companies:['Stripe','Amazon','Google'], question:'Stripe rate limits 1000 req/sec per customer without a global lock. How?', difficulty:'Medium', tag:'Rate Limiting', answer:{ headline:'Token Bucket in Redis with sliding window counters — no global lock needed.', keyPoints:[{title:'Token Bucket',detail:'Each customer gets N tokens. Each request costs 1 token. Refills at R/sec. Bucket empty = rate limited. Redis DECR is atomic.'},{title:'Sliding Window',detail:'Redis ZADD stores timestamps of recent requests. ZCOUNT counts requests in last 60s. Count > limit → reject.'},{title:'Local Rate Limiting First',detail:'Each API server does local in-memory rate limiting first. Only spills to Redis if exceeded. Reduces Redis calls by 90%.'},{title:'Distributed Counters',detail:'Rate limit key = "rate:{customer_id}:{minute}". Sharded by customer_id across Redis cluster.'},{title:'Graceful Headers',detail:'Stripe sends: X-RateLimit-Remaining, X-RateLimit-Reset. Clients can back off intelligently.'}], techStack:['Redis (token bucket)','Nginx (local limiting)','Lua scripts (atomic ops)','Envoy (sidecar)','Prometheus (metrics)'], interviewTip:'Token Bucket = allows burst. Fixed Window = simple but double-burst at boundary. Sliding Window = most accurate but expensive. Know all three.' } },
+   {
+id:16,
+free:false,
+category:'Messaging',
+icon:'MessageSquare',
+companies:['Meta','Google'],
+difficulty:'Hard',
+tag:'Distributed Systems',
+question:'How would you design WhatsApp to support billions of users sending messages in real time?',
+answer:{
+headline:'Persistent WebSocket connections + distributed message queues for reliable real-time delivery.',
+keyPoints:[
+{title:'Persistent Connections',detail:'Clients maintain long-lived WebSocket connections with chat servers.'},
+{title:'Message Queue',detail:'Messages pass through Kafka so delivery is asynchronous and fault-tolerant.'},
+{title:'Sharding Users',detail:'User IDs hashed across chat servers to distribute connections.'},
+{title:'Offline Messages',detail:'If user offline, messages stored in distributed database like Cassandra.'},
+{title:'Delivery Acks',detail:'Server stores message until recipient sends acknowledgement.'}
+],
+techStack:['WebSockets','Apache Kafka','Cassandra','Redis','Push Notifications'],
+interviewTip:'Focus on connection scaling, message ordering, and offline message storage.'
+}
+},
+
+{
+id:17,
+free:false,
+category:'Search',
+icon:'Search',
+companies:['Google'],
+difficulty:'Hard',
+tag:'Search Engine',
+question:'How does Google Search return results in under 500ms across billions of web pages?',
+answer:{
+headline:'Distributed web crawler + inverted index + ranking system.',
+keyPoints:[
+{title:'Web Crawlers',detail:'Thousands of distributed crawlers fetch pages and store them in document storage.'},
+{title:'Inverted Index',detail:'Search index maps keywords → list of documents.'},
+{title:'PageRank',detail:'Ranking algorithm measures importance based on link graph.'},
+{title:'Query Processing',detail:'User query hits distributed index servers.'},
+{title:'Result Ranking',detail:'Machine learning ranking system orders results.'}
+],
+techStack:['Bigtable','MapReduce','Colossus','Spanner'],
+interviewTip:'Explain inverted index clearly — most important concept.'
+}
+},
+
+{
+id:18,
+free:false,
+category:'Storage',
+icon:'Database',
+companies:['Amazon'],
+difficulty:'Hard',
+tag:'Distributed Storage',
+question:'How does Amazon S3 store trillions of objects with 99.999999999% durability?',
+answer:{
+headline:'Objects replicated across multiple availability zones with distributed metadata storage.',
+keyPoints:[
+{title:'Object Storage',detail:'Files stored as objects with metadata.'},
+{title:'Replication',detail:'Each object replicated across multiple AZs.'},
+{title:'Partitioned Metadata',detail:'Object metadata sharded across partitions.'},
+{title:'Consistency Model',detail:'S3 now provides strong read-after-write consistency.'},
+{title:'Background Repair',detail:'Systems continuously scan for corrupted replicas.'}
+],
+techStack:['Erasure Coding','Distributed Metadata','Replication'],
+interviewTip:'Durability achieved through replication + repair mechanisms.'
+}
+},
+
+{
+id:19,
+free:false,
+category:'Video Streaming',
+icon:'Video',
+companies:['Netflix'],
+difficulty:'Hard',
+tag:'Streaming',
+question:'How does Netflix stream video smoothly even on slow internet?',
+answer:{
+headline:'Adaptive bitrate streaming adjusts video quality dynamically.',
+keyPoints:[
+{title:'Multiple Encodings',detail:'Videos encoded in multiple resolutions and bitrates.'},
+{title:'Adaptive Streaming',detail:'Client switches quality based on bandwidth.'},
+{title:'CDN Delivery',detail:'Content served from edge CDN nodes.'},
+{title:'Buffering Strategy',detail:'Client buffers segments to avoid playback interruptions.'}
+],
+techStack:['HLS','DASH','CDN','Video Encoding'],
+interviewTip:'Mention adaptive bitrate streaming.'
+}
+},
+
+{
+id:20,
+free:false,
+category:'Feed Systems',
+icon:'List',
+companies:['Meta'],
+difficulty:'Hard',
+tag:'Feed Ranking',
+question:'How would you design Facebook News Feed?',
+answer:{
+headline:'Fan-out architecture with ranking algorithms.',
+keyPoints:[
+{title:'Fan-out on Write',detail:'When user posts, push to followers feed cache.'},
+{title:'Feed Ranking',detail:'ML ranks posts based on engagement likelihood.'},
+{title:'Feed Cache',detail:'Redis stores feed results for fast access.'},
+{title:'Pagination',detail:'Feeds loaded incrementally.'}
+],
+techStack:['Redis','MySQL','Machine Learning Ranking'],
+interviewTip:'Explain fan-out on write vs fan-out on read.'
+}
+},
+
+{
+id:21,
+free:false,
+category:'URL Shortener',
+icon:'Link',
+companies:['Google','Amazon'],
+difficulty:'Medium',
+tag:'System Design',
+question:'How would you design a URL shortener like bit.ly?',
+answer:{
+headline:'Hash long URLs to unique short codes stored in key-value database.',
+keyPoints:[
+{title:'Short Code Generation',detail:'Use base62 encoding to generate compact keys.'},
+{title:'Database Mapping',detail:'Store shortCode → longURL mapping.'},
+{title:'Caching',detail:'Popular URLs cached in Redis.'},
+{title:'Redirect Flow',detail:'HTTP 302 redirect used.'}
+],
+techStack:['Redis','Cassandra','Load Balancer'],
+interviewTip:'Discuss collision handling.'
+}
+},
+
+{
+id:22,
+free:false,
+category:'Recommendations',
+icon:'Star',
+companies:['Netflix','Amazon'],
+difficulty:'Hard',
+tag:'Recommendation Systems',
+question:'How does Netflix recommend movies you might like?',
+answer:{
+headline:'Collaborative filtering + machine learning models.',
+keyPoints:[
+{title:'User Behavior',detail:'Track watch history and ratings.'},
+{title:'Similarity Models',detail:'Recommend based on similar users.'},
+{title:'Content Based',detail:'Analyze movie features like genre and actors.'},
+{title:'Real Time Updates',detail:'Recommendations updated after watching activity.'}
+],
+techStack:['Spark','ML pipelines','Kafka'],
+interviewTip:'Mention collaborative filtering.'
+}
+},
+
+{
+id:23,
+free:false,
+category:'Distributed Cache',
+icon:'Server',
+companies:['Amazon','Google'],
+difficulty:'Medium',
+tag:'Caching',
+question:'How does Redis improve performance in large systems?',
+answer:{
+headline:'In-memory caching reduces database load and latency.',
+keyPoints:[
+{title:'Cache Layer',detail:'Frequently accessed data stored in Redis.'},
+{title:'Cache Invalidation',detail:'Data invalidated when source changes.'},
+{title:'TTL Expiration',detail:'Entries automatically expire.'}
+],
+techStack:['Redis','Memcached'],
+interviewTip:'Explain cache-aside pattern.'
+}
+},
+
+{
+id:24,
+free:false,
+category:'Payments',
+icon:'CreditCard',
+companies:['Stripe'],
+difficulty:'Hard',
+tag:'Payments',
+question:'How does Stripe process millions of payments reliably?',
+answer:{
+headline:'Idempotent APIs + distributed transaction handling.',
+keyPoints:[
+{title:'Idempotency Keys',detail:'Prevent duplicate payments.'},
+{title:'Event Queue',detail:'Payment events handled asynchronously.'},
+{title:'Fraud Detection',detail:'Machine learning models detect fraud.'}
+],
+techStack:['Kafka','Postgres','Redis'],
+interviewTip:'Mention idempotency.'
+}
+},
+
+{
+id:25,
+free:false,
+category:'Maps',
+icon:'Map',
+companies:['Google'],
+difficulty:'Hard',
+tag:'Geospatial Systems',
+question:'How does Google Maps provide directions instantly?',
+answer:{
+headline:'Precomputed graph routing with distributed graph storage.',
+keyPoints:[
+{title:'Graph Model',detail:'Road network represented as graph.'},
+{title:'Shortest Path',detail:'Algorithms like Dijkstra used.'},
+{title:'Traffic Data',detail:'Real-time traffic modifies edge weights.'}
+],
+techStack:['Graph Databases','Dijkstra','ML'],
+interviewTip:'Mention graph algorithms.'
+}
+},
+
+{
+id:26,
+free:false,
+category:'Ads',
+icon:'Target',
+companies:['Google','Meta'],
+difficulty:'Hard',
+tag:'Ad Systems',
+question:'How does Google choose which ad to show in milliseconds?',
+answer:{
+headline:'Real-time auction among advertisers.',
+keyPoints:[
+{title:'Ad Ranking',detail:'Based on bid price and quality score.'},
+{title:'Targeting',detail:'Uses user behavior and demographics.'},
+{title:'Auction',detail:'Second price auction determines winner.'}
+],
+techStack:['ML models','Real-time bidding systems'],
+interviewTip:'Explain ad auctions.'
+}
+},
+
+
+
 ]
 
 // ═══════════════════════════════════════════════════════════════
@@ -79,6 +322,96 @@ const SERVICE_QUESTIONS = {
       { id:'o6', question:'Explain Design Patterns: Singleton, Factory, Observer, Strategy.', companies:['Infosys','Accenture','Cognizant'], difficulty:'Hard', answer:'Singleton: Only one instance. Thread-safe via double-checked locking or enum. Factory: Creates objects without specifying exact class. Hides creation logic. Observer: One-to-many dependency. Subject notifies all observers on change (Event system). Strategy: Define family of algorithms, make them interchangeable at runtime (Sorting strategy).', example:'Singleton: Logger.getInstance()\nFactory: ShapeFactory.create("circle") returns Circle\nObserver: EventEmitter in Node.js, Java Swing listeners\nStrategy: Sorter with BubbleSortStrategy or QuickSortStrategy', tip:'Real-world: Spring Framework uses Factory (BeanFactory), Singleton (Spring beans), Observer (ApplicationEvents).' },
       { id:'o7', question:'What is the difference between deep copy and shallow copy?', companies:['TCS','Wipro','HCL'], difficulty:'Easy', answer:'Shallow copy: copies object references. Both original and copy point to SAME nested objects. Changing nested object in copy affects original. Deep copy: copies all objects recursively. Completely independent copy. Change in copy does NOT affect original.', example:'Shallow: Address addr = new Address("Chennai"); Person p2 = p1.clone(); // p2.address == p1.address (same object)\nDeep: p2.address = new Address(p1.address.city); // independent copy', tip:'In Java: Object.clone() is shallow. For deep copy: implement Cloneable and override clone(), or use serialization/deserialization, or copy constructor.' },
       { id:'o8', question:'Explain method hiding vs method overriding.', companies:['TCS','Cognizant'], difficulty:'Medium', answer:'Method Overriding: instance methods. Decision at RUNTIME based on actual object type. Method Hiding: static methods. Decision at COMPILE TIME based on reference type. With overriding, polymorphism works. With hiding, polymorphism does NOT work.', example:'Overriding:\nAnimal a = new Dog(); a.sound(); // calls Dog.sound() — runtime decision\n\nHiding:\nAnimal a = new Dog(); a.staticMethod(); // calls Animal.staticMethod() — compile time decision', tip:'"Static methods belong to class, not to instance — so they cannot be overridden, only hidden."' },
+      { 
+      id:'o9', 
+      question:'What is the difference between final, finally, and finalize in Java?', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Easy', 
+      answer:'final: keyword — variable cannot change, method cannot override, class cannot extend. finally: block that always executes after try/catch — used for cleanup. finalize: method called by GC before object is destroyed (deprecated in Java 9+).', 
+      example:'final int MAX=100;\nvoid method(){ try{ return; } finally { System.out.println("cleanup"); } }\n@Override protected void finalize() { ... }', 
+      tip:'"Use final for constants, finally for cleanup, avoid finalize."' 
+    },
+    { 
+      id:'o10', 
+      question:'What is the difference between == and .equals() in Java?', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Easy', 
+      answer:'== compares references for objects, values for primitives. .equals() compares content for objects. Default Object.equals behaves like ==, many classes override equals for content comparison.', 
+      example:'String a = new String("hi"); String b = new String("hi"); a==b → false, a.equals(b) → true', 
+      tip:'"Use .equals() for String/content comparison, == only for reference comparison."' 
+    },
+    { 
+      id:'o11', 
+      question:'What is method overloading vs method overriding?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Easy', 
+      answer:'Overloading: same method name, different parameters, compile-time decision. Overriding: child class redefines parent method, runtime decision, supports polymorphism.', 
+      example:'Overload: void add(int a, int b), void add(double a, double b)\nOverride: class Dog extends Animal { void sound(){...} }', 
+      tip:'"Overloading = compile-time, overriding = runtime."' 
+    },
+    { 
+      id:'o12', 
+      question:'What is the difference between abstract class and interface in Java?', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Medium', 
+      answer:'Abstract class: can have fields, constructors, concrete methods; single inheritance. Interface: all fields public static final, methods abstract by default, can have default/static methods, multiple inheritance via implements.', 
+      example:'abstract class Vehicle { int speed; abstract void move(); }\ninterface Flyable { void fly(); } interface Swimmable { void swim(); }', 
+      tip:'"Use abstract class for shared state, interface for capability/behavior."' 
+    },
+    { 
+      id:'o13', 
+      question:'What is the difference between shallow copy and deep copy?', 
+      companies:['TCS','Wipro','Infosys','HCL'], 
+      difficulty:'Easy', 
+      answer:'Shallow copy: copies object references, nested objects shared. Deep copy: copies objects recursively, completely independent.', 
+      example:'Shallow: Person p2 = p1.clone(); // p2.address == p1.address\nDeep: p2.address = new Address(p1.address.city);', 
+      tip:'"Shallow copy = references copied, Deep copy = full independent object copy."' 
+    },
+    { 
+      id:'o14', 
+      question:'What is polymorphism in Java?', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Easy', 
+      answer:'Polymorphism = many forms. Compile-time (method overloading), runtime (method overriding). Allows same interface, different behavior.', 
+      example:'Animal a = new Dog(); a.sound(); // calls Dog.sound() at runtime\nadd(int a,int b) vs add(double a,double b) at compile-time', 
+      tip:'"Runtime polymorphism = dynamic behavior, compile-time = static behavior."' 
+    },
+    { 
+      id:'o15', 
+      question:'What is encapsulation in Java? How is it implemented?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Easy', 
+      answer:'Encapsulation = hiding data and exposing via methods. Achieved using private fields + public getters/setters. Ensures controlled access.', 
+      example:'class BankAccount { private double balance; public void deposit(double amt){ balance+=amt; } public double getBalance(){ return balance; } }', 
+      tip:'"Encapsulation = hide data, provide access methods."' 
+    },
+    { 
+      id:'o16', 
+      question:'What is inheritance in Java? Explain types of inheritance supported.', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Easy', 
+      answer:'Inheritance = reuse code of parent in child class. Types: Single, Multilevel, Hierarchical. Java does NOT support multiple class inheritance (use interfaces instead).', 
+      example:'class Vehicle {} class Car extends Vehicle {}', 
+      tip:'"Use inheritance for IS-A relationships."' 
+    },
+    { 
+      id:'o17', 
+      question:'What is the difference between static and instance methods in Java?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Easy', 
+      answer:'Static: belongs to class, can be called without object, cannot access instance variables directly. Instance: belongs to object, requires object reference.', 
+      example:'class Demo { static void s(){ } void i(){} } Demo.s(); Demo d=new Demo(); d.i();', 
+      tip:'"Static = class-level, Instance = object-level."' 
+    },
+    { 
+      id:'o18', 
+      question:'What is the use of the transient keyword in Java?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Medium', 
+      answer:'transient keyword prevents a field from being serialized. Useful in sensitive data or temporary states.', 
+      example:'class User implements Serializable { transient String password; }', 
+      tip:'"transient = skip during serialization."' 
+    }
     ]
   },
   dbms: {
@@ -93,6 +426,150 @@ const SERVICE_QUESTIONS = {
       { id:'d6', question:'What is the difference between SQL and NoSQL? When to use which?', companies:['Accenture','Cognizant','HCL','Capgemini'], difficulty:'Medium', answer:'SQL (Relational): Fixed schema, ACID, JOIN support, vertical scaling. Best for: financial systems, user management, orders — anything needing transactions. NoSQL types: Document (MongoDB) — flexible schema, nested JSON. Key-Value (Redis) — ultra-fast cache. Column (Cassandra) — high write throughput, time-series. Graph (Neo4j) — relationship queries. When to use NoSQL: Massive scale, flexible/evolving schema, no complex JOINs needed.', example:'SQL use case: Bank account, orders, user profiles (need transactions, JOINs)\nMongoDB use case: Product catalog (different fields per product type)\nCassandra use case: IoT sensor data (millions of writes/sec, time-series)\nRedis use case: Session cache, rate limiting, leaderboard', tip:'"Start with PostgreSQL. Switch to NoSQL only when you have a specific scale or schema flexibility problem PostgreSQL can\'t solve."' },
       { id:'d7', question:'Explain stored procedures vs functions vs triggers in SQL.', companies:['TCS','Wipro','Infosys'], difficulty:'Medium', answer:'Stored Procedure: Pre-compiled SQL code stored in DB. Can have input/output params. Cannot be used in SELECT. Can contain DML (INSERT/UPDATE/DELETE). Function: Returns a value. Can be used in SELECT. Should not have side effects. Typically no DML. Trigger: Automatically executes on INSERT/UPDATE/DELETE. Cannot be called manually. Used for audit logging, maintaining derived data.', example:'Stored Proc:\nCREATE PROCEDURE TransferMoney(from_id INT, to_id INT, amount DECIMAL)\nBEGIN\n  UPDATE accounts SET balance = balance - amount WHERE id = from_id;\n  UPDATE accounts SET balance = balance + amount WHERE id = to_id;\nEND;\n\nTrigger:\nCREATE TRIGGER after_salary_update\nAFTER UPDATE ON employees\nFOR EACH ROW INSERT INTO salary_audit VALUES(OLD.salary, NEW.salary, NOW());', tip:'"Triggers are powerful but dangerous — they run automatically and can cause performance issues if poorly designed. Always document them."' },
       { id:'d8', question:'What is a deadlock in database? How to prevent it?', companies:['TCS','Wipro','Accenture'], difficulty:'Hard', answer:'Deadlock: T1 holds lock on A, waits for B. T2 holds lock on B, waits for A. Neither can proceed — circular wait. Prevention strategies: 1) Always acquire locks in the same order (T1 and T2 both lock A then B). 2) Use timeout — if lock not acquired in N seconds, rollback. 3) Deadlock detection — DB detects cycle and kills one transaction. 4) Use optimistic locking instead of pessimistic locking.', example:'Deadlock scenario:\nT1: LOCK A → try LOCK B (waiting)\nT2: LOCK B → try LOCK A (waiting)\n→ Deadlock!\n\nPrevention:\nT1: LOCK A first, then B\nT2: LOCK A first, then B\n→ T2 waits for T1 to release A. No deadlock.', tip:'"MySQL/PostgreSQL detect deadlocks automatically and kill one transaction. But deadlock detection is expensive — prevention via consistent lock ordering is better."' },
+      { 
+    id:'d9', 
+    question:'What is a primary key, foreign key, and unique key?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'Primary Key: Uniquely identifies a record in a table. Cannot be NULL. Foreign Key: Field that links to primary key in another table, enforces referential integrity. Unique Key: Ensures values in a column are unique, can have NULLs.', 
+    example:'Table Users(ID PK, Email UNIQUE)\nTable Orders(UserID FK → Users.ID)', 
+    tip:'"Primary Key = unique identifier, Foreign Key = link to another table, Unique = uniqueness constraint."' 
+  },
+  { 
+    id:'d10', 
+    question:'What is a database index and why is it used?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Index is a data structure (B-Tree/Hash) that speeds up data retrieval. Without index, DB scans full table (O(N)). With index, lookup is O(log N).', 
+    example:'CREATE INDEX idx_email ON Users(email); SELECT * FROM Users WHERE email="a@b.com";', 
+    tip:'"Indexes improve read speed but slow down writes (INSERT/UPDATE/DELETE). Use selectively."' 
+  },
+  { 
+    id:'d11', 
+    question:'What is a view in SQL?', 
+    companies:['TCS','Infosys','Wipro'], 
+    difficulty:'Easy', 
+    answer:'View is a virtual table based on result of a SELECT query. Doesn’t store data physically (except materialized view). Simplifies queries and hides complexity.', 
+    example:'CREATE VIEW active_users AS SELECT * FROM Users WHERE status="active"; SELECT * FROM active_users;', 
+    tip:'"Use views to simplify complex joins or hide sensitive columns."' 
+  },
+  { 
+    id:'d12', 
+    question:'What is the difference between DELETE, TRUNCATE, and DROP?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'DELETE: Removes rows, can use WHERE, slower, logs each row. TRUNCATE: Removes all rows, faster, cannot use WHERE, resets identity. DROP: Deletes table entirely, schema and data lost.', 
+    example:'DELETE FROM Users WHERE id=1;\nTRUNCATE TABLE Users;\nDROP TABLE Users;', 
+    tip:'"DELETE = selective, TRUNCATE = all rows, DROP = table itself."' 
+  },
+  { 
+    id:'d13', 
+    question:'What is a transaction in a database?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Transaction is a group of SQL operations executed as a single unit. Either all succeed or all fail (ACID properties).', 
+    example:'BEGIN TRANSACTION;\nUPDATE A SET balance=balance-100;\nUPDATE B SET balance=balance+100;\nCOMMIT;', 
+    tip:'"Think of transactions as “all or nothing” operations — crucial in banking."' 
+  },
+  { 
+    id:'d14', 
+    question:'What are constraints in SQL?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'Constraints are rules on table columns to enforce data integrity. Common: PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, CHECK, DEFAULT.', 
+    example:'CREATE TABLE Users(ID INT PRIMARY KEY, Email VARCHAR(100) UNIQUE NOT NULL, Age INT CHECK(Age>18));', 
+    tip:'"Constraints help maintain data accuracy and reliability."' 
+  },
+  { 
+    id:'d15', 
+    question:'What are the different types of SQL JOINs?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'INNER JOIN: Only matching rows from both tables.\nLEFT JOIN: All rows from left table + matching from right (NULL if no match).\nRIGHT JOIN: All rows from right table + matching from left.\nFULL OUTER JOIN: All rows from both tables, NULL if no match.\nCROSS JOIN: Cartesian product (every row of A × every row of B).', 
+    example:'SELECT * FROM Users U INNER JOIN Orders O ON U.ID=O.UserID;\nSELECT * FROM Users U LEFT JOIN Orders O ON U.ID=O.UserID;', 
+    tip:'"Inner join = only matches, Left join = keep all from left, Right join = keep all from right."' 
+  },
+  { 
+    id:'d16', 
+    question:'What is database normalization?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Normalization organizes tables to reduce redundancy and dependency. Common forms: 1NF: atomic columns, no repeating groups. 2NF: 1NF + no partial dependency. 3NF: 2NF + no transitive dependency.', 
+    example:'1NF: Phone="9876,8765" → separate rows for each\n2NF: Order(ProductID, OrderID) → move ProductName to Products table\n3NF: StudentID→Zip→City → separate Zip table', 
+    tip:'"Remember: The key (1NF), the whole key (2NF), and nothing but the key (3NF)."' 
+  },
+  { 
+    id:'d17', 
+    question:'What is a primary key vs candidate key vs alternate key?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Primary Key: Unique identifier for a table. Candidate Key: Any column(s) that can be PK. Alternate Key: Candidate key not chosen as PK.', 
+    example:'Table Users(ID PK, Email UNIQUE) — ID=PK, Email=candidate key/alternate key', 
+    tip:'"PK = main ID, Candidate = potential IDs, Alternate = unused candidates."' 
+  },
+  { 
+    id:'d18', 
+    question:'What is a foreign key and referential integrity?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Foreign Key links a column in one table to primary key in another table. Ensures that referenced data exists (referential integrity).', 
+    example:'Orders(UserID FK → Users.ID) ensures every order has a valid user.', 
+    tip:'"FK prevents invalid references between tables."' 
+  },
+  { 
+    id:'d19', 
+    question:'What is the difference between TRUNCATE and DELETE?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'DELETE: Removes rows selectively, can use WHERE, slower, logs each row. TRUNCATE: Removes all rows, faster, cannot use WHERE, resets identity counters.', 
+    example:'DELETE FROM Users WHERE Age<18;\nTRUNCATE TABLE Users;', 
+    tip:'"DELETE = selective, TRUNCATE = all rows."' 
+  },
+  { 
+    id:'d20', 
+    question:'What is a transaction and why are ACID properties important?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'Transaction: Group of SQL operations executed as a unit. ACID ensures reliability: Atomicity (all or none), Consistency (valid state), Isolation (no interference), Durability (changes persist).', 
+    example:'BEGIN TRANSACTION;\nUPDATE A SET balance=balance-100;\nUPDATE B SET balance=balance+100;\nCOMMIT;', 
+    tip:'"ACID ensures banking and financial operations are safe and consistent."' 
+  },
+  { 
+    id:'d21', 
+    question:'What is the difference between SQL and NoSQL?', 
+    companies:['TCS','Wipro','Infosys','Capgemini'], 
+    difficulty:'Easy', 
+    answer:'SQL: Relational, fixed schema, ACID, JOINs. Good for structured data and transactions.\nNoSQL: Non-relational (Document, Key-Value, Column, Graph), flexible schema, eventual consistency. Good for large scale, unstructured data.', 
+    example:'SQL: PostgreSQL for banking. NoSQL: MongoDB for product catalog, Redis for cache.', 
+    tip:'"Start with SQL. Use NoSQL only if schema flexibility or massive scale needed."' 
+  },
+  { 
+    id:'d22', 
+    question:'What is a stored procedure, function, and trigger?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Stored Procedure: Predefined SQL code, can have input/output, used for operations. Function: Returns a value, can be used in SELECT. Trigger: Auto-executes on INSERT/UPDATE/DELETE.', 
+    example:'CREATE PROCEDURE TransferMoney(...); CREATE FUNCTION GetAge(...); CREATE TRIGGER after_update ...;', 
+    tip:'"Procedures = manual call, Functions = return value, Triggers = automatic actions."' 
+  },
+  { 
+    id:'d23', 
+    question:'What is deadlock and how to prevent it in DB?', 
+    companies:['TCS','Wipro','Infosys','Accenture'], 
+    difficulty:'Medium', 
+    answer:'Deadlock: Two transactions wait for each other’s locks. Prevention: Acquire locks in consistent order, use timeout, or optimistic locking.', 
+    example:'T1: LOCK A then B; T2: LOCK A then B → no deadlock\nT1: LOCK A then B; T2: LOCK B then A → deadlock', 
+    tip:'"Avoid circular wait to prevent deadlocks."' 
+  },
+  { 
+    id:'d24', 
+    question:'What is an index and its types in simple words?', 
+    companies:['TCS','Wipro','Infosys','Accenture'], 
+    difficulty:'Easy', 
+    answer:'Index: Data structure to speed up search. Types: Clustered (data sorted by index, usually PK), Non-clustered (separate structure), Covering (index includes all query columns).', 
+    example:'CREATE INDEX idx_email ON Users(email);', 
+    tip:'"Indexes improve SELECT performance but slow down INSERT/UPDATE/DELETE."' 
+  }
     ]
   },
   os: {
@@ -107,6 +584,96 @@ const SERVICE_QUESTIONS = {
       { id:'s6', question:'What is a mutex vs semaphore? When to use which?', companies:['TCS','Accenture','Cognizant'], difficulty:'Hard', answer:'Mutex (Mutual Exclusion): Binary lock. Only the thread that ACQUIRED it can RELEASE it. Used for protecting critical section. Ownership concept. Semaphore: Counter. Can be acquired by one thread and released by another. Binary semaphore ≈ mutex (but no ownership). Counting semaphore: controls access to N resources. Mutex: Thread safety of shared data. Semaphore: Signaling between threads, limiting concurrent access (e.g., max 5 DB connections).', example:'Mutex:\nlock(mutex); // Thread A acquires\n// critical section\nunlock(mutex); // Only Thread A can unlock\n\nSemaphore (producer-consumer):\nfull.acquire(); // consumer waits until item available\nbuffer.get();\nempty.release(); // signal producer: space available', tip:'"Mutex is a locking mechanism. Semaphore is a signaling mechanism. Mutex = binary semaphore with ownership. Never release a mutex from a different thread — undefined behavior."' },
       { id:'s7', question:'What is context switching? Why is it expensive?', companies:['TCS','Wipro','Infosys'], difficulty:'Medium', answer:'Context Switch: OS saves current process state (PCB: registers, PC, stack pointer, page table) and loads another process\'s state. Cost factors: 1) Save/restore registers (~200 instructions). 2) TLB flush (Translation Lookaside Buffer — cache of page table entries). 3) Cache invalidation — new process has different working set, cold cache. 4) Scheduler decision overhead. Context switch takes ~1-10 microseconds but cache miss penalty can be much higher.', example:'WHY goroutines are cheaper than OS threads:\nOS thread context switch: ~5-10μs + TLB flush + cache miss\nGoroutine switch: ~100ns (no OS involvement, no TLB flush, smaller stack 2KB vs 8MB)', tip:'"Node.js single-threaded model avoids context switches — uses async I/O instead. This is why Node.js handles 10K concurrent connections efficiently."' },
       { id:'s8', question:'What is thrashing in OS? How does the OS prevent it?', companies:['Accenture','HCL','Capgemini'], difficulty:'Hard', answer:'Thrashing: OS spends more time swapping pages in/out of disk than actually executing processes. Cause: Too many processes in RAM, each with insufficient frames. Solution: Working Set Model — track pages a process actually uses in recent N memory references. Ensure each process has at least its working set in RAM. Page Fault Frequency: If PFF too high → allocate more frames. If PFF too low → take away frames for other processes.', example:'System has 100 frames, 5 processes each needing 25 frames = 125 frames\n→ All 5 can\'t fit in RAM simultaneously\n→ Constant page faults → thrashing\n\nSolution: Suspend 1-2 processes to give remaining processes enough frames', tip:'"AWS Lambda functions have memory allocation — under-allocating causes thrashing. Setting 512MB for a function that needs 400MB working set prevents this."' },
+      { 
+      id:'s9', 
+      question:'What is the difference between process and thread?', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Easy', 
+      answer:'Process: independent program with its own memory, PCB, file descriptors. Heavyweight. Crash in one process doesn’t affect others. Thread: lightweight unit within a process, shares memory, faster creation/context switch. Communication via shared memory.', 
+      example:'Chrome tab = process (crash isolated)\nSpellcheck in Word = thread within process\nThread A can access Thread B’s variables → risk of race condition', 
+      tip:'"Threads share memory — efficient but need synchronization."' 
+    },
+    { 
+      id:'s10', 
+      question:'What is deadlock? Explain the 4 Coffman conditions.', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Medium', 
+      answer:'Deadlock: set of processes permanently waiting for each other. Coffman conditions: 1) Mutual Exclusion: only one process can hold a resource. 2) Hold and Wait: process holding resource waits for others. 3) No Preemption: resource cannot be forcibly taken. 4) Circular Wait: circular chain of processes waiting.', 
+      example:'Dining Philosophers: all pick left fork → all wait for right fork → circular wait → deadlock\nSolution: one philosopher picks right fork first to break circular wait.', 
+      tip:'"Break any Coffman condition to prevent deadlock; easiest: impose resource ordering."' 
+    },
+    { 
+      id:'s11', 
+      question:'What is virtual memory? How does paging work?', 
+      companies:['Accenture','HCL','Capgemini'], 
+      difficulty:'Medium', 
+      answer:'Virtual memory: illusion of more RAM than physically available. Each process sees large address space. Paging: divide virtual memory into fixed-size pages, physical memory into frames, page table maps page→frame. Page fault occurs when page not in RAM.', 
+      example:'Process accesses virtual address → MMU maps via page table → physical frame\nIf not in RAM → page fault → OS loads page from disk', 
+      tip:'"Page fault is normal, excessive page faults = thrashing."' 
+    },
+    { 
+      id:'s12', 
+      question:'Explain CPU scheduling algorithms: FCFS, SJF, Round Robin, Priority.', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Medium', 
+      answer:'FCFS: first come first served, non-preemptive, simple, convoy effect. SJF: shortest job first, optimal avg wait, but starvation risk. Round Robin: fixed time quantum, preemptive, good for time-sharing. Priority: higher priority executes first, starvation possible, use aging to prevent.', 
+      example:'Round Robin: P1(24ms), P2(3ms), P3(3ms), quantum 4ms → switch sequence: P1→P2→P3→P1...', 
+      tip:'"Modern OS uses multilevel feedback queue. Linux uses Completely Fair Scheduler."' 
+    },
+    { 
+      id:'s13', 
+      question:'What is the difference between user mode and kernel mode?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Easy', 
+      answer:'User mode: code executes with restricted access, cannot directly access hardware or kernel memory. Kernel mode: full access to hardware and memory. System calls switch from user → kernel mode.', 
+      example:'Reading a file: user process calls read() → CPU switches to kernel mode → performs I/O → returns to user mode', 
+      tip:'"Kernel mode is privileged, user mode is protected — prevents accidental system crashes."' 
+    },
+    { 
+      id:'s14', 
+      question:'What is a semaphore? Difference between binary and counting semaphore?', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Medium', 
+      answer:'Semaphore: signaling mechanism to control access to resources. Binary semaphore: only 0 or 1 (like mutex). Counting semaphore: counts number of available resources.', 
+      example:'Binary semaphore: lock/unlock critical section\nCounting semaphore: allow max 5 threads in DB connection pool', 
+      tip:'"Binary semaphore ≈ mutex (with ownership), counting semaphore limits concurrent access."' 
+    },
+    { 
+      id:'s15', 
+      question:'What is a race condition? How to prevent it?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Easy', 
+      answer:'Race condition: two threads/processes access shared data concurrently and outcome depends on timing. Prevent: synchronization (mutex/locks), atomic operations, avoid shared mutable state.', 
+      example:'Thread A and B increment same counter → final value may be wrong\nSolution: synchronized increment()', 
+      tip:'"Race conditions lead to non-deterministic bugs. Always protect shared data."' 
+    },
+    { 
+      id:'s16', 
+      question:'What is paging vs segmentation?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Medium', 
+      answer:'Paging: divides memory into fixed-size blocks (pages/frames). Segmentation: divides memory into logical segments (code, data, stack). Paging avoids external fragmentation, segmentation is logical.', 
+      example:'Process code + data + stack: segments with variable size\nPaging: each segment split into 4KB pages mapped to frames', 
+      tip:'"Paging = physical memory management, segmentation = logical view of program."' 
+    },
+    { 
+      id:'s17', 
+      question:'What is a critical section? How is it protected?', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Easy', 
+      answer:'Critical section: code accessing shared resources that must not be concurrently executed. Protected via locks, mutexes, semaphores, monitors.', 
+      example:'increment shared counter → wrap in synchronized block/mutex lock', 
+      tip:'"Only one thread at a time in critical section to prevent race conditions."' 
+    },
+    { 
+      id:'s18', 
+      question:'What is starvation in OS? How is it prevented?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Medium', 
+      answer:'Starvation: low-priority process never gets CPU because higher-priority processes keep executing. Prevention: aging — gradually increase priority of waiting processes.', 
+      example:'Priority scheduling: P1 high priority keeps running, P5 low priority never executes → apply aging', 
+      tip:'"Aging ensures fairness in CPU scheduling."' 
+    }
     ]
   },
   networking: {
@@ -121,6 +688,96 @@ const SERVICE_QUESTIONS = {
       { id:'n6', question:'What is DNS? Explain the complete DNS resolution process.', companies:['TCS','Accenture','Cognizant'], difficulty:'Medium', answer:'DNS (Domain Name System): Translates human-readable names to IP addresses. Hierarchical distributed database. Resolution steps: 1) Browser cache. 2) OS cache (/etc/hosts, OS DNS cache). 3) Recursive Resolver (ISP\'s DNS server). 4) Root DNS Servers (13 root servers worldwide — know where .com, .in etc. are). 5) TLD DNS (.com nameserver — knows where google.com NS is). 6) Authoritative DNS (google.com\'s own server — returns IP). Result cached at each level with TTL.', example:'Query: www.google.com\nRoot DNS: "I don\'t know google.com but .com is handled by a.gtld-servers.net"\nTLD DNS: "google.com is handled by ns1.google.com"\nAuthoritative: "www.google.com = 142.250.77.78"\n\nTTL = 300s → cached for 5 minutes everywhere', tip:'"Low TTL (60s) = changes propagate fast but more DNS traffic. High TTL (86400s) = efficient caching but slow propagation. Companies use low TTL before planned changes."' },
       { id:'n7', question:'What is a firewall? Difference between stateful and stateless firewall?', companies:['TCS','Wipro','HCL','Capgemini'], difficulty:'Medium', answer:'Firewall: Network security device that monitors and controls incoming/outgoing traffic based on rules. Stateless Firewall: Inspects each packet independently. Based on: source IP, dest IP, port, protocol. Fast but can be bypassed (e.g., spoofed packets). Stateful Firewall: Tracks connection state. Maintains connection table. Knows if a packet is part of an established connection. Blocks packets that don\'t belong to any established connection. More secure, slightly slower.', example:'Stateless: Rule "Allow port 80 inbound" → allows ANY packet to port 80\nAttacker sends RST packet to port 80 → stateless allows it (matches rule)\n\nStateful: Tracks that no SYN was sent for this RST → rejects it\n(RST must belong to an established connection)', tip:'"AWS Security Groups are stateful (you only need to allow inbound — response traffic is automatically allowed). AWS NACLs are stateless (must explicitly allow both inbound and outbound)."' },
       { id:'n8', question:'What is CORS? Why does the browser block cross-origin requests?', companies:['Infosys','Accenture','Cognizant'], difficulty:'Medium', answer:'CORS (Cross-Origin Resource Sharing): Security mechanism preventing malicious websites from making API calls on behalf of users. Same-Origin Policy: Browser blocks JS on evil.com from calling api.bank.com (different origin). CORS allows servers to whitelist specific origins. Preflight: Browser sends OPTIONS request first for non-simple requests (POST with JSON). Server responds with allowed origins/methods/headers. If origin not in allow-list → browser blocks response (request went through but browser hides response).', example:'Scenario:\nYou\'re logged into bank.com (cookie in browser)\nEvil.com JS tries: fetch("https://api.bank.com/transfer", {method:"POST", ...})\nBrowser sends preflight to api.bank.com\nBank\'s CORS: "only bank.com allowed"\n→ Browser blocks evil.com from seeing response\n\nFix for legitimate use:\nAccess-Control-Allow-Origin: https://myapp.com', tip:'"CORS is enforced by browsers, not servers. The API request DOES reach the server — CORS just prevents the browser from giving the response to the requesting page."' },
+      { 
+      id:'n9', 
+      question:'What happens when you type www.google.com in browser? Explain step by step.', 
+      companies:['TCS','Wipro','Infosys','Accenture','Cognizant'], 
+      difficulty:'Medium', 
+      answer:'1) DNS Resolution: Browser cache → OS cache → Router cache → ISP DNS → Root DNS → TLD → Authoritative DNS → returns IP. 2) TCP Connection: 3-way handshake (SYN → SYN-ACK → ACK). 3) TLS Handshake: Key exchange, secure channel. 4) HTTP Request: GET /, sends headers/cookies. 5) Server Processing: Load balancer → app server → database → generate response. 6) Browser Rendering: Parse HTML → DOM → CSSOM → Render tree → Layout → Paint.', 
+      example:'DNS: ~20ms | TCP handshake: ~20ms | TLS: ~30ms | Server: ~50ms | Render: ~70ms\nTotal ~200ms for fast website', 
+      tip:'"Answer in layers: DNS → Transport (TCP/TLS) → Application (HTTP) → Server → Browser."' 
+    },
+    { 
+      id:'n10', 
+      question:'What is the OSI model? Explain all 7 layers with examples.', 
+      companies:['TCS','Wipro','HCL','Capgemini'], 
+      difficulty:'Easy', 
+      answer:'L7 Application: HTTP, FTP, SMTP, DNS. L6 Presentation: Encryption (SSL/TLS), compression, encoding. L5 Session: Session management between client-server. L4 Transport: TCP (reliable) / UDP (unreliable). L3 Network: IP routing. L2 Data Link: MAC addresses, frames, switches. L1 Physical: bits, voltages, cables, Wi-Fi.', 
+      example:'Sending an email:\nL7 SMTP sends email\nL4 TCP port 25 ensures delivery\nL3 IP packet routed to mail server\nL2 Frame delivered to router MAC\nL1 electrical signals transmitted', 
+      tip:'"Mnemonic: Please Do Not Throw Sausage Pizza Away = Physical, Data Link, Network, Transport, Session, Presentation, Application."' 
+    },
+    { 
+      id:'n11', 
+      question:'TCP vs UDP — when to use which? Give real-world examples.', 
+      companies:['TCS','Wipro','Infosys','Cognizant'], 
+      difficulty:'Easy', 
+      answer:'TCP: reliable, connection-oriented, ordered, error-checked. Higher latency. UDP: connectionless, no reliability, lower latency, no handshake.', 
+      example:'TCP: HTTP, Email, FTP, Banking → reliability matters.\nUDP: Video calls, Live streaming, Online gaming, DNS → speed matters.', 
+      tip:'"UDP is used when dropping packets is better than delaying (live video/audio)."' 
+    },
+    { 
+      id:'n12', 
+      question:'What is the difference between HTTP, HTTPS, HTTP/2, and HTTP/3?', 
+      companies:['Infosys','Accenture','HCL'], 
+      difficulty:'Medium', 
+      answer:'HTTP/1.1: text, one request per TCP connection (head-of-line blocking). HTTPS = HTTP + TLS encryption. HTTP/2: binary, multiplexing, header compression, server push. HTTP/3 (QUIC): uses UDP, avoids TCP head-of-line blocking, faster connection (0-RTT).', 
+      example:'HTTP/1.1: 10 requests → 10 TCP connections\nHTTP/2: 10 requests → 1 TCP connection, multiplexed\nHTTP/3: 1 UDP connection, no head-of-line blocking', 
+      tip:'"HTTP/3 + QUIC = better performance on mobile/unstable networks."' 
+    },
+    { 
+      id:'n13', 
+      question:'What is DNS? Explain the complete DNS resolution process.', 
+      companies:['TCS','Accenture','Cognizant'], 
+      difficulty:'Medium', 
+      answer:'DNS translates domain names to IPs. Resolution steps: 1) Browser cache, 2) OS cache, 3) Recursive resolver (ISP), 4) Root DNS, 5) TLD DNS, 6) Authoritative DNS. Result cached with TTL at each level.', 
+      example:'www.google.com → root DNS → TLD (.com) → authoritative (returns 142.250.x.x) → cached', 
+      tip:'"Low TTL → fast updates, high traffic; High TTL → slow updates, efficient caching."' 
+    },
+    { 
+      id:'n14', 
+      question:'What is a firewall? Difference between stateful and stateless firewall?', 
+      companies:['TCS','Wipro','HCL','Capgemini'], 
+      difficulty:'Medium', 
+      answer:'Firewall monitors and controls network traffic. Stateless: checks each packet independently, fast, simpler. Stateful: tracks connection state, blocks invalid packets, more secure.', 
+      example:'Stateless: allow port 80 → any packet allowed\nStateful: allow port 80 only if part of established connection', 
+      tip:'"AWS Security Groups = stateful, NACLs = stateless."' 
+    },
+    { 
+      id:'n15', 
+      question:'What is CORS? Why does the browser block cross-origin requests?', 
+      companies:['Infosys','Accenture','Cognizant'], 
+      difficulty:'Medium', 
+      answer:'CORS prevents malicious cross-origin requests in browsers. Same-Origin Policy blocks JS on evil.com from calling api.bank.com. Servers can whitelist origins. Preflight OPTIONS request checks allowed methods/headers.', 
+      example:'Evil.com tries fetch("https://api.bank.com") → preflight → blocked if not allowed', 
+      tip:'"CORS enforced by browser, request reaches server but browser hides response."' 
+    },
+    { 
+      id:'n16', 
+      question:'What is NAT? Why is it used?', 
+      companies:['TCS','Wipro','Infosys','Accenture'], 
+      difficulty:'Easy', 
+      answer:'NAT (Network Address Translation) maps private IPs to public IPs for internet access. Used because IPv4 addresses are limited. Hides internal network structure.', 
+      example:'Private IP 192.168.1.10 → NAT → Public IP 49.207.10.1 when accessing internet', 
+      tip:'"Home routers use NAT so multiple devices share one public IP."' 
+    },
+    { 
+      id:'n17', 
+      question:'What is the difference between IPv4 and IPv6? Why is IPv6 needed?', 
+      companies:['TCS','Wipro','Infosys'], 
+      difficulty:'Easy', 
+      answer:'IPv4: 32-bit, ~4.3B addresses. IPv6: 128-bit, huge address space. IPv6 needed due to IPv4 exhaustion, built-in security (IPSec), auto-configuration, efficient routing.', 
+      example:'Home router NAT for IPv4 → multiple devices share one public IP\nIPv6: each device can have globally unique address', 
+      tip:'"IPv6 adoption growing — Google traffic ~50% IPv6."' 
+    },
+    { 
+      id:'n18', 
+      question:'What is a subnet? How do subnet masks work?', 
+      companies:['TCS','Wipro','Infosys','Accenture'], 
+      difficulty:'Medium', 
+      answer:'Subnet divides network into smaller networks. Subnet mask determines network vs host portion. Helps routing and efficient IP usage.', 
+      example:'IP 192.168.1.10/24 → mask 255.255.255.0 → network = 192.168.1.0, hosts 1-254', 
+      tip:'"Subnetting reduces broadcast domains and organizes networks."' 
+    }
     ]
   },
   java: {
@@ -135,6 +792,150 @@ const SERVICE_QUESTIONS = {
       { id:'j6', question:'What is the Java Collections Framework? HashMap internals.', companies:['TCS','Wipro','Infosys','HCL'], difficulty:'Hard', answer:'HashMap internals: Array of buckets (default 16). Key → hashCode() → compressed to bucket index. Each bucket is a linked list (or red-black tree if >8 entries). Put: hash key → find bucket → check for existing key (equals()) → add/update. Get: hash key → find bucket → traverse list/tree → return value. Load Factor (default 0.75): When 75% full → resize to 2x and rehash. Java 8+: Bucket becomes red-black tree when >8 entries → O(log n) instead of O(n) for hash collisions.', example:'HashMap<String, Integer> map = new HashMap<>();\nmap.put("apple", 1); // hash("apple") = 92599, bucket = 92599 % 16 = 3, store at bucket[3]\nmap.put("appLe", 2); // different hash → different bucket, no collision\n// If two keys hash to same bucket → linked list/tree at that bucket', tip:'"hashCode() and equals() contract: if a.equals(b) then a.hashCode() == b.hashCode(). Violate this → objects can\'t be found in HashMap."' },
       { id:'j7', question:'What is exception handling in Java? Checked vs Unchecked exceptions.', companies:['TCS','Wipro','Infosys','Cognizant'], difficulty:'Easy', answer:'Checked Exception: Compiler forces you to handle or declare them. Extends Exception. e.g., IOException, SQLException. Must use try-catch or throws. Unchecked Exception: Runtime exceptions. Extends RuntimeException. Not checked at compile time. e.g., NullPointerException, ArrayIndexOutOfBoundsException. try-with-resources: Auto-closes Closeable resources (files, DB connections). Finally: Always executes (even after return/exception).', example:'// Checked:\ntry {\n  FileReader f = new FileReader("file.txt"); // throws IOException (checked)\n} catch (IOException e) { e.printStackTrace(); }\n\n// Unchecked:\nString s = null;\ns.length(); // NullPointerException — no compiler warning!\n\n// try-with-resources:\ntry (Connection conn = DriverManager.getConnection(url)) {\n  // conn auto-closed even if exception\n}', tip:'"Best practice: Use checked exceptions for recoverable conditions (file not found — user can retry). Use unchecked for programming errors (null pointer — fix the code)."' },
       { id:'j8', question:'What is the difference between final, finally, and finalize in Java?', companies:['TCS','Wipro','Infosys','Cognizant','HCL'], difficulty:'Easy', answer:'final (keyword): Variable: value cannot be changed (constant). Method: cannot be overridden. Class: cannot be extended (e.g., String class is final). finally (block): Always executes after try-catch, even if exception thrown or return statement executed. Used for cleanup (close connections, files). finalize (method): Called by GC before object is destroyed. Deprecated in Java 9. Unreliable — no guarantee when or if it\'s called. Use try-with-resources or close() instead.', example:'final int MAX = 100; // constant\nfinal class String {} // cannot extend String\n\nvoid method() {\n  try { return; } // return executed\n  finally { System.out.println("cleanup"); } // STILL runs before method returns\n}\n\n@Override\nprotected void finalize() { // Called by GC — avoid in modern Java\n  connection.close(); // Bad: GC may never call this!\n}', tip:'"finalize() is deprecated and unreliable. Never use it for resource cleanup. Always use try-with-resources or explicit close() in finally block."' },
+       { 
+    id:'j9', 
+    question:'What is Java memory and garbage collection in simple terms?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Java memory is mainly Stack (stores local variables & method calls) and Heap (stores objects). Garbage Collection (GC) automatically removes objects that are no longer used to free memory.', 
+    example:'Person p = new Person(); p = null; // old object is now eligible for GC', 
+    tip:'"You don’t manage memory manually in Java; GC does it. Just avoid unnecessary object creation."' 
+  },
+  { 
+    id:'j10', 
+    question:'What is a ThreadPool and why use it?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'ThreadPool: A group of threads ready to execute tasks. Avoids creating a new thread for every task. Improves performance and resource management.', 
+    example:'ExecutorService pool = Executors.newFixedThreadPool(5);\npool.submit(() -> doTask());', 
+    tip:'"Always use thread pools instead of creating raw Threads for multiple tasks."' 
+  },
+  { 
+    id:'j11', 
+    question:'What is serialization and the transient keyword?', 
+    companies:['TCS','Infosys','Wipro'], 
+    difficulty:'Easy', 
+    answer:'Serialization: Converting an object to bytes to save or send over network. transient: Marks a field to be skipped during serialization.', 
+    example:'class User implements Serializable { String name; transient String password; }', 
+    tip:'"Use transient for sensitive data that should not be saved or sent."' 
+  },
+  { 
+    id:'j12', 
+    question:'What is Java Reflection in simple words?', 
+    companies:['TCS','Infosys'], 
+    difficulty:'Medium', 
+    answer:'Reflection lets a Java program look at classes, methods, and fields at runtime and even call them dynamically. Used in frameworks like Spring.', 
+    example:'Class<?> cls = Class.forName("java.util.ArrayList"); Method m = cls.getMethod("add", Object.class); m.invoke(list, "Hello");', 
+    tip:'"Use reflection carefully — it’s powerful but slower and bypasses compile-time safety."' 
+  },
+  { 
+    id:'j13', 
+    question:'What is Optional in Java 8 and why use it?', 
+    companies:['TCS','Infosys','Wipro'], 
+    difficulty:'Easy', 
+    answer:'Optional is a container for a value that might be null. Helps avoid NullPointerException and forces you to handle missing values safely.', 
+    example:'Optional<String> name = Optional.ofNullable(user.getName()); name.ifPresent(System.out::println);', 
+    tip:'"Return Optional instead of null to make code safer."' 
+  },
+  { 
+    id:'j14', 
+    question:'What is Stream API in Java 8?', 
+    companies:['TCS','Infosys','Wipro'], 
+    difficulty:'Easy', 
+    answer:'Stream API allows processing collections of data in a functional way (map, filter, reduce) without writing loops. Supports parallel processing easily.', 
+    example:'List<String> names = list.stream().filter(n -> n.startsWith("A")).collect(Collectors.toList());', 
+    tip:'"Streams are lazy; operations happen only when terminal operation (collect, forEach) is called."' 
+  },
+   { 
+    id:'j15', 
+    question:'What is the difference between JDK, JRE, and JVM?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'JVM (Java Virtual Machine): Runs Java bytecode, platform-independent. JRE (Java Runtime Environment): JVM + standard libraries to run Java programs. JDK (Java Development Kit): JRE + compiler + tools to develop Java programs.', 
+    example:'To run a Java program, JRE suffices. To compile Java code, JDK is needed.', 
+    tip:'"Remember: JDK = development kit, JRE = runtime, JVM = engine that executes Java code."' 
+  },
+  { 
+    id:'j16', 
+    question:'What are access modifiers in Java?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Java has four access levels: private (same class), default/package-private (same package), protected (same package + subclasses), public (anywhere). Determines visibility of classes, methods, and variables.', 
+    example:'class A { private int x; protected int y; public int z; int w; }', 
+    tip:'"Use private for encapsulation. Default for package-level access. Protected for inheritance."' 
+  },
+  { 
+    id:'j17', 
+    question:'What is the difference between abstract class and interface?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Medium', 
+    answer:'Abstract class: Can have implemented and abstract methods. Can have fields. Single inheritance only. Interface: All methods abstract (Java 8+ can have default/static methods). No instance fields, only constants. Multiple inheritance allowed via interfaces.', 
+    example:'abstract class A { abstract void m1(); void m2() {}} interface I { void m3(); default void m4() {}}', 
+    tip:'"Use interface for contract, abstract class for common behavior."' 
+  },
+  { 
+    id:'j18', 
+    question:'What is the difference between String, StringBuilder, and StringBuffer?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'String: Immutable, every change creates new object. StringBuilder: Mutable, faster, not thread-safe. StringBuffer: Mutable, thread-safe (synchronized).', 
+    example:'String s = "abc"; s.concat("d"); // new object\nStringBuilder sb = new StringBuilder("abc"); sb.append("d"); // same object', 
+    tip:'"Use StringBuilder for mutable strings in single-threaded apps. StringBuffer only if multiple threads."' 
+  },
+  { 
+    id:'j19', 
+    question:'What is the difference between checked and unchecked exceptions?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'Checked exceptions: Checked at compile-time, must handle or declare (IOException, SQLException). Unchecked exceptions: Runtime exceptions, not checked at compile-time (NullPointerException, ArrayIndexOutOfBoundsException).', 
+    example:'try { FileReader f = new FileReader("file.txt"); } catch (IOException e) {} // checked\nString s = null; s.length(); // unchecked', 
+    tip:'"Checked: recoverable errors, Unchecked: programming bugs."' 
+  },
+  { 
+    id:'j20', 
+    question:'What is the difference between == and equals() in Java?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'== compares object references (memory address). equals() compares content. For primitives, == compares values.', 
+    example:'String a = new String("hi"); String b = new String("hi"); a==b → false, a.equals(b) → true', 
+    tip:'"Always use equals() for object content comparison."' 
+  },
+  { 
+    id:'j21', 
+    question:'What is a constructor in Java?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Constructor: Special method called when object is created. Same name as class. No return type. Can be default (no args) or parameterized.', 
+    example:'class A { A() { System.out.println("Created"); } } A obj = new A();', 
+    tip:'"Constructor initializes object state."' 
+  },
+  { 
+    id:'j22', 
+    question:'What is method overloading vs method overriding?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Medium', 
+    answer:'Overloading: Same method name, different parameters (compile-time polymorphism). Overriding: Subclass provides specific implementation of superclass method (runtime polymorphism).', 
+    example:'Overloading: void add(int a, int b), void add(double a, double b)\nOverriding: class Parent { void show() {} } class Child extends Parent { void show() {} }', 
+    tip:'"Overloading = same class, different params. Overriding = inheritance, same signature."' 
+  },
+  { 
+    id:'j23', 
+    question:'What is the difference between static and instance methods?', 
+    companies:['TCS','Wipro','Infosys'], 
+    difficulty:'Easy', 
+    answer:'Static methods belong to class, can be called without object. Instance methods belong to object, require object to call.', 
+    example:'class A { static void sm() {} void im() {} } A.sm(); A a = new A(); a.im();', 
+    tip:'"Use static for utility/helper methods."' 
+  },
+  { 
+    id:'j24', 
+    question:'What is the difference between final, finally, and finalize?', 
+    companies:['TCS','Wipro','Infosys','Cognizant'], 
+    difficulty:'Easy', 
+    answer:'final: constant, cannot change; finally: block executed after try/catch; finalize(): called by GC before object destruction.', 
+    example:'final int x=10; try{} finally{} protected void finalize(){}', 
+    tip:'"Do not rely on finalize() for cleanup; use try-with-resources."' 
+  }
     ]
   },
   sql: {
@@ -159,6 +960,195 @@ const SERVICE_QUESTIONS = {
     pro: [
       { id:'sy3', question:'What is load balancing? Explain different algorithms.', companies:['TCS','Wipro','Infosys','Accenture'], difficulty:'Medium', answer:'Load Balancer distributes incoming requests across multiple servers to prevent overload and improve availability. Algorithms: Round Robin — each server gets requests in turn. Equal load assumed. Least Connections — route to server with fewest active connections. Best for variable request duration. Weighted Round Robin — servers get proportional traffic based on capacity. IP Hash — same client always goes to same server (session affinity). Health checks: LB pings servers; removes unhealthy ones from rotation.', example:'Round Robin: 3 servers, requests go: S1, S2, S3, S1, S2, S3...\nLeast Connections: S1 has 10 active, S2 has 3, S3 has 8 → new request goes to S2\n\nTypes:\nL4 LB: Routes by IP/port (TCP level) — ultra-fast, dumb\nL7 LB: Routes by URL/headers (HTTP level) — smart routing, more features\n\nExamples: AWS ALB (L7), AWS NLB (L4), Nginx (both), HAProxy', tip:'"In interviews: mention both L4 and L7 load balancing. L4 for raw performance, L7 for smart routing (route /api to one cluster, /static to CDN)."' },
       { id:'sy4', question:'What is caching? Explain cache eviction policies: LRU, LFU, FIFO.', companies:['TCS','Wipro','Infosys','Accenture','Cognizant'], difficulty:'Medium', answer:'Cache: Temporary storage of frequently accessed data for faster retrieval. Types: L1/L2/L3 CPU cache, Browser cache, CDN cache, Application cache (Redis/Memcached). Eviction Policies (when cache is full): LRU (Least Recently Used): Evicts least recently accessed item. Good for temporal locality. LFU (Least Frequently Used): Evicts least often accessed item. Good for popularity-based access. FIFO: Evicts oldest inserted item. Simple but ignores usage patterns. Cache strategies: Cache-aside (lazy loading), Write-through, Write-behind.', example:'LRU example (cache size=3):\nAccess: A, B, C, A, D\nAfter A,B,C: Cache=[A,B,C]\nAfter A: Cache=[B,C,A] (A moved to front)\nAfter D: Cache=[C,A,D] (B evicted — least recently used)\n\nRedis eviction: maxmemory-policy = allkeys-lru (default)\nRedis evicts LRU key when memory full', tip:'"Implement LRU Cache is a classic interview problem. Solution: HashMap (O(1) lookup) + Doubly Linked List (O(1) move to front / remove). Combined = O(1) get and put."' },
+      { 
+  id:'sy5', 
+  question:'What is database sharding? Explain horizontal vs vertical sharding.', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Hard', 
+  answer:'Sharding: Splitting a database into smaller, faster, more manageable parts called shards. Horizontal Sharding: Split rows across multiple databases (same schema). Example: UserID 1–100k → DB1, 100k–200k → DB2. Vertical Sharding: Split tables by columns (schema split). Example: User table columns split: Login info → DB1, Profile info → DB2. Benefits: Improved performance, scalability, distributed load. Challenges: Cross-shard joins, transactions, re-sharding.', 
+  example:'Horizontal: Users with IDs 1–100k → DB1, 100k–200k → DB2\nVertical: User authentication table → DB1, User profile table → DB2', 
+  tip:'"Horizontal sharding is more common for high-traffic systems. Vertical sharding useful if some columns are rarely accessed."'
+},
+{ 
+  id:'sy6', 
+  question:'Explain CAP theorem with examples.', 
+  companies:['Amazon','Microsoft','Infosys','TCS'], 
+  difficulty:'Medium', 
+  answer:'CAP Theorem: In distributed systems, only two of three can be guaranteed at a time: Consistency (all nodes see same data), Availability (every request receives a response), Partition Tolerance (system works despite network failures). Examples: \n- CP system: MongoDB in replica set with majority write (Consistency + Partition tolerant)\n- AP system: DynamoDB, Cassandra (Availability + Partition tolerant)\n- CA system: Single node DB (Consistency + Availability, no partition tolerance)', 
+  example:'CP: Banking transactions → strong consistency\nAP: Social feed → eventual consistency acceptable\nCA: Local DB on single server → no network partition risk', 
+  tip:'"Always explain what is sacrificed and why: in high-traffic web apps, Partition tolerance + Availability often prioritized over strong consistency."' 
+},
+{ 
+  id:'sy7', 
+  question:'Explain message queues and event-driven architecture.', 
+  companies:['Amazon','Microsoft','Google','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Message Queue: System to asynchronously send messages between services (producer → queue → consumer). Event-driven architecture: Services react to events/messages. Benefits: decoupling, scalability, fault tolerance. Examples of MQ: RabbitMQ, Kafka, AWS SQS. Patterns: Publish-Subscribe, Work Queue, Fanout.', 
+  example:'Order Service emits "OrderPlaced" event → Payment Service and Inventory Service subscribe → update database asynchronously', 
+  tip:'"Use MQ for decoupling services. Ensure idempotent consumers to handle duplicate messages."' 
+},
+{ 
+  id:'sy8', 
+  question:'What is CDN? How does it improve performance?', 
+  companies:['Amazon','Google','Infosys','Accenture'], 
+  difficulty:'Medium', 
+  answer:'CDN (Content Delivery Network): Distributed servers cache static content close to users. Reduces latency, improves load times, decreases origin server load. Types: Push CDN (origin pushes content), Pull CDN (fetches content on first request).', 
+  example:'User in India requests image hosted in US → CDN edge server in India serves image → faster response', 
+  tip:'"Use CDN for static assets (images, videos, JS, CSS). Consider cache expiry and invalidation strategies."' 
+},
+{ 
+  id:'sy9', 
+  question:'Explain database replication: Master-Slave vs Master-Master.', 
+  companies:['Amazon','Microsoft','Infosys','TCS'], 
+  difficulty:'Medium', 
+  answer:'Replication: Copying data across multiple DB nodes for redundancy and high availability. \nMaster-Slave: One master handles writes, slaves handle reads. Simple, avoids conflicts, read scaling. \nMaster-Master: Multiple nodes accept writes. More complex (conflict resolution), better write scaling.', 
+  example:'Master-Slave: MySQL primary → writes, MySQL replicas → reads\nMaster-Master: Multiple MySQL nodes accept writes → eventual sync', 
+  tip:'"Use Master-Slave for read-heavy systems, Master-Master for write-heavy, geo-distributed systems. Handle conflict resolution carefully."' 
+},
+{ 
+  id:'sy10', 
+  question:'What is eventual consistency? Compare with strong consistency.', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Strong Consistency: All reads see the latest write. Example: Traditional SQL DB. \nEventual Consistency: System guarantees that if no new updates are made, all nodes will eventually be consistent. Example: DynamoDB, Cassandra. Improves availability and partition tolerance at cost of temporary stale reads.', 
+  example:'User updates profile → Reads immediately may see old value (eventual consistency)\nBank transaction → Strong consistency required to prevent money loss', 
+  tip:'"Use eventual consistency for high-traffic, distributed, read-heavy systems. Strong consistency for critical data like payments."' 
+},
+{ 
+  id:'sy11', 
+  question:'What is horizontal vs vertical scaling? When to use each?', 
+  companies:['Amazon','Microsoft','Infosys','TCS'], 
+  difficulty:'Medium', 
+  answer:'Horizontal scaling: Add more machines/nodes to handle load (scale out). Vertical scaling: Increase resources (CPU, RAM) of a single machine (scale up). Horizontal scaling improves fault tolerance and elasticity. Vertical scaling limited by hardware, can be simpler to implement initially.', 
+  example:'Horizontal: Add 3 web servers behind a load balancer\nVertical: Upgrade DB server from 16GB→64GB RAM', 
+  tip:'"Use horizontal scaling for web servers, distributed services. Use vertical scaling for legacy monoliths or databases where scaling out is hard."' 
+},
+{ 
+  id:'sy12', 
+  question:'Explain sharding vs replication trade-offs in databases.', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Hard', 
+  answer:'Sharding splits data across nodes (write scaling, reduces per-node size, more complex queries). Replication copies data (high availability, read scaling, redundancy, potential stale reads). Combining both: shard for scaling, replicate each shard for HA.', 
+  example:'E-commerce DB: Users table sharded by region; each shard replicated 3x across data centers', 
+  tip:'"Replication improves read throughput & fault tolerance. Sharding improves write scalability and manages huge datasets."' 
+},
+{ 
+  id:'sy13', 
+  question:'What is rate limiting? Explain algorithms: Token Bucket vs Leaky Bucket.', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Rate limiting controls number of requests a client can make in a time window. Token Bucket: Tokens added at fixed rate, requests consume tokens; allows burst traffic. Leaky Bucket: Queue of requests leak at constant rate; smooths traffic, no burst allowed.', 
+  example:'API allows 100 requests per minute:\nToken Bucket: client can send 50 requests immediately if bucket full\nLeaky Bucket: requests processed at constant 1.66/sec', 
+  tip:'"Use Token Bucket when bursts are acceptable. Leaky Bucket for constant throughput & avoiding spikes."' 
+},
+{ 
+  id:'sy14', 
+  question:'Explain CQRS (Command Query Responsibility Segregation) pattern.', 
+  companies:['Amazon','Microsoft','Google','Infosys'], 
+  difficulty:'Hard', 
+  answer:'CQRS separates read operations (Query) and write operations (Command) into different models. Improves performance, scalability, and maintainability. Writes go to command DB, reads from query DB (denormalized). Often paired with Event Sourcing.', 
+  example:'E-commerce order service: write order → command DB, read order history → query DB optimized for reads', 
+  tip:'"CQRS helps when read and write workloads are very different or need high scalability. Adds complexity, so use judiciously."' 
+},
+{ 
+  id:'sy15', 
+  question:'What is event sourcing? How does it relate to CQRS?', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Hard', 
+  answer:'Event Sourcing: Store state changes as a sequence of events instead of current state. Current state is derived by replaying events. Works well with CQRS: Commands produce events, Query model reads derived state.', 
+  example:'User account balance changes: deposit $100 → event "Deposit(100)" → state derived by replaying all events', 
+  tip:'"Event Sourcing ensures auditability, rebuildable state, and easy temporal queries. Handle event versioning carefully."' 
+},
+{ 
+  id:'sy16', 
+  question:'Explain circuit breaker pattern in microservices.', 
+  companies:['Amazon','Microsoft','Google','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Circuit breaker prevents cascading failures in distributed systems. Monitors for failed requests; if failures exceed threshold, trips circuit and short-circuits further calls to failing service, allowing fallback or fail-fast behavior.', 
+  example:'Payment service down → Order service calls fail → Circuit breaker trips → return fallback "Payment unavailable" message instead of retrying endlessly', 
+  tip:'"Circuit breakers improve resiliency. Combine with retries, timeouts, and bulkheads for robust microservices."' 
+},
+{ 
+  id:'sy17', 
+  question:'Explain CAP theorem trade-offs in distributed caches.', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Hard', 
+  answer:'Distributed caches face CAP trade-offs. Strong Consistency (C) may reduce availability (A) during network partitions (P). Eventual consistency (AP) is often chosen for cache: stale reads tolerated, high availability.', 
+  example:'Redis cluster: during partition, some nodes may serve slightly stale data (AP) rather than fail (C+P)', 
+  tip:'"Cache often favors AP for performance and high availability; critical data consistency handled at DB level."' 
+},
+{ 
+  id:'sy18', 
+  question:'Explain database indexing: B-Tree vs Hash Index.', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Medium', 
+  answer:'B-Tree index: Ordered, supports range queries efficiently (e.g., SELECT * WHERE age BETWEEN 20 AND 30). Hash index: Maps key → location, efficient for equality lookup only (e.g., WHERE user_id=123). Trade-offs: B-Tree supports ORDER BY and ranges, Hash index faster for exact matches but no ranges.', 
+  example:'B-Tree: age query → find all users 20–30\nHash index: user_id=1001 lookup → direct access', 
+  tip:'"Use B-Tree for general-purpose indexing & ranges. Use Hash index for exact-match queries on high-cardinality columns."' 
+},
+{ 
+  id:'sy19', 
+  question:'What is log aggregation and why is it important?', 
+  companies:['Amazon','Microsoft','Google','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Log aggregation: Collecting logs from multiple servers/services into a central system for analysis, monitoring, debugging. Tools: ELK stack, Splunk, Graylog. Helps detect issues, track performance, perform auditing.', 
+  example:'Web servers, DB, and microservices logs → aggregated in ELK → dashboard for errors and metrics', 
+  tip:'"Aggregated logs are essential in microservices or distributed systems to correlate issues and monitor health."' 
+},
+{ 
+  id:'sy20', 
+  question:'Explain CDN cache invalidation strategies.', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Medium', 
+  answer:'CDN caches content. When origin content changes, caches must be updated. Strategies: Time-to-Live (TTL) — expire after set time; Purge/Invalidate — explicitly remove cached content; Versioned URLs — change file name on update.', 
+  example:'CSS file updated: /style.css → /style_v2.css, CDN fetches new version', 
+  tip:'"Versioned URLs are simplest and avoid stale cache issues. TTL alone may serve outdated content briefly."' 
+},
+{ 
+  id:'sy21', 
+  question:'Explain blue-green and canary deployments.', 
+  companies:['Amazon','Microsoft','Google','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Blue-Green Deployment: Two identical production environments (Blue & Green). Switch traffic from Blue → Green after deployment, rollback easy. Canary Deployment: Release new version to small subset of users first; monitor → gradually roll out to all.', 
+  example:'Blue-Green: Current traffic on Blue, deploy to Green → switch DNS or load balancer\nCanary: 5% users see new version → monitor metrics → increase rollout', 
+  tip:'"Blue-Green good for zero-downtime, easy rollback. Canary good for gradual risk mitigation and monitoring new features."' 
+},
+{ 
+  id:'sy22', 
+  question:'What is eventual consistency in distributed databases? How to handle conflicts?', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Hard', 
+  answer:'Eventual consistency: nodes converge to same value over time. Conflicts may occur during concurrent writes. Resolution strategies: Last-Write-Wins, Vector Clocks, CRDTs (Conflict-free Replicated Data Types), Manual resolution.', 
+  example:'User updates profile in two regions concurrently → reconcile using vector clocks or merge fields', 
+  tip:'"Choose conflict resolution strategy based on application: e-commerce carts vs banking balances."' 
+},
+{ 
+  id:'sy23', 
+  question:'Explain distributed tracing in microservices.', 
+  companies:['Amazon','Google','Microsoft','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Distributed tracing: Track requests as they flow through multiple microservices to debug, measure latency, detect bottlenecks. Tools: Jaeger, Zipkin, AWS X-Ray.', 
+  example:'Request from front-end → API Gateway → Auth Service → Order Service → DB. Trace shows latency per service.', 
+  tip:'"Tracing helps pinpoint slow services and failures in complex distributed systems."' 
+},
+{ 
+  id:'sy24', 
+  question:'Explain bulkhead isolation pattern in microservices.', 
+  companies:['Amazon','Microsoft','Google','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Bulkhead pattern: Isolate resources for different services/components so failure in one does not bring down others. Analogous to ship compartments.', 
+  example:'Separate thread pools for Payment Service vs Notification Service → Payment failure does not block Notifications', 
+  tip:'"Combine bulkheads with circuit breakers to improve resilience."' 
+},
+{ 
+  id:'sy25', 
+  question:'Explain the difference between synchronous and asynchronous communication in microservices.', 
+  companies:['Amazon','Microsoft','Google','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Synchronous: Caller waits for response (REST, gRPC). Simple, but tight coupling. Asynchronous: Caller continues; response via events/messages (Kafka, RabbitMQ). Decouples services, improves scalability, but harder to debug.', 
+  example:'Sync: Payment API → waits for DB write confirmation\nAsync: Order API publishes "OrderPlaced" event → Payment Service consumes later', 
+  tip:'"Use async for high throughput and decoupling. Use sync when immediate response is required."' 
+}
     ]
   },
   dsa: {
@@ -169,6 +1159,60 @@ const SERVICE_QUESTIONS = {
     pro: [
       { id:'a3', question:'What is dynamic programming? Explain with Fibonacci and 0/1 Knapsack.', companies:['Infosys','Accenture','HCL','Capgemini'], difficulty:'Hard', answer:'DP: Optimization technique for problems with overlapping subproblems and optimal substructure. Store solutions to subproblems to avoid recomputation. Two approaches: Top-down (Memoization): Recursive + cache. Bottom-up (Tabulation): Iterative, fill table from base cases. Key insight: if problem has both overlapping subproblems AND optimal substructure → DP is the solution.', example:'Fibonacci (Naive O(2^n) → DP O(n)):\nfib(5) = fib(4) + fib(3)\n       = fib(3)+fib(2) + fib(2)+fib(1) // fib(3) computed twice!\n\nDP Memoization:\nint[] memo = new int[n+1];\nfib(n) = memo[n] != 0 ? memo[n] : memo[n] = fib(n-1) + fib(n-2);\n\n0/1 Knapsack (capacity W, n items with weight/value):\ndp[i][w] = max value using first i items with capacity w\ndp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i])\n           // either skip item i, or take item i', tip:'"DP in 3 steps: 1) Define state (what does dp[i] mean?), 2) Recurrence (how is dp[i] related to dp[i-1]?), 3) Base cases. Master this framework."' },
       { id:'a4', question:'What is a Binary Search Tree? How to insert, delete, and balance it?', companies:['TCS','Wipro','Infosys','HCL'], difficulty:'Medium', answer:'BST Property: Left subtree < root < right subtree. Allows O(log n) search, insert, delete for balanced tree. Insert: Recursively compare with current node, go left if smaller, right if larger. Delete: 3 cases: 1) Leaf node → simply remove. 2) One child → replace with child. 3) Two children → replace with inorder successor (smallest in right subtree). Self-balancing BSTs: AVL Tree (strict height balance, more rotations), Red-Black Tree (relaxed balance, fewer rotations — used in Java TreeMap, C++ std::map).', example:'BST Insert 50, 30, 70, 20, 40:\n      50\n     /  \\\n   30    70\n  /  \\\n20   40\n\nSearch 40: 50→(40<50, go left)→30→(40>30, go right)→40 found! O(log n)\n\nUnbalanced problem:\nInsert 1,2,3,4,5: becomes a right-skewed linked list → O(n) search\n\nAVL/RB-Tree: Automatically rotates to maintain balance → O(log n) guaranteed', tip:'"In Java, TreeMap/TreeSet use Red-Black Tree internally. HashMap gives O(1) average but unordered. TreeMap gives O(log n) but maintains sorted order. Use TreeMap when you need sorted keys."' },
+       { 
+  id:'a5', 
+  question:'Explain Graph algorithms: Dijkstra, Bellman-Ford, and Topological Sort.', 
+  companies:['Amazon','Microsoft','Infosys','TCS'], 
+  difficulty:'Hard', 
+  answer:'Graph algorithms are used to find shortest paths, detect cycles, or order tasks. Dijkstra: Weighted graphs, non-negative edges, priority queue, O(E log V). Bellman-Ford: Works with negative weights, O(VE), detects negative cycles. Topological Sort: Ordering in DAGs (Directed Acyclic Graphs), can use DFS or Kahn\'s algorithm.', 
+  example:'Dijkstra Example:\nGraph: A→B(4), A→C(2), C→B(1)\nShortest path from A to B: A→C→B = 3\n\nTopological Sort Example:\nTasks: 1→2, 1→3, 3→4\nValid order: 1,3,4,2 or 1,2,3,4', 
+  tip:'"Use Dijkstra for non-negative weighted shortest paths. Use Bellman-Ford if negative weights are possible. Use Topological Sort to schedule tasks respecting dependencies."' 
+},
+{ 
+  id:'a6', 
+  question:'Explain Trie and its applications.', 
+  companies:['Google','Amazon','Microsoft','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Trie: Tree-like data structure used for storing strings where nodes represent characters. Search, insert, delete in O(L) where L = length of string. Useful for autocomplete, spell check, prefix search.', 
+  example:'Insert: "cat", "car", "dog"\nSearch prefix "ca": matches "cat", "car"\n\nUse-case: Autocomplete search bar shows suggestions as you type.', 
+  tip:'"Tries can be memory heavy. Use HashMap/Array at each node depending on size of alphabet. Perfect for prefix-based search tasks."' 
+},
+{ 
+  id:'a7', 
+  question:'What are segment trees? How are they used?', 
+  companies:['Amazon','Microsoft','Adobe','Infosys'], 
+  difficulty:'Hard', 
+  answer:'Segment Tree: Binary tree used for storing intervals/ranges. Supports range queries and updates efficiently (O(log n) per query/update). Useful for sum, min, max, gcd over subarrays.', 
+  example:'Array: [1,3,5,7,9,11]\nQuery: sum(1,3) → 3+5+7=15\nUpdate: arr[1]=10, update tree → sum(1,3)=10+5+7=22', 
+  tip:'"Segment tree is ideal for dynamic range queries. Lazy propagation is used for range updates to keep O(log n) time."' 
+},
+{ 
+  id:'a8', 
+  question:'Explain Union-Find (Disjoint Set Union) with path compression and union by rank.', 
+  companies:['Google','Amazon','Microsoft'], 
+  difficulty:'Hard', 
+  answer:'Union-Find: Data structure to manage disjoint sets, supports union(x,y) and find(x) operations. Path compression flattens tree during find to optimize. Union by rank attaches smaller tree under root of bigger tree to optimize.', 
+  example:'Find connected components in a graph: edges = [(1,2),(2,3),(4,5)]\nInitially each node is its own set, after unions: {1,2,3}, {4,5}\nCheck if 2 and 3 are connected → yes', 
+  tip:'"Union-Find with path compression + union by rank gives near O(1) amortized time per operation, perfect for dynamic connectivity problems."' 
+},
+{ 
+  id:'a9', 
+  question:'Explain KMP algorithm for pattern matching.', 
+  companies:['Microsoft','Amazon','Infosys'], 
+  difficulty:'Hard', 
+  answer:'KMP (Knuth-Morris-Pratt) searches a pattern in a text in O(n+m) time. Preprocess pattern to create lps (longest proper prefix which is also suffix) array to avoid rechecking characters.', 
+  example:'Text="ABABDABACDABABCABAB", Pattern="ABABCABAB"\nLPS array = [0,0,1,2,0,1,2,3,4]\nUse LPS to skip characters while matching', 
+  tip:'"KMP is faster than naive string search for large texts and repeated patterns. Always preprocess pattern to compute LPS."' 
+},
+{ 
+  id:'a10', 
+  question:'Explain Heap and its applications beyond priority queue.', 
+  companies:['Amazon','Google','TCS','Infosys'], 
+  difficulty:'Medium', 
+  answer:'Heap: Complete binary tree satisfying heap property (max-heap or min-heap). Supports insert O(log n), extract-min/max O(log n). Applications: priority queues, median maintenance, heap sort, scheduling algorithms.', 
+  example:'Median of stream using two heaps:\nMaxHeap for lower half, MinHeap for upper half\nMedian = top of heaps depending on size', 
+  tip:'"Use heap for efficient min/max queries on dynamic data. Two-heap method is standard for running median problems."' 
+}
     ]
   }
 }
@@ -622,7 +1666,7 @@ function UpgradeCTA({ count, type, subject }) {
             : 'Full access to real-world scenario questions from Google, Amazon, Netflix, Apple with detailed technical explanations.'
           }
         </p>
-        <Link to="/dashboard/pricing"
+        <Link to="/pricing"
           className="inline-flex items-center gap-2 font-black px-8 py-3.5 rounded-2xl text-sm transition-all hover:scale-105"
           style={{ backgroundColor:'#f59e0b',color:'#000' }}>
           <Crown size={15}/> Upgrade to Pro — ₹499/month

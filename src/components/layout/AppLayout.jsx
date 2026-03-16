@@ -63,7 +63,7 @@ function SidebarContent({ user, isAdmin, onClose, onLogout }) {
 
       {/* Pro Upgrade Banner */}
       {user?.role !== 'PRO' && (
-        <div className="mx-4 mb-4 p-4 bg-gradient-to-br from-brand-500/10 to-cyan-500/10 border border-brand-500/20 rounded-xl">
+        <div className="mx-4 mb-4 p-4 bg-linear-to-br from-brand-500/10 to-cyan-500/10 border border-brand-500/20 rounded-xl">
           <div className="flex items-center gap-2 mb-2">
             <Zap size={14} className="text-brand-400" />
             <span className="text-xs font-display font-semibold text-brand-400">Upgrade to Pro</span>
@@ -78,7 +78,7 @@ function SidebarContent({ user, isAdmin, onClose, onLogout }) {
       {/* User */}
       <div className="p-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-2 py-2 mb-1">
-          <div className="w-8 h-8 bg-gradient-to-br from-brand-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold font-display">
+          <div className="w-8 h-8 bg-linear-to-br from-brand-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold font-display">
             {user?.name?.[0]?.toUpperCase() || 'U'}
           </div>
           <div className="flex-1 min-w-0">
@@ -115,7 +115,7 @@ export default function AppLayout() {
   return (
     <div className="flex h-screen bg-surface-950 overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-60 bg-surface-900 border-r border-white/5 flex-shrink-0">
+      <aside className="hidden lg:flex flex-col w-60 bg-surface-900 border-r border-white/5 shrink-0">
         <SidebarContent user={user} isAdmin={isAdmin} onClose={() => {}} onLogout={handleLogout} />
       </aside>
 
@@ -145,7 +145,7 @@ export default function AppLayout() {
             </div>
             <span className="font-display font-bold text-white text-base">InterviewPrep<span className="text-brand-400">AI</span></span>
           </div>
-          <div className="w-8 h-8 bg-gradient-to-br from-brand-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-8 h-8 bg-linear-to-br from-brand-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
             {user?.name?.[0]?.toUpperCase() || 'U'}
           </div>
         </header>

@@ -109,7 +109,7 @@ export default function ProblemsPage() {
           </p>
         </div>
         {!isPro && (
-          <Link to="/dashboard/pricing"
+          <Link to="/pricing"
             className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black text-sm font-bold px-4 py-2 rounded-xl transition-colors">
             <Crown size={14} /> Unlock All 500
           </Link>
@@ -259,7 +259,7 @@ export default function ProblemsPage() {
                       : 'Full access to 500 problems from Zoho, Amazon, Google, Microsoft, Walmart, Flipkart, TCS & Infosys'
                     }
                   </p>
-                  <Link to="/dashboard/pricing"
+                  <Link to="/pricing"
                     className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl text-sm transition-colors">
                     <Crown size={15} /> Upgrade to Pro — ₹499/month
                   </Link>

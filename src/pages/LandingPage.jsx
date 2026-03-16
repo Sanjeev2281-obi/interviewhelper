@@ -76,8 +76,8 @@ export default function LandingPage() {
   }, [])
 
   const T = TESTIMONIALS[activeTesti]
-  const TestiLogo = LOGOS[T.company]
-
+  //const TestiLogo = LOGOS[T.company]
+  const TestiLogo = LOGOS[T.company] || LOGOS.Google
   return (
     <div style={{ backgroundColor: '#020408', color: '#fff', fontFamily: "DM Sans, system-ui, sans-serif", overflowX: 'hidden' }}>
 
@@ -88,12 +88,12 @@ export default function LandingPage() {
           </div>
           <span style={{ fontWeight: 900, fontSize: 20, letterSpacing: '-0.5px' }}>InterviewPrep<span style={{ color: '#22c55e' }}>AI</span></span>
         </div>
-        <div style={{ display: 'flex', gap: 36 }} className="hidden md:flex ">
+        <div className="hidden md:flex items-center gap-8">
           {[['#features','Features'],['#companies','Companies'],['#pricing','Pricing']].map(([h,l]) => (
             <a key={h} href={h} style={{ color: '#64748b', fontSize: 14, fontWeight: 500, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#64748b'}>{l}</a>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <div className="hidden md:flex items-center gap-3">
           <Link to="/login" style={{ color: '#64748b', fontSize: 14, fontWeight: 600, textDecoration: 'none', padding: '8px 16px', borderRadius: 10, transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color='#fff'; e.currentTarget.style.backgroundColor='rgba(255,255,255,0.05)' }} onMouseLeave={e => { e.currentTarget.style.color='#64748b'; e.currentTarget.style.backgroundColor='transparent' }}>Sign in</Link>
           <Link to="/signup" style={{ background: 'linear-gradient(135deg,#22c55e,#16a34a)', color: '#fff', fontSize: 14, fontWeight: 800, padding: '10px 22px', borderRadius: 12, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 0 20px rgba(34,197,94,0.3)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.transform='scale(1.04)'; e.currentTarget.style.boxShadow='0 0 35px rgba(34,197,94,0.5)' }} onMouseLeave={e => { e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.boxShadow='0 0 20px rgba(34,197,94,0.3)' }}>
             Get Started <ArrowRight size={14} />
