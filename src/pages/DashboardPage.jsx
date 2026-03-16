@@ -1,21 +1,22 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Flame, Trophy, Code2, PlayCircle, FileText, MessageSquare,
-  Building2, ChevronRight, TrendingUp, Calendar, CheckCircle,
-  Clock, Target, BookOpen, Zap
+  Flame, Code2, PlayCircle, FileText, MessageSquare,
+  Building2, ChevronRight, Calendar, CheckCircle,
+  Clock, Target, BookOpen, Zap, Lock
 } from 'lucide-react'
+import { useEffect, useState } from "react"
+import { progressService } from "../services/ProgressService"
 import { useAuth } from '../hooks/useAuth'
 
-const MOCK_STATS = {
-  streak: 7,
-  solved: 42,
-  total: 150,
-  mockInterviews: 5,
-  score: 78,
-}
+const ROADMAP = [
+  { phase: '1', title: 'Arrays & Strings', weeks: '1–2', done: false, active: true },
+  { phase: '2', title: 'Linked Lists & Stacks', weeks: '3–4', done: false },
+  { phase: '3', title: 'Trees & Graphs', weeks: '5–6', done: false },
+  { phase: '4', title: 'Dynamic Programming', weeks: '7–8', done: false },
+  { phase: '5', title: 'System Design', weeks: '9–10', done: false },
+]
 
-const MOCK_DAILY = {
+const DAILY_PROBLEM = {
   id: 1,
   title: 'Two Sum',
   difficulty: 'easy',
@@ -23,106 +24,174 @@ const MOCK_DAILY = {
   description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.',
 }
 
-const ROADMAP = [
-  { phase: '1', title: 'Arrays & Strings', weeks: '1–2', done: true },
-  { phase: '2', title: 'Linked Lists & Stacks', weeks: '3–4', done: true },
-  { phase: '3', title: 'Trees & Graphs', weeks: '5–6', done: false, active: true },
-  { phase: '4', title: 'Dynamic Programming', weeks: '7–8', done: false },
-  { phase: '5', title: 'System Design', weeks: '9–10', done: false },
-]
-
-const RECENT = [
-  { title: 'Valid Parentheses', difficulty: 'easy', date: 'Today' },
-  { title: 'Longest Substring', difficulty: 'medium', date: 'Yesterday' },
-  { title: 'Binary Tree Traversal', difficulty: 'medium', date: '2 days ago' },
-]
-
 export default function DashboardPage() {
   const { user } = useAuth()
-  const [stats] = useState(MOCK_STATS)
-  const [daily] = useState(MOCK_DAILY)
 
-  const pct = Math.round((stats.solved / stats.total) * 100)
+  const [dbStats, setDbStats] = useState(null)
+
+  useEffect(() => {
+    progressService.getStats()
+      .then(res => setDbStats(res.data))
+      .catch(() => {}) // backend not connected yet
+  }, [])
+
+  const stats = {
+    streak: dbStats?.streak ?? 0,
+    solved: dbStats?.totalSolved ?? 0,
+    total: 500,
+    mockInterviews: dbStats?.mockInterviews ?? 0,
+    resumeScore: dbStats?.resumeScore ?? null,
+  }
+
+  const isPro = user?.role === 'PRO'
+
+  const greeting = () => {
+    const h = new Date().getHours()
+    if (h < 12) return 'Good morning'
+    if (h < 17) return 'Good afternoon'
+    return 'Good evening'
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
+
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-white">
-            Good morning, {user?.name?.split(' ')[0]} 👋
+          <h1 className="text-3xl font-extrabold text-white">
+            {greeting()}, {user?.name?.split(' ')[0]} 👋
           </h1>
-          <p className="text-slate-400 font-body text-sm mt-1">
+          <p className="text-gray-400 text-sm mt-1">
             {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
-        {user?.plan !== 'PRO' && (
-          <Link to="/pricing" className="btn-primary hidden sm:inline-flex">
-            <Zap size={15} /> Upgrade to Pro
+        {!isPro && (
+          <Link to="/dashboard/pricing"
+            className="hidden sm:flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-bold px-4 py-2 rounded-xl transition-colors">
+            <Zap size={14} /> Upgrade to Pro
           </Link>
         )}
       </div>
 
-      {/* Stats row */}
+      {/* New user welcome banner */}
+      <div className="rounded-2xl p-5 flex items-center gap-4"
+        style={{ backgroundColor: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
+        <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+          <Zap size={20} className="text-green-400" />
+        </div>
+        <div className="flex-1">
+          <p className="text-white font-bold text-sm">Welcome to InterviewPrep AI! 🎉</p>
+          <p className="text-gray-400 text-xs mt-0.5">
+            Start with today's DSA problem. Solve daily to build your streak and track progress.
+          </p>
+        </div>
+        <Link to="/dashboard/problems"
+          className="flex-shrink-0 bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors">
+          Start Now →
+        </Link>
+      </div>
+
+      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Flame} label="Day Streak" value={`${stats.streak} days`} sub="Keep it up! 🔥" iconColor="text-orange-400" bg="from-orange-500/10 to-orange-500/5" />
-        <StatCard icon={CheckCircle} label="Problems Solved" value={stats.solved} sub={`of ${stats.total} total`} iconColor="text-brand-400" bg="from-brand-500/10 to-brand-500/5" />
-        <StatCard icon={PlayCircle} label="Mock Interviews" value={stats.mockInterviews} sub="this month" iconColor="text-purple-400" bg="from-purple-500/10 to-purple-500/5" />
-        <StatCard icon={Target} label="Resume Score" value={`${stats.score}/100`} sub="Last reviewed" iconColor="text-cyan-400" bg="from-cyan-500/10 to-cyan-500/5" />
+        <StatCard
+          icon={Flame}
+          label="Day Streak"
+          value={stats.streak === 0 ? '0 days' : `${stats.streak} days`}
+          sub={stats.streak === 0 ? 'Solve today to start!' : 'Keep it up! 🔥'}
+          iconColor="text-orange-400"
+          bg="#1a1007"
+          border="#92400e"
+        />
+        <StatCard
+          icon={CheckCircle}
+          label="Problems Solved"
+          value={stats.solved}
+          sub={`of ${stats.total} total`}
+          iconColor="text-green-400"
+          bg="#0a1f0a"
+          border="#166534"
+        />
+        <StatCard
+          icon={PlayCircle}
+          label="Mock Interviews"
+          value={stats.mockInterviews}
+          sub={isPro ? 'Unlimited available' : '3 free per month'}
+          iconColor="text-purple-400"
+          bg="#130a1f"
+          border="#6b21a8"
+        />
+        <StatCard
+          icon={Target}
+          label="Resume Score"
+          value={stats.resumeScore ? `${stats.resumeScore}/100` : 'Not reviewed'}
+          sub={isPro ? 'Upload to review' : 'Pro feature'}
+          iconColor="text-cyan-400"
+          bg="#0a1a1f"
+          border="#155e75"
+          locked={!isPro}
+        />
       </div>
 
       {/* Main grid */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Daily Problem */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="card-hover p-6">
+        <div className="lg:col-span-2 space-y-5">
+
+          {/* Today's Problem */}
+          <div className="rounded-2xl p-6" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-brand-500/20 rounded-lg flex items-center justify-center">
-                  <Calendar size={16} className="text-brand-400" />
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Calendar size={15} className="text-green-400" />
                 </div>
-                <span className="font-display font-semibold text-white">Today's Problem</span>
+                <span className="font-bold text-white text-sm">Today's Problem</span>
               </div>
-              <span className="badge-easy">Daily</span>
+              <span className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full font-semibold">Daily</span>
             </div>
 
-            <h3 className="font-display text-xl font-bold text-white mb-2">{daily.title}</h3>
-            <p className="text-slate-400 text-sm font-body mb-4 line-clamp-2">{daily.description}</p>
+            <h3 className="text-xl font-extrabold text-white mb-2">{DAILY_PROBLEM.title}</h3>
+            <p className="text-gray-400 text-sm mb-4 leading-relaxed line-clamp-2">{DAILY_PROBLEM.description}</p>
 
-            <div className="flex items-center gap-3">
-              <span className="badge-easy">{daily.difficulty}</span>
-              <span className="text-slate-500 text-xs font-body">Asked by {daily.company}</span>
+            <div className="flex items-center gap-3 mb-5">
+              <span className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full">{DAILY_PROBLEM.difficulty}</span>
+              <span className="text-gray-500 text-xs">Asked by {DAILY_PROBLEM.company}</span>
             </div>
 
-            <div className="mt-5 flex gap-3">
-              <Link to={`/dashboard/problems/${daily.id}`} className="btn-primary">
-                Solve Now <ChevronRight size={15} />
+            <div className="flex gap-3">
+              <Link to={`/dashboard/problems/${DAILY_PROBLEM.id}`}
+                className="bg-green-500 hover:bg-green-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors flex items-center gap-1.5">
+                Solve Now <ChevronRight size={14} />
               </Link>
-              <Link to="/dashboard/problems" className="btn-secondary">View All</Link>
+              <Link to="/dashboard/problems"
+                className="text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+                style={{ backgroundColor: '#1f2937', border: '1px solid #374151' }}>
+                View All
+              </Link>
             </div>
           </div>
 
           {/* Progress */}
-          <div className="card p-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="font-display font-semibold text-white">Overall Progress</span>
-              <span className="text-brand-400 text-sm font-mono font-medium">{pct}%</span>
+          <div className="rounded-2xl p-6" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-bold text-white text-sm">Overall Progress</span>
+              <span className="text-green-400 text-sm font-mono font-bold">
+                {Math.round((stats.solved / stats.total) * 100)}%
+              </span>
             </div>
-            <div className="w-full bg-white/5 rounded-full h-2 mb-4">
+            <div className="w-full rounded-full h-2 mb-4" style={{ backgroundColor: '#1f2937' }}>
               <div
-                className="h-2 bg-gradient-to-r from-brand-500 to-cyan-400 rounded-full transition-all duration-1000"
-                style={{ width: `${pct}%` }}
+                className="h-2 bg-gradient-to-r from-green-500 to-cyan-400 rounded-full transition-all duration-700"
+                style={{ width: `${Math.round((stats.solved / stats.total) * 100)}%` }}
               />
             </div>
-            <div className="grid grid-cols-3 gap-4 mt-4">
+            <div className="grid grid-cols-3 gap-4 mt-2">
               {[
-                { label: 'Easy', count: 20, color: 'text-brand-400' },
-                { label: 'Medium', count: 16, color: 'text-yellow-400' },
-                { label: 'Hard', count: 6, color: 'text-red-400' },
-              ].map(({ label, count, color }) => (
-                <div key={label} className="text-center">
-                  <div className={`font-display text-2xl font-bold ${color}`}>{count}</div>
-                  <div className="text-slate-500 text-xs font-body">{label}</div>
+                { label: 'Easy', count: 0, color: 'text-green-400', total: 150 },
+                { label: 'Medium', count: 0, color: 'text-yellow-400', total: 250 },
+                { label: 'Hard', count: 0, color: 'text-red-400', total: 100 },
+              ].map(({ label, count, color, total }) => (
+                <div key={label} className="text-center p-3 rounded-xl" style={{ backgroundColor: '#1a2030' }}>
+                  <div className={`text-2xl font-extrabold ${color}`}>{count}</div>
+                  <div className="text-gray-500 text-xs mt-0.5">{label} / {total}</div>
                 </div>
               ))}
             </div>
@@ -130,63 +199,90 @@ export default function DashboardPage() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-4">
-            <QuickAction to="/dashboard/mock-interview" icon={PlayCircle} title="Mock Interview" desc="Simulate a real interview" color="purple" />
-            <QuickAction to="/dashboard/ai-interview" icon={MessageSquare} title="AI Practice" desc="Chat with AI interviewer" color="cyan" />
-            <QuickAction to="/dashboard/resume" icon={FileText} title="Resume Review" desc="Get AI feedback" color="orange" />
-            <QuickAction to="/dashboard/companies" icon={Building2} title="Company Questions" desc="Amazon, Microsoft & more" color="green" />
+            <QuickAction to="/dashboard/mock-interview" icon={PlayCircle} title="Mock Interview" desc="3 free per month" color="#7c3aed" locked={false} />
+            <QuickAction to="/dashboard/ai-interview" icon={MessageSquare} title="AI Practice" desc="Chat with AI interviewer" color="#0891b2" locked={!isPro} />
+            <QuickAction to="/dashboard/resume" icon={FileText} title="Resume Review" desc="Get AI score & feedback" color="#ea580c" locked={!isPro} />
+            <QuickAction to="/dashboard/companies" icon={Building2} title="Company Questions" desc="Amazon, Microsoft & more" color="#16a34a" locked={!isPro} />
           </div>
         </div>
 
         {/* Right column */}
-        <div className="space-y-6">
-          {/* Roadmap */}
-          <div className="card p-6">
-            <div className="flex items-center gap-2 mb-5">
-              <BookOpen size={16} className="text-brand-400" />
-              <span className="font-display font-semibold text-white">Prep Roadmap</span>
+        <div className="space-y-5">
+
+          {/* Plan info */}
+          {!isPro && (
+            <div className="rounded-2xl p-5" style={{ backgroundColor: '#111827', border: '2px solid rgba(34,197,94,0.3)' }}>
+              <p className="text-green-400 font-bold text-xs uppercase tracking-wider mb-3">Free Plan</p>
+              <div className="space-y-2 mb-4">
+                {[
+                  { text: '1 daily DSA problem', ok: true },
+                  { text: '3 mock interviews/month', ok: true },
+                  { text: 'AI interview practice', ok: false },
+                  { text: 'Resume review', ok: false },
+                  { text: 'Company questions', ok: false },
+                ].map(({ text, ok }) => (
+                  <div key={text} className="flex items-center gap-2">
+                    {ok
+                      ? <CheckCircle size={13} className="text-green-500 flex-shrink-0" />
+                      : <Lock size={13} className="text-gray-600 flex-shrink-0" />
+                    }
+                    <span className={`text-xs ${ok ? 'text-gray-300' : 'text-gray-600'}`}>{text}</span>
+                  </div>
+                ))}
+              </div>
+              <Link to="/dashboard/pricing"
+                className="block text-center bg-green-500 hover:bg-green-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">
+                Upgrade to Pro — ₹499/mo
+              </Link>
             </div>
-            <div className="space-y-3">
+          )}
+
+          {/* Roadmap */}
+          <div className="rounded-2xl p-5" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
+            <div className="flex items-center gap-2 mb-4">
+              <BookOpen size={15} className="text-green-400" />
+              <span className="font-bold text-white text-sm">Prep Roadmap</span>
+            </div>
+            <div className="space-y-2">
               {ROADMAP.map(({ phase, title, weeks, done, active }) => (
-                <div key={phase} className={`flex items-center gap-3 p-3 rounded-xl ${active ? 'bg-brand-500/10 border border-brand-500/20' : ''}`}>
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-display flex-shrink-0 ${
-                    done ? 'bg-brand-500 text-white' :
-                    active ? 'bg-brand-500/20 text-brand-400 border border-brand-500/40' :
-                    'bg-white/5 text-slate-500'
-                  }`}>
+                <div key={phase}
+                  className="flex items-center gap-3 p-3 rounded-xl"
+                  style={active ? { backgroundColor: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' } : {}}>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{
+                      backgroundColor: done ? '#16a34a' : active ? 'rgba(34,197,94,0.2)' : '#1f2937',
+                      color: done ? 'white' : active ? '#4ade80' : '#6b7280',
+                      border: active ? '1px solid rgba(34,197,94,0.4)' : 'none'
+                    }}>
                     {done ? '✓' : phase}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium font-body ${active ? 'text-white' : done ? 'text-slate-400' : 'text-slate-500'}`}>{title}</p>
-                    <p className="text-xs text-slate-600 font-body">Week {weeks}</p>
+                    <p className={`text-sm font-medium ${active ? 'text-white' : done ? 'text-gray-400' : 'text-gray-600'}`}>{title}</p>
+                    <p className="text-xs text-gray-700">Week {weeks}</p>
                   </div>
-                  {active && <span className="text-[10px] bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded font-display font-semibold">NOW</span>}
+                  {active && (
+                    <span className="text-[10px] bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded font-bold">NOW</span>
+                  )}
                 </div>
               ))}
             </div>
           </div>
 
           {/* Recent Activity */}
-          <div className="card p-6">
-            <div className="flex items-center gap-2 mb-5">
-              <Clock size={16} className="text-slate-400" />
-              <span className="font-display font-semibold text-white">Recent Activity</span>
+          <div className="rounded-2xl p-5" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
+            <div className="flex items-center gap-2 mb-4">
+              <Clock size={15} className="text-gray-400" />
+              <span className="font-bold text-white text-sm">Recent Activity</span>
             </div>
-            <div className="space-y-3">
-              {RECENT.map(({ title, difficulty, date }) => (
-                <div key={title} className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-brand-500/20 rounded-md flex items-center justify-center flex-shrink-0">
-                    <Code2 size={11} className="text-brand-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-300 font-body truncate">{title}</p>
-                    <p className="text-xs text-slate-600 font-body">{date}</p>
-                  </div>
-                  <span className={`badge-${difficulty} text-[10px]`}>{difficulty}</span>
-                </div>
-              ))}
+            <div className="py-6 text-center">
+              <Code2 size={28} className="text-gray-700 mx-auto mb-2" />
+              <p className="text-gray-600 text-sm">No activity yet</p>
+              <p className="text-gray-700 text-xs mt-1">Solve your first problem!</p>
             </div>
-            <Link to="/dashboard/problems" className="btn-ghost w-full justify-center mt-4 text-xs">
-              View all problems <ChevronRight size={13} />
+            <Link to="/dashboard/problems"
+              className="block text-center text-gray-400 hover:text-white text-xs py-2 rounded-xl transition-colors"
+              style={{ border: '1px solid #1f2937' }}>
+              Go to Problems →
             </Link>
           </div>
         </div>
@@ -195,33 +291,42 @@ export default function DashboardPage() {
   )
 }
 
-function StatCard({ icon: Icon, label, value, sub, iconColor, bg }) {
+function StatCard({ icon: Icon, label, value, sub, iconColor, bg, border, locked }) {
   return (
-    <div className="card p-5">
-      <div className={`w-10 h-10 bg-gradient-to-br ${bg} rounded-xl flex items-center justify-center mb-3`}>
+    <div className="rounded-2xl p-5 relative" style={{ backgroundColor: '#111827', border: `1px solid #1f2937` }}>
+      {locked && (
+        <div className="absolute top-3 right-3">
+          <Lock size={12} className="text-gray-600" />
+        </div>
+      )}
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ backgroundColor: bg, border: `1px solid ${border}` }}>
         <Icon size={18} className={iconColor} />
       </div>
-      <div className="font-display text-2xl font-bold text-white">{value}</div>
-      <div className="text-slate-400 text-xs font-body mt-0.5">{label}</div>
-      <div className="text-slate-600 text-xs font-body mt-0.5">{sub}</div>
+      <div className="text-2xl font-extrabold text-white">{value}</div>
+      <div className="text-gray-400 text-xs mt-0.5">{label}</div>
+      <div className="text-gray-600 text-xs mt-0.5">{sub}</div>
     </div>
   )
 }
 
-function QuickAction({ to, icon: Icon, title, desc, color }) {
-  const colors = {
-    purple: 'text-purple-400 bg-purple-500/10 group-hover:bg-purple-500/20',
-    cyan: 'text-cyan-400 bg-cyan-500/10 group-hover:bg-cyan-500/20',
-    orange: 'text-orange-400 bg-orange-500/10 group-hover:bg-orange-500/20',
-    green: 'text-brand-400 bg-brand-500/10 group-hover:bg-brand-500/20',
-  }
+function QuickAction({ to, icon: Icon, title, desc, color, locked }) {
   return (
-    <Link to={to} className="card-hover p-4 group block">
-      <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-3 transition-colors ${colors[color]}`}>
-        <Icon size={16} className={colors[color].split(' ')[0]} />
+    <Link to={to} className="rounded-2xl p-4 block relative group transition-all duration-200"
+      style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}
+      onMouseEnter={e => e.currentTarget.style.borderColor = locked ? '#374151' : color + '60'}
+      onMouseLeave={e => e.currentTarget.style.borderColor = '#1f2937'}>
+      {locked && (
+        <div className="absolute top-3 right-3">
+          <Lock size={11} className="text-gray-600" />
+        </div>
+      )}
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
+        style={{ backgroundColor: color + '20' }}>
+        <Icon size={17} style={{ color }} />
       </div>
-      <p className="font-display font-semibold text-white text-sm">{title}</p>
-      <p className="text-slate-500 text-xs font-body mt-0.5">{desc}</p>
+      <p className="font-bold text-white text-sm">{title}</p>
+      <p className="text-gray-500 text-xs mt-0.5">{desc}</p>
+      {locked && <p className="text-yellow-600 text-[10px] mt-1 font-semibold">PRO FEATURE</p>}
     </Link>
   )
 }

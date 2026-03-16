@@ -49,7 +49,8 @@ export function AuthProvider({ children }) {
       register,
       logout,
       loading,
-      isAdmin: user?.role === 'ADMIN'
+      isAdmin: user?.role === 'ADMIN',
+    isPro: user?.role === 'PRO'
     }}>
       {children}
     </AuthContext.Provider>

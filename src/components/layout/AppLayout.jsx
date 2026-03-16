@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from "../../hooks/useAuth";
 import toast from 'react-hot-toast'
-
+import { Cpu } from 'lucide-react'  // add Cpu to existing import
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/dashboard/problems', icon: Code2, label: 'DSA Problems' },
@@ -14,6 +14,7 @@ const navItems = [
   { to: '/dashboard/ai-interview', icon: MessageSquare, label: 'AI Interview' },
   { to: '/dashboard/resume', icon: FileText, label: 'Resume Review' },
   { to: '/dashboard/companies', icon: Building2, label: 'Company Questions' },
+  { to: '/dashboard/system-design', icon: Cpu, label: 'System Design' },
 ]
 
 // ✅ FIXED: Moved outside AppLayout so React doesn't recreate it on every render
@@ -59,7 +60,7 @@ function SidebarContent({ user, isAdmin, onClose, onLogout }) {
       </nav>
 
       {/* Pro Upgrade Banner */}
-      {user?.plan !== 'PRO' && (
+      {user?.role !== 'PRO' && (
         <div className="mx-4 mb-4 p-4 bg-gradient-to-br from-brand-500/10 to-cyan-500/10 border border-brand-500/20 rounded-xl">
           <div className="flex items-center gap-2 mb-2">
             <Zap size={14} className="text-brand-400" />
@@ -82,7 +83,7 @@ function SidebarContent({ user, isAdmin, onClose, onLogout }) {
             <p className="text-sm font-medium text-white truncate font-body">{user?.name}</p>
             <p className="text-xs text-slate-500 truncate font-body">{user?.email}</p>
           </div>
-          {user?.plan === 'PRO' && (
+          {user?.role === 'PRO' && (
             <span className="text-[10px] bg-brand-500/20 text-brand-400 border border-brand-500/30 px-1.5 py-0.5 rounded-md font-display font-semibold">PRO</span>
           )}
         </div>

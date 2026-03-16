@@ -1,224 +1,256 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ChevronLeft, CheckCircle, Bookmark, Play, RotateCcw, Lightbulb } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { ChevronLeft, CheckCircle, ExternalLink, Lightbulb, Tag, Building2, ChevronDown } from 'lucide-react'
 
-const MOCK_PROBLEM = {
-  id: 1,
-  title: 'Two Sum',
-  difficulty: 'easy',
-  topic: 'Arrays',
-  companies: ['Amazon', 'Google', 'Microsoft'],
-  description: `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+const PROBLEMS = {
+  1: {
+    id: 1, title: 'Two Sum', difficulty: 'easy', topic: 'Arrays',
+    companies: ['Amazon', 'Google', 'Microsoft'],
+    leetcode: 'https://leetcode.com/problems/two-sum/',
+    gfg: 'https://www.geeksforgeeks.org/two-sum/',
+    description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.',
+    examples: [
+      { input: 'nums = [2,7,11,15], target = 9', output: '[0,1]', explanation: 'nums[0] + nums[1] = 2 + 7 = 9.' },
+      { input: 'nums = [3,2,4], target = 6', output: '[1,2]', explanation: 'nums[1] + nums[2] = 2 + 4 = 6.' },
+    ],
+    constraints: ['2 <= nums.length <= 10^4', '-10^9 <= nums[i] <= 10^9', 'Only one valid answer exists.'],
+    hints: [
+      'Try using a HashMap to store values you have seen so far.',
+      'For each element x, check if target - x exists in your map.',
+      'This gives you O(n) time complexity instead of O(n²).',
+    ],
+    approach: 'Use a HashMap. For each number, check if (target - number) already exists in the map. If yes, return both indices. If no, add current number to map.',
+    timeComplexity: 'O(n)',
+    spaceComplexity: 'O(n)',
+  },
+}
 
-You may assume that each input would have exactly one solution, and you may not use the same element twice.
+// Default problem for IDs not in our map
+const DEFAULT = (id) => ({
+  id, title: 'Problem #' + id, difficulty: 'medium', topic: 'Arrays',
+  companies: ['Amazon'],
+  leetcode: 'https://leetcode.com/problemset/',
+  gfg: 'https://www.geeksforgeeks.org/explore?category=Arrays',
+  description: 'Click LeetCode or GFG button below to view and solve this problem on the respective platform.',
+  examples: [],
+  constraints: [],
+  hints: ['Open the problem on LeetCode or GFG to see hints.'],
+  approach: 'Open on LeetCode or GFG to see the full approach.',
+  timeComplexity: 'Varies',
+  spaceComplexity: 'Varies',
+})
 
-You can return the answer in any order.`,
-  examples: [
-    { input: 'nums = [2,7,11,15], target = 9', output: '[0,1]', explanation: 'Because nums[0] + nums[1] == 9, we return [0, 1].' },
-    { input: 'nums = [3,2,4], target = 6', output: '[1,2]', explanation: 'nums[1] + nums[2] = 2 + 4 = 6.' },
-  ],
-  constraints: ['2 <= nums.length <= 10^4', '-10^9 <= nums[i] <= 10^9', 'Only one valid answer exists.'],
-  starterCode: `class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        // Write your solution here
-        
-    }
-}`,
-  solution: `class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int complement = target - nums[i];
-            if (map.containsKey(complement)) {
-                return new int[] { map.get(complement), i };
-            }
-            map.put(nums[i], i);
-        }
-        return new int[] {};
-    }
-}`,
-  hints: [
-    'A really brute force way would be to search for all possible pairs of numbers but that would be too slow.',
-    'So, if we fix one of the numbers, say x, we have to scan the entire array to find the next number y which is target - x.',
-    'What if we use a HashMap to reduce the time complexity?',
-  ],
+const diffStyle = {
+  easy: { bg: 'rgba(34,197,94,0.1)', color: '#4ade80', border: 'rgba(34,197,94,0.2)' },
+  medium: { bg: 'rgba(234,179,8,0.1)', color: '#facc15', border: 'rgba(234,179,8,0.2)' },
+  hard: { bg: 'rgba(239,68,68,0.1)', color: '#f87171', border: 'rgba(239,68,68,0.2)' },
 }
 
 export default function ProblemDetailPage() {
   const { id } = useParams()
-  const [code, setCode] = useState(MOCK_PROBLEM.starterCode)
-  const [showSolution, setShowSolution] = useState(false)
-
-  const [hintIdx, setHintIdx] = useState(0)
+  const problem = PROBLEMS[id] || DEFAULT(id)
   const [solved, setSolved] = useState(false)
-  const [activeTab, setActiveTab] = useState('problem')
-
-  const handleRun = () => {
-    toast.success('Code submitted! Output: [0, 1] ✓', { duration: 3000 })
-    setSolved(true)
-  }
+  const [showHints, setShowHints] = useState(false)
+  const [showApproach, setShowApproach] = useState(false)
+  const [hintIdx, setHintIdx] = useState(0)
+  const ds = diffStyle[problem.difficulty]
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <Link to="/dashboard/problems" className="inline-flex items-center gap-1.5 text-slate-400 hover:text-white text-sm font-body mb-5 transition-colors">
+    <div className="max-w-3xl mx-auto space-y-5">
+
+      {/* Back */}
+      <Link to="/dashboard/problems"
+        className="inline-flex items-center gap-1.5 text-gray-400 hover:text-white text-sm transition-colors">
         <ChevronLeft size={15} /> Back to Problems
       </Link>
 
-      <div className="grid lg:grid-cols-2 gap-5 h-[calc(100vh-160px)]">
-        {/* Left: Problem */}
-        <div className="card flex flex-col overflow-hidden">
-          {/* Tabs */}
-          <div className="flex border-b border-white/5 px-5 pt-4 gap-1">
-            {['problem', 'solution', 'hints'].map(t => (
-              <button
-                key={t}
-                onClick={() => setActiveTab(t)}
-                className={`px-4 py-2 text-sm font-body font-medium rounded-t-lg transition-colors capitalize ${
-                  activeTab === t ? 'text-white border-b-2 border-brand-500' : 'text-slate-500 hover:text-slate-300'
-                }`}
-              >
-                {t === 'solution' ? '🔒 Solution' : t.charAt(0).toUpperCase() + t.slice(1)}
-              </button>
+      {/* Header card */}
+      <div className="rounded-2xl p-6" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-2xl font-extrabold text-white mb-3">{problem.title}</h1>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                style={{ backgroundColor: ds.bg, color: ds.color, border: `1px solid ${ds.border}` }}>
+                {problem.difficulty}
+              </span>
+              <span className="flex items-center gap-1 text-gray-500 text-xs">
+                <Tag size={11} /> {problem.topic}
+              </span>
+              <span className="flex items-center gap-1 text-gray-500 text-xs">
+                <Building2 size={11} /> {problem.companies.join(', ')}
+              </span>
+            </div>
+          </div>
+
+          {/* Solved toggle */}
+          <button
+            onClick={() => setSolved(p => !p)}
+            className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl flex-shrink-0 transition-all"
+            style={solved
+              ? { backgroundColor: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)' }
+              : { backgroundColor: '#1f2937', color: '#9ca3af', border: '1px solid #374151' }
+            }
+          >
+            <CheckCircle size={15} />
+            {solved ? 'Solved ✓' : 'Mark Solved'}
+          </button>
+        </div>
+
+        {/* Solve buttons */}
+        <div className="flex gap-3">
+          <a
+            href={problem.leetcode}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors"
+            style={{ backgroundColor: 'rgba(234,179,8,0.15)', color: '#fbbf24', border: '1px solid rgba(234,179,8,0.3)' }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(234,179,8,0.25)'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(234,179,8,0.15)'}
+          >
+            <ExternalLink size={15} />
+            Solve on LeetCode
+          </a>
+          <a
+            href={problem.gfg}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors"
+            style={{ backgroundColor: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)' }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(34,197,94,0.25)'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(34,197,94,0.15)'}
+          >
+            <ExternalLink size={15} />
+            Solve on GFG
+          </a>
+        </div>
+      </div>
+
+      {/* Description */}
+      {problem.description && (
+        <div className="rounded-2xl p-6" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
+          <h2 className="font-bold text-white text-sm mb-3">Problem Description</h2>
+          <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">{problem.description}</p>
+        </div>
+      )}
+
+      {/* Examples */}
+      {problem.examples.length > 0 && (
+        <div className="rounded-2xl p-6" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
+          <h2 className="font-bold text-white text-sm mb-4">Examples</h2>
+          <div className="space-y-4">
+            {problem.examples.map((ex, i) => (
+              <div key={i} className="rounded-xl p-4" style={{ backgroundColor: '#0f1923', border: '1px solid #1f2937' }}>
+                <p className="text-gray-500 text-xs mb-2">Example {i + 1}</p>
+                <div className="font-mono text-xs space-y-1 mb-2">
+                  <div><span className="text-gray-500">Input: </span><span className="text-gray-200">{ex.input}</span></div>
+                  <div><span className="text-gray-500">Output: </span><span className="text-green-400 font-bold">{ex.output}</span></div>
+                </div>
+                <p className="text-gray-500 text-xs"><span className="text-gray-400 font-semibold">Explanation: </span>{ex.explanation}</p>
+              </div>
             ))}
           </div>
-
-          <div className="flex-1 overflow-y-auto p-5">
-            {activeTab === 'problem' && (
-              <>
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h1 className="font-display text-2xl font-bold text-white">{MOCK_PROBLEM.title}</h1>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="badge-easy">{MOCK_PROBLEM.difficulty}</span>
-                      <span className="text-slate-500 text-xs font-body">{MOCK_PROBLEM.topic}</span>
-                      {MOCK_PROBLEM.companies.map(c => (
-                        <span key={c} className="text-[10px] bg-white/5 text-slate-500 px-1.5 py-0.5 rounded font-body">{c}</span>
-                      ))}
-                    </div>
-                  </div>
-                  {solved && (
-                    <div className="flex items-center gap-1.5 text-brand-400 text-sm font-body">
-                      <CheckCircle size={16} /> Solved
-                    </div>
-                  )}
-                </div>
-
-                <p className="text-slate-300 text-sm font-body leading-relaxed whitespace-pre-line mb-5">
-                  {MOCK_PROBLEM.description}
-                </p>
-
-                <div className="space-y-4 mb-5">
-                  {MOCK_PROBLEM.examples.map((ex, i) => (
-                    <div key={i} className="bg-white/3 rounded-xl p-4 border border-white/5">
-                      <p className="text-xs text-slate-500 font-body mb-2">Example {i + 1}:</p>
-                      <div className="code-block text-sm mb-2">
-                        <span className="text-slate-500">Input: </span><span className="text-slate-200">{ex.input}</span>
-                        {'\n'}
-                        <span className="text-slate-500">Output: </span><span className="text-brand-400">{ex.output}</span>
-                      </div>
-                      <p className="text-xs text-slate-500 font-body"><strong className="text-slate-400">Explanation:</strong> {ex.explanation}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div>
-                  <p className="text-sm font-display font-semibold text-slate-300 mb-2">Constraints:</p>
-                  <ul className="space-y-1">
-                    {MOCK_PROBLEM.constraints.map((c, i) => (
-                      <li key={i} className="text-xs text-slate-500 font-mono flex items-start gap-2">
-                        <span className="text-slate-700 mt-0.5">•</span> {c}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </>
-            )}
-
-            {activeTab === 'solution' && (
-              <div>
-                {!showSolution ? (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <Lightbulb size={28} className="text-yellow-400" />
-                    </div>
-                    <p className="text-slate-400 font-body text-sm mb-4">Try solving the problem first! Solutions are available for Pro users.</p>
-                    <button onClick={() => setShowSolution(true)} className="btn-secondary">
-                      Reveal Solution
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-slate-400 text-sm font-body mb-4">Optimal solution using HashMap — O(n) time, O(n) space:</p>
-                    <pre className="code-block text-xs text-slate-200 overflow-x-auto">{MOCK_PROBLEM.solution}</pre>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {activeTab === 'hints' && (
-              <div className="space-y-4">
-                <p className="text-slate-400 text-sm font-body">Use hints only when stuck. Try to solve on your own first!</p>
-                {MOCK_PROBLEM.hints.slice(0, hintIdx + 1).map((hint, i) => (
-                  <div key={i} className="bg-brand-500/5 border border-brand-500/20 rounded-xl p-4">
-                    <p className="text-xs text-brand-400 font-display font-semibold mb-1">Hint {i + 1}</p>
-                    <p className="text-slate-300 text-sm font-body">{hint}</p>
-                  </div>
-                ))}
-                {hintIdx < MOCK_PROBLEM.hints.length - 1 && (
-                  <button onClick={() => setHintIdx(prev => prev + 1)} className="btn-secondary text-xs">
-                    Next Hint
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
         </div>
+      )}
 
-        {/* Right: Code Editor */}
-        <div className="card flex flex-col overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3 border-b border-white/5">
-            <div className="flex items-center gap-2">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-500/60" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-                <div className="w-3 h-3 rounded-full bg-green-500/60" />
-              </div>
-              <span className="text-slate-500 text-xs font-mono ml-2">Solution.java</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <select className="bg-white/5 border border-white/10 text-slate-300 text-xs px-3 py-1.5 rounded-lg font-mono">
-                <option>Java</option>
-                <option>Python</option>
-                <option>C++</option>
-              </select>
-              <button onClick={() => setCode(MOCK_PROBLEM.starterCode)} className="btn-ghost text-xs p-2">
-                <RotateCcw size={13} />
-              </button>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-hidden bg-[#0d1117]">
-            <textarea
-              value={code}
-              onChange={e => setCode(e.target.value)}
-              className="w-full h-full bg-transparent text-slate-200 font-mono text-sm p-5 resize-none focus:outline-none leading-relaxed"
-              spellCheck={false}
-            />
-          </div>
-
-          <div className="px-5 py-3 border-t border-white/5 flex items-center justify-between">
-            <div className="text-xs text-slate-600 font-mono">{code.split('\n').length} lines</div>
-            <div className="flex gap-2">
-              <button onClick={() => toast('Testing against sample cases...')} className="btn-secondary text-xs px-4 py-2">
-                Test
-              </button>
-              <button onClick={handleRun} className="btn-primary text-xs px-4 py-2">
-                <Play size={13} /> Submit
-              </button>
-            </div>
-          </div>
+      {/* Constraints */}
+      {problem.constraints.length > 0 && (
+        <div className="rounded-2xl p-6" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
+          <h2 className="font-bold text-white text-sm mb-3">Constraints</h2>
+          <ul className="space-y-1.5">
+            {problem.constraints.map((c, i) => (
+              <li key={i} className="flex items-start gap-2 text-xs font-mono text-gray-400">
+                <span className="text-gray-700 mt-0.5">•</span>{c}
+              </li>
+            ))}
+          </ul>
         </div>
+      )}
+
+      {/* Hints - collapsible */}
+      <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #1f2937' }}>
+        <button
+          onClick={() => setShowHints(p => !p)}
+          className="w-full flex items-center justify-between px-6 py-4 text-left transition-colors"
+          style={{ backgroundColor: '#111827' }}
+          onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1a2332'}
+          onMouseLeave={e => e.currentTarget.style.backgroundColor = '#111827'}
+        >
+          <div className="flex items-center gap-2">
+            <Lightbulb size={15} className="text-yellow-400" />
+            <span className="font-bold text-white text-sm">Hints</span>
+            <span className="text-xs text-gray-600">({problem.hints.length} available)</span>
+          </div>
+          <ChevronDown size={15} className={`text-gray-500 transition-transform ${showHints ? 'rotate-180' : ''}`} />
+        </button>
+
+        {showHints && (
+          <div className="px-6 pb-5 pt-2" style={{ backgroundColor: '#111827', borderTop: '1px solid #1f2937' }}>
+            <p className="text-gray-500 text-xs mb-4">Try to solve without hints first!</p>
+            <div className="space-y-3">
+              {problem.hints.slice(0, hintIdx + 1).map((hint, i) => (
+                <div key={i} className="rounded-xl p-4"
+                  style={{ backgroundColor: 'rgba(234,179,8,0.05)', border: '1px solid rgba(234,179,8,0.15)' }}>
+                  <p className="text-yellow-400 text-xs font-bold mb-1">Hint {i + 1}</p>
+                  <p className="text-gray-300 text-sm">{hint}</p>
+                </div>
+              ))}
+              {hintIdx < problem.hints.length - 1 && (
+                <button
+                  onClick={() => setHintIdx(prev => prev + 1)}
+                  className="text-yellow-400 hover:text-yellow-300 text-xs font-semibold transition-colors"
+                >
+                  + Show next hint
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Approach - collapsible */}
+      <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #1f2937' }}>
+        <button
+          onClick={() => setShowApproach(p => !p)}
+          className="w-full flex items-center justify-between px-6 py-4 text-left transition-colors"
+          style={{ backgroundColor: '#111827' }}
+          onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1a2332'}
+          onMouseLeave={e => e.currentTarget.style.backgroundColor = '#111827'}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-base">🧠</span>
+            <span className="font-bold text-white text-sm">Approach & Complexity</span>
+          </div>
+          <ChevronDown size={15} className={`text-gray-500 transition-transform ${showApproach ? 'rotate-180' : ''}`} />
+        </button>
+
+        {showApproach && (
+          <div className="px-6 pb-5 pt-2" style={{ backgroundColor: '#111827', borderTop: '1px solid #1f2937' }}>
+            <p className="text-gray-300 text-sm leading-relaxed mb-4">{problem.approach}</p>
+            <div className="flex gap-4">
+              <div className="rounded-lg px-3 py-2" style={{ backgroundColor: '#1f2937' }}>
+                <p className="text-gray-500 text-xs">Time</p>
+                <p className="text-green-400 font-bold text-sm font-mono">{problem.timeComplexity}</p>
+              </div>
+              <div className="rounded-lg px-3 py-2" style={{ backgroundColor: '#1f2937' }}>
+                <p className="text-gray-500 text-xs">Space</p>
+                <p className="text-cyan-400 font-bold text-sm font-mono">{problem.spaceComplexity}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Bottom solve buttons */}
+      <div className="flex gap-3 pb-4">
+        <a href={problem.leetcode} target="_blank" rel="noopener noreferrer"
+          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-yellow-500 hover:bg-yellow-400 text-black transition-colors">
+          <ExternalLink size={15} /> Open on LeetCode
+        </a>
+        <a href={problem.gfg} target="_blank" rel="noopener noreferrer"
+          className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm bg-green-500 hover:bg-green-400 text-white transition-colors">
+          <ExternalLink size={15} /> Open on GFG
+        </a>
       </div>
     </div>
   )
