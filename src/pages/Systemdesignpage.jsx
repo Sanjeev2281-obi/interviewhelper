@@ -395,6 +395,69 @@ const PROBLEMS = [
       { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Detailed design' },
     ],
   },
+  {
+  id: 7,
+  type: 'LLD',
+  title: 'Design Call Taxi Booking System',
+  subtitle: 'Like Uber / Ola',
+  difficulty: 'Medium',
+  companies: ['Zoho','Uber','Amazon'],
+  tags: ['OOP','Design Patterns','Java','Scheduling'],
+  duration: '45 mins',
+  free: false,
+
+  description: 'Design a taxi booking system where users can book taxis, drivers get assigned automatically, and fares are calculated based on distance.',
+
+  keyComponents: [
+    'TaxiBookingService',
+    'Driver',
+    'Passenger',
+    'Ride',
+    'LocationService',
+    'FareCalculator'
+  ],
+
+  requirements: {
+    functional: [
+      'Book taxi',
+      'Assign nearest driver',
+      'Start and end ride',
+      'Calculate fare',
+      'Show ride history'
+    ],
+    nonFunctional: [
+      'Handle multiple bookings simultaneously',
+      'Driver location updates',
+      'Low latency ride matching'
+    ],
+  },
+
+  approach: `
+1. **Classes**
+   - Passenger
+   - Driver
+   - Ride
+   - Location
+   - TaxiBookingService
+
+2. **Driver Matching**
+   - Find nearest available driver using distance calculation.
+
+3. **Ride Flow**
+   Passenger → request ride → match driver → ride started → ride completed.
+
+4. **Strategy Pattern**
+   Different FareCalculation strategies (Normal, Surge).
+
+5. **Observer Pattern**
+   Notify driver and passenger for ride status updates.
+  `,
+
+  solveOptions: [
+    { label: 'Design UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Draw class diagrams' },
+    { label: 'Code on LeetCode', url: 'https://leetcode.com/', icon: '💻', desc: 'Implement classes in Java' },
+  ],
+}
 ]
 
 // Generate remaining 20 pro problems

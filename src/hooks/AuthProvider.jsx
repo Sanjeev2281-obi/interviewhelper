@@ -1,22 +1,56 @@
-import { createContext, useState } from 'react'
+import { createContext, useState ,useEffect} from 'react'
 import { authService } from '../services/api'
 
 export const AuthContext = createContext(null)
 
-// ✅ Fix 1: Initialize state from localStorage directly in useState
-// avoids calling setState inside useEffect body
 function getInitialUser() {
   try {
     const stored = localStorage.getItem('user')
     const token = localStorage.getItem('token')
     if (stored && token) return JSON.parse(stored)
-  } catch { /* empty */ }
+  } catch (err) {
+    console.error("Failed to parse user", err)
+  }
   return null
 }
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(getInitialUser)   // ← reads localStorage once, no effect needed
+
+  const [user, setUser] = useState(getInitialUser)
   const [loading] = useState(false)
+
+  useEffect(() => {
+  const checkUser = async () => {
+    const token = localStorage.getItem("token")
+    if (!token) return
+
+    try {
+      const res = await authService.me()
+      const updatedUser = res.data
+
+      localStorage.setItem("user", JSON.stringify(updatedUser))
+      setUser(updatedUser)
+
+    } catch (err)
+    {
+      console.error("User refresh failed")
+    }
+  }
+
+  checkUser()
+}, [])
+  // ✅ MOVE refreshUser HERE
+  const refreshUser = async () => {
+    try {
+      const res = await authService.me()
+      const updatedUser = res.data
+
+      localStorage.setItem('user', JSON.stringify(updatedUser))
+      setUser(updatedUser)
+
+    } catch (err) {
+      console.error("Failed to refresh user", err)
+    }
+  }
 
   const login = async (email, password) => {
     const res = await authService.login(email, password)
@@ -48,9 +82,10 @@ export function AuthProvider({ children }) {
       login,
       register,
       logout,
+      refreshUser,
       loading,
       isAdmin: user?.role === 'ADMIN',
-    isPro: user?.role === 'PRO'
+      isPro: user?.role === 'PRO'
     }}>
       {children}
     </AuthContext.Provider>

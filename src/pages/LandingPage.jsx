@@ -88,7 +88,7 @@ export default function LandingPage() {
           </div>
           <span style={{ fontWeight: 900, fontSize: 20, letterSpacing: '-0.5px' }}>InterviewPrep<span style={{ color: '#22c55e' }}>AI</span></span>
         </div>
-        <div style={{ display: 'flex', gap: 36 }} className="hidden md:flex">
+        <div style={{ display: 'flex', gap: 36 }} className="hidden md:flex ">
           {[['#features','Features'],['#companies','Companies'],['#pricing','Pricing']].map(([h,l]) => (
             <a key={h} href={h} style={{ color: '#64748b', fontSize: 14, fontWeight: 500, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color='#fff'} onMouseLeave={e => e.target.style.color='#64748b'}>{l}</a>
           ))}
@@ -262,7 +262,7 @@ export default function LandingPage() {
         <div style={{ maxWidth:860,margin:'0 auto',position:'relative',zIndex:1 }}>
           <div style={{ textAlign:'center',marginBottom:56 }}>
             <h2 style={{ fontWeight:900,fontSize:'clamp(2rem,4vw,3.5rem)',letterSpacing:'-1.5px',lineHeight:1.1,margin:'0 0 14px' }}>One price.<br/><span style={{color:'#22c55e'}}>Your entire career.</span></h2>
-            <p style={{ color:'#334155',fontSize:17 }}>Rs 499/month. Less than a Swiggy order. Worth infinitely more.</p>
+            <p style={{ color:'white',fontSize:17 }}>Rs 299/month. Less than a Swiggy order. Worth infinitely more.</p>
           </div>
 
           <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:20 }} className="pricing-grid">
