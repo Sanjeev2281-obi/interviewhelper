@@ -76,7 +76,7 @@ export default function DashboardPage() {
       {/* New user welcome banner */}
       <div className="rounded-2xl p-5 flex items-center gap-4"
         style={{ backgroundColor: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
-        <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0">
           <Zap size={20} className="text-green-400" />
         </div>
         <div className="flex-1">
@@ -86,7 +86,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <Link to="/dashboard/problems"
-          className="flex-shrink-0 bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors">
+          className="shrink-0 bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors">
           Start Now →
         </Link>
       </div>
@@ -179,7 +179,7 @@ export default function DashboardPage() {
             </div>
             <div className="w-full rounded-full h-2 mb-4" style={{ backgroundColor: '#1f2937' }}>
               <div
-                className="h-2 bg-gradient-to-r from-green-500 to-cyan-400 rounded-full transition-all duration-700"
+                className="h-2 bg-linear-to-r from-green-500 to-cyan-400 rounded-full transition-all duration-700"
                 style={{ width: `${Math.round((stats.solved / stats.total) * 100)}%` }}
               />
             </div>
@@ -223,8 +223,8 @@ export default function DashboardPage() {
                 ].map(({ text, ok }) => (
                   <div key={text} className="flex items-center gap-2">
                     {ok
-                      ? <CheckCircle size={13} className="text-green-500 flex-shrink-0" />
-                      : <Lock size={13} className="text-gray-600 flex-shrink-0" />
+                      ? <CheckCircle size={13} className="text-green-500 shrink-0" />
+                      : <Lock size={13} className="text-gray-600 shrink-0" />
                     }
                     <span className={`text-xs ${ok ? 'text-gray-300' : 'text-gray-600'}`}>{text}</span>
                   </div>
