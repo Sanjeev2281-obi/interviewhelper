@@ -1,6 +1,254 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, ChevronUp, ExternalLink, ArrowLeft, Play, BookOpen, CheckCircle, Lightbulb } from 'lucide-react'
+import { ChevronDown, ChevronUp, ExternalLink, ArrowLeft, Play, BookOpen, CheckCircle, Lightbulb, Code2, Globe, Brain, Briefcase, AlertTriangle, Zap } from 'lucide-react'
+
+// ── Programming Language Guide ────────────────────────────────
+function ProgrammingGuide() {
+  const [open, setOpen] = useState(false)
+
+  const goals = [
+    {
+      icon: '🎯', title: 'Placement (Zoho, product companies)',
+      badge: 'Your goal', badgeColor: '#4ade80', badgeBg: 'rgba(34,197,94,0.15)',
+      langs: [
+        { name: 'Java', tag: 'Recommended', color: '#f97316', bg: 'rgba(249,115,22,0.12)' },
+        { name: 'C++', tag: 'Optional', color: '#9ca3af', bg: 'rgba(156,163,175,0.1)' },
+      ],
+      why: 'Strong for DSA + Interviews. Used heavily in backend. Most interview solutions are in Java/C++.',
+    },
+    {
+      icon: '🌐', title: 'Web development (frontend + full stack)',
+      badge: 'You already know this!', badgeColor: '#60a5fa', badgeBg: 'rgba(59,130,246,0.15)',
+      langs: [
+        { name: 'JavaScript', tag: 'Must', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' },
+        { name: 'React', tag: 'You use it', color: '#60a5fa', bg: 'rgba(59,130,246,0.12)' },
+      ],
+      why: 'You already use React — you are ahead of most beginners. JavaScript is the language of the web.',
+    },
+    {
+      icon: '🤖', title: 'AI / Machine Learning',
+      badge: 'Future goal', badgeColor: '#c084fc', badgeBg: 'rgba(192,132,252,0.15)',
+      langs: [
+        { name: 'Python', tag: 'Only choice', color: '#c084fc', bg: 'rgba(192,132,252,0.12)' },
+      ],
+      why: 'Python dominates AI/ML. TensorFlow, PyTorch, scikit-learn — all Python. Learn after you master Java/JS.',
+    },
+    {
+      icon: '💼', title: 'Freelancing',
+      badge: 'Side income', badgeColor: '#34d399', badgeBg: 'rgba(52,211,153,0.15)',
+      langs: [
+        { name: 'JavaScript', tag: 'Frontend', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' },
+        { name: 'Node.js', tag: 'Backend', color: '#4ade80', bg: 'rgba(34,197,94,0.12)' },
+      ],
+      why: 'JavaScript lets you build both frontend and backend. One language, full product. Fastest path to earning.',
+    },
+  ]
+
+  return (
+    <div style={{ marginBottom: '1.5rem' }}>
+      {/* Toggle button */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '14px 18px', background: open ? 'rgba(168,85,247,0.06)' : '#111827',
+          border: open ? '1px solid rgba(168,85,247,0.3)' : '1px solid #1f2937',
+          borderRadius: open ? '14px 14px 0 0' : 14, cursor: 'pointer', transition: 'all .2s',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 8, background: 'rgba(168,85,247,0.15)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Code2 size={15} color="#c084fc" />
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'white' }}>What is a programming language? How to choose?</div>
+            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 1 }}>Click to read — perfect if you are just starting out</div>
+          </div>
+        </div>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          padding: '4px 10px', borderRadius: 20, background: 'rgba(168,85,247,0.12)',
+          border: '1px solid rgba(168,85,247,0.2)', flexShrink: 0,
+        }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: '#c084fc' }}>Beginner guide</span>
+          {open ? <ChevronUp size={13} color="#c084fc" /> : <ChevronDown size={13} color="#c084fc" />}
+        </div>
+      </button>
+
+      {/* Content */}
+      {open && (
+        <div style={{
+          border: '1px solid rgba(168,85,247,0.3)', borderTop: 'none',
+          borderRadius: '0 0 14px 14px', background: '#0d1117', overflow: 'hidden',
+        }}>
+          {/* What is a programming language */}
+          <div style={{ padding: '1.25rem 1.25rem 0' }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: 'white', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Code2 size={16} color="#c084fc" /> What is a programming language?
+            </div>
+            <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.8, marginBottom: '1rem' }}>
+              A programming language is just a way to talk to a computer.
+            </p>
+
+            {/* Analogy card */}
+            <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '1rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 12, alignItems: 'center' }}>
+                <div style={{ textAlign: 'center', background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 10, padding: '12px 8px' }}>
+                  <div style={{ fontSize: 22, marginBottom: 4 }}>🗣️</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#60a5fa' }}>Talking to people</div>
+                  <div style={{ fontSize: 11, color: '#6b7280', marginTop: 3 }}>Use English / Tamil</div>
+                </div>
+                <div style={{ fontSize: 18, color: '#374151', fontWeight: 700 }}>vs</div>
+                <div style={{ textAlign: 'center', background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 10, padding: '12px 8px' }}>
+                  <div style={{ fontSize: 22, marginBottom: 4 }}>💻</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#c084fc' }}>Talking to computers</div>
+                  <div style={{ fontSize: 11, color: '#6b7280', marginTop: 3 }}>Use Java / Python / JS</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Code example */}
+            <div style={{ marginBottom: '1rem' }}>
+              <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 6 }}>Example — when you write this:</div>
+              <div style={{ background: '#0a0f1a', border: '1px solid #1f2937', borderRadius: 10, padding: '12px 14px', marginBottom: 8 }}>
+                <pre style={{ fontSize: 13, color: '#4ade80', fontFamily: 'monospace', margin: 0 }}>{'System.out.println("Hello");'}</pre>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ fontSize: 18 }}>➡️</div>
+                <div style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 8, padding: '6px 12px', fontSize: 13, color: '#4ade80', fontWeight: 600 }}>
+                  Computer prints "Hello" on the screen
+                </div>
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 10, padding: '10px 14px', marginBottom: '1.5rem' }}>
+              <p style={{ fontSize: 13, color: '#d8b4fe', fontWeight: 600, margin: 0 }}>
+                Programming language = Instructions you give to a computer
+              </p>
+            </div>
+
+            {/* Why so many */}
+            <div style={{ fontSize: 15, fontWeight: 800, color: 'white', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Brain size={16} color="#fbbf24" /> Why do so many languages exist?
+            </div>
+            <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.7, marginBottom: '0.75rem' }}>
+              Because different jobs need different tools. Think of it like physical tools:
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 8, marginBottom: '1.5rem' }}>
+              {[
+                { emoji: '🔨', tool: 'Hammer', use: 'for nails', lang: 'Java', langUse: 'backend, apps' },
+                { emoji: '🔧', tool: 'Screwdriver', use: 'for screws', lang: 'JavaScript', langUse: 'websites' },
+                { emoji: '🎨', tool: 'Paintbrush', use: 'for art', lang: 'Python', langUse: 'AI, automation' },
+              ].map(({ emoji, tool, use, lang, langUse }) => (
+                <div key={tool} style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 10, padding: '12px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 24, marginBottom: 6 }}>{emoji}</div>
+                  <div style={{ fontSize: 12, color: '#9ca3af' }}>{tool} = {use}</div>
+                  <div style={{ width: '100%', height: 1, background: '#1f2937', margin: '8px 0' }} />
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'white' }}>{lang}</div>
+                  <div style={{ fontSize: 11, color: '#6b7280' }}>{langUse}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* How to choose */}
+            <div style={{ fontSize: 15, fontWeight: 800, color: 'white', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Zap size={16} color="#4ade80" /> How to choose — based on your goal
+            </div>
+          </div>
+
+          {/* Goal cards */}
+          <div style={{ padding: '0 1.25rem', display: 'flex', flexDirection: 'column', gap: 10, marginBottom: '1.25rem' }}>
+            {goals.map(g => (
+              <div key={g.title} style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 8 }}>
+                  <span style={{ fontSize: 20, flexShrink: 0 }}>{g.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: 'white' }}>{g.title}</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: g.badgeBg, color: g.badgeColor }}>
+                        {g.badge}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6 }}>{g.why}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {g.langs.map(l => (
+                    <div key={l.name} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 8, background: l.bg, border: `1px solid ${l.color}30` }}>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: l.color }}>{l.name}</span>
+                      <span style={{ fontSize: 10, color: l.color, opacity: .7 }}>{l.tag}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Honest advice */}
+          <div style={{ margin: '0 1.25rem 1.25rem' }}>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(34,197,94,0.06), rgba(59,130,246,0.06))',
+              border: '1px solid rgba(34,197,94,0.25)', borderRadius: 12, padding: '1rem',
+            }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#4ade80', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Zap size={13} color="#4ade80" /> Honest advice for you
+              </div>
+              <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.7, marginBottom: 10 }}>
+                Based on your goal (Zoho + full stack + DSA), you already have the right combo:
+              </p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.25)', borderRadius: 10, padding: '8px 14px' }}>
+                  <span style={{ fontSize: 20 }}>☕</span>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#fb923c' }}>Java</div>
+                    <div style={{ fontSize: 11, color: '#6b7280' }}>for DSA + backend</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.25)', borderRadius: 10, padding: '8px 14px' }}>
+                  <span style={{ fontSize: 20 }}>⚡</span>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#fbbf24' }}>JavaScript</div>
+                    <div style={{ fontSize: 11, color: '#6b7280' }}>for frontend (React)</div>
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: 12, color: '#4ade80', fontWeight: 600 }}>
+                That is a power combo. Do not switch. Master these two first.
+              </p>
+            </div>
+          </div>
+
+          {/* Biggest mistake */}
+          <div style={{ margin: '0 1.25rem 1.25rem' }}>
+            <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 12, padding: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                <AlertTriangle size={14} color="#f87171" />
+                <span style={{ fontSize: 13, fontWeight: 800, color: '#f87171' }}>Biggest mistake beginners make</span>
+              </div>
+              <div style={{ background: '#0d1117', borderRadius: 10, padding: '10px 14px', marginBottom: 10 }}>
+                <p style={{ fontSize: 12, color: '#f87171', fontFamily: 'monospace', margin: 0 }}>
+                  Python → Java → C++ → JavaScript → Go 😵
+                </p>
+              </div>
+              <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.7, marginBottom: 8 }}>
+                Jumping between languages every few weeks. You learn syntax but never get good at problem-solving.
+              </p>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <CheckCircle size={14} color="#4ade80" style={{ flexShrink: 0, marginTop: 2 }} />
+                <p style={{ fontSize: 13, color: '#4ade80', fontWeight: 600, lineHeight: 1.6 }}>
+                  Instead: Pick 1 main language → master problem solving → then expand. Depth beats breadth every time.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // ── Tamil YouTube channels (verified DSA in Tamil) ────────────
 const TAMIL_CHANNELS = [
@@ -600,6 +848,9 @@ export default function BeginnerDSAPage() {
           </a>
         ))}
       </div>
+
+      {/* Programming Language Guide */}
+      <ProgrammingGuide />
 
       {/* Topic tabs */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: '1.5rem' }}>
