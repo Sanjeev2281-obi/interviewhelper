@@ -224,7 +224,7 @@ export default function PricingPage() {
             <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#0f766e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 900, color: '#fff', flexShrink: 0, border: '2px solid rgba(16,185,129,0.4)' }}>SK</div>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
-                <span style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>Senthil Kumar</span>
+                <span style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>Sanjeev s</span>
                 <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'rgba(245,158,11,0.15)', color: '#fbbf24', fontWeight: 700 }}>Pro exclusive</span>
                 <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'rgba(16,185,129,0.15)', color: '#10b981', fontWeight: 700 }}>தமிழில் பேசலாம்</span>
               </div>

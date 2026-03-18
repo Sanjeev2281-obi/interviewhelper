@@ -899,7 +899,7 @@ export default function CompanyQuestions() {
               </span>
             ))}
           </div>
-          <Link to="/pricing"
+          <Link to="/dashboard/pricing"
             className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl transition-colors">
             <Crown size={15} /> Unlock All — ₹499/month
           </Link>

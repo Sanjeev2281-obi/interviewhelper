@@ -1,29 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ChevronLeft, CheckCircle, ExternalLink, Lightbulb, Tag, Building2, ChevronDown } from 'lucide-react'
-
-const PROBLEMS = {
-  1: {
-    id: 1, title: 'Two Sum', difficulty: 'easy', topic: 'Arrays',
-    companies: ['Amazon', 'Google', 'Microsoft'],
-    leetcode: 'https://leetcode.com/problems/two-sum/',
-    gfg: 'https://www.geeksforgeeks.org/two-sum/',
-    description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.',
-    examples: [
-      { input: 'nums = [2,7,11,15], target = 9', output: '[0,1]', explanation: 'nums[0] + nums[1] = 2 + 7 = 9.' },
-      { input: 'nums = [3,2,4], target = 6', output: '[1,2]', explanation: 'nums[1] + nums[2] = 2 + 4 = 6.' },
-    ],
-    constraints: ['2 <= nums.length <= 10^4', '-10^9 <= nums[i] <= 10^9', 'Only one valid answer exists.'],
-    hints: [
-      'Try using a HashMap to store values you have seen so far.',
-      'For each element x, check if target - x exists in your map.',
-      'This gives you O(n) time complexity instead of O(n²).',
-    ],
-    approach: 'Use a HashMap. For each number, check if (target - number) already exists in the map. If yes, return both indices. If no, add current number to map.',
-    timeComplexity: 'O(n)',
-    spaceComplexity: 'O(n)',
-  },
-}
+import { PROBLEMS } from '../services/Problem'
 
 // Default problem for IDs not in our map
 const DEFAULT = (id) => ({
@@ -48,7 +26,7 @@ const diffStyle = {
 
 export default function ProblemDetailPage() {
   const { id } = useParams()
-  const problem = PROBLEMS[id] || DEFAULT(id)
+  const problem = PROBLEMS.find(p => p.id === Number(id)) || DEFAULT(id)
   const [solved, setSolved] = useState(false)
   const [showHints, setShowHints] = useState(false)
   const [showApproach, setShowApproach] = useState(false)
@@ -135,7 +113,7 @@ export default function ProblemDetailPage() {
       )}
 
       {/* Examples */}
-      {problem.examples.length > 0 && (
+      {problem.examples?.length > 0 && (
         <div className="rounded-2xl p-6" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
           <h2 className="font-bold text-white text-sm mb-4">Examples</h2>
           <div className="space-y-4">
@@ -154,7 +132,7 @@ export default function ProblemDetailPage() {
       )}
 
       {/* Constraints */}
-      {problem.constraints.length > 0 && (
+      {problem.constraints?.length > 0 && (
         <div className="rounded-2xl p-6" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
           <h2 className="font-bold text-white text-sm mb-3">Constraints</h2>
           <ul className="space-y-1.5">
@@ -179,7 +157,7 @@ export default function ProblemDetailPage() {
           <div className="flex items-center gap-2">
             <Lightbulb size={15} className="text-yellow-400" />
             <span className="font-bold text-white text-sm">Hints</span>
-            <span className="text-xs text-gray-600">({problem.hints.length} available)</span>
+            <span className="text-xs text-gray-600">({problem.hints?.length} available)</span>
           </div>
           <ChevronDown size={15} className={`text-gray-500 transition-transform ${showHints ? 'rotate-180' : ''}`} />
         </button>
@@ -188,7 +166,7 @@ export default function ProblemDetailPage() {
           <div className="px-6 pb-5 pt-2" style={{ backgroundColor: '#111827', borderTop: '1px solid #1f2937' }}>
             <p className="text-gray-500 text-xs mb-4">Try to solve without hints first!</p>
             <div className="space-y-3">
-              {problem.hints.slice(0, hintIdx + 1).map((hint, i) => (
+              {problem.hints?.slice(0, hintIdx + 1).map((hint, i) => (
                 <div key={i} className="rounded-xl p-4"
                   style={{ backgroundColor: 'rgba(234,179,8,0.05)', border: '1px solid rgba(234,179,8,0.15)' }}>
                   <p className="text-yellow-400 text-xs font-bold mb-1">Hint {i + 1}</p>

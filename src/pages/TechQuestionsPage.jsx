@@ -1666,7 +1666,7 @@ function UpgradeCTA({ count, type, subject }) {
             : 'Full access to real-world scenario questions from Google, Amazon, Netflix, Apple with detailed technical explanations.'
           }
         </p>
-        <Link to="/pricing"
+        <Link to="/dashboard/pricing"
           className="inline-flex items-center gap-2 font-black px-8 py-3.5 rounded-2xl text-sm transition-all hover:scale-105"
           style={{ backgroundColor:'#f59e0b',color:'#000' }}>
           <Crown size={15}/> Upgrade to Pro — ₹499/month

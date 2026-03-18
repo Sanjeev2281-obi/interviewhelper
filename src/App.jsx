@@ -19,6 +19,8 @@ import AppLayout from './components/layout/AppLayout'
 import SystemDesignPage from './pages/Systemdesignpage'
 import TechQuestionsPage from './pages/TechQuestionsPage'
 import DiscussionPage from './pages/DiscussionPage'
+import ScrollToTop from './components/layout/ScrollToTop'
+import BeginnerDSAPage from './pages/Beginnerdsapage'
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, loading } = useAuth()
   if (loading) return (
@@ -41,6 +43,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+       <ScrollToTop /> 
         <Toaster
           position="top-right"
           toastOptions={{
@@ -63,7 +66,9 @@ export default function App() {
 
           {/* Protected dashboard routes */}
           <Route path="/dashboard" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+         
             <Route index element={<DashboardPage />} />
+             <Route path="beginner" element={<BeginnerDSAPage />} />
             <Route path="system-design" element={<SystemDesignPage />} />
             <Route path="problems" element={<ProblemsPage />} />
             <Route path="problems/:id" element={<ProblemDetailPage />} />

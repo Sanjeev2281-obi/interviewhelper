@@ -6,7 +6,7 @@ import {
   Zap, CheckCircle, ArrowRight, BookOpen, Code2,
   Server, Layers, Database, Globe
 } from 'lucide-react'
-
+import { PROBLEMS } from '../services/Problemsdata'
 // ── Company logos as SVG ───────────────────────────────────────
 const CompanyLogo = ({ name, size = 32 }) => {
   const logos = {
@@ -71,1122 +71,9 @@ const CompanyLogo = ({ name, size = 32 }) => {
 }
 
 // ── System Design Problems ─────────────────────────────────────
-const PROBLEMS = [
-  // FREE
-  {
-    id: 1,
-    type: 'HLD',
-    title: 'Design URL Shortener',
-    subtitle: 'Like bit.ly or TinyURL',
-    difficulty: 'Medium',
-    companies: ['Google', 'Amazon', 'Microsoft'],
-    tags: ['Hashing', 'Database', 'Caching', 'REST API'],
-    duration: '45 mins',
-    free: true,
-    description: 'Design a system that takes a long URL and returns a short URL. Must handle millions of redirects per day.',
-    keyComponents: ['API Gateway', 'URL Hash Generator', 'Key-Value Store', 'Cache Layer', 'Analytics Service'],
-    requirements: {
-      functional: ['Shorten URL', 'Redirect to original', 'Custom aliases', 'URL expiry', 'Analytics'],
-      nonFunctional: ['100M URLs/day', '10:1 read/write ratio', '< 10ms redirect latency', '99.9% uptime'],
-    },
-    approach: `
-1. **API Design** — POST /shorten → returns short URL, GET /{shortCode} → 302 redirect
-2. **Hash Generation** — Use MD5/SHA256, take first 7 chars, handle collisions with counter
-3. **Storage** — NoSQL (Cassandra/DynamoDB) for key-value: shortCode → longURL
-4. **Cache** — Redis cache for hot URLs (80% reads from cache)
-5. **Scale** — Load balancer → App servers → Cache → DB
-    `,
-    resources: [
-      { label: 'Grokking SD — URL Shortener', url: 'https://www.educative.io/courses/grokking-the-system-design-interview/m2ygV4E81AR' },
-      { label: 'YouTube: Gaurav Sen', url: 'https://www.youtube.com/watch?v=fMZMm_0ZhK4' },
-    ],
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Free whiteboard for system diagrams' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Professional architecture diagrams' },
-      { label: 'Google Docs', url: 'https://docs.google.com/', icon: '📄', desc: 'Write your design document' },
-    ],
-  },
 
-  // PRO PROBLEMS
-  {
-    id: 2,
-    type: 'HLD',
-    title: 'Design Netflix',
-    subtitle: 'Video streaming at 200M+ users',
-    difficulty: 'Hard',
-    companies: ['Netflix', 'Amazon', 'Google'],
-    tags: ['CDN', 'Video Encoding', 'Microservices', 'Streaming'],
-    duration: '60 mins',
-    free: false,
-    description: 'Design a video streaming platform that serves 200 million users globally with low latency.',
-    keyComponents: ['CDN', 'Video Encoder', 'Recommendation Engine', 'Search Service', 'Payment Service'],
-    requirements: {
-      functional: ['Upload & stream videos', 'Search content', 'User recommendations', 'Multiple resolutions', 'Offline download'],
-      nonFunctional: ['200M users', 'Global low latency', '99.99% uptime', 'Adaptive bitrate streaming'],
-    },
-    approach: `
-1. **Video Upload Pipeline** — S3 → Transcoder → Multiple resolutions (4K, 1080p, 720p, 480p)
-2. **CDN** — AWS CloudFront/Akamai — serve videos from edge nodes closest to user
-3. **Adaptive Streaming** — DASH/HLS protocol, client switches quality based on bandwidth
-4. **Recommendation** — Apache Kafka for events → ML pipeline → personalized feed
-5. **Database** — User data (MySQL), Content metadata (Cassandra), Watch history (DynamoDB)
-    `,
-    resources: [
-      { label: 'Netflix Tech Blog', url: 'https://netflixtechblog.com/' },
-      { label: 'System Design Interview — Netflix', url: 'https://www.youtube.com/watch?v=psQzyFfsUGU' },
-    ],
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Free whiteboard for system diagrams' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Professional architecture diagrams' },
-    ],
-  },
-  {
-    id: 3,
-    type: 'LLD',
-    title: 'Design Parking Lot System',
-    subtitle: 'OOP + Design Patterns',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Microsoft', 'Apple'],
-    tags: ['OOP', 'Design Patterns', 'Java', 'Clean Code'],
-    duration: '45 mins',
-    free: false,
-    description: 'Design a parking lot system with multiple floors, different vehicle types, and automated ticketing.',
-    keyComponents: ['ParkingLot', 'ParkingFloor', 'ParkingSpot', 'Vehicle', 'Ticket', 'Payment'],
-    requirements: {
-      functional: ['Park vehicle', 'Exit vehicle', 'Calculate charges', 'Find nearest spot', 'Display board'],
-      nonFunctional: ['Thread-safe for concurrent entries', 'Support 4 vehicle types', 'Extensible design'],
-    },
-    approach: `
-1. **Classes** — ParkingLot (Singleton), ParkingFloor[], ParkingSpot, Vehicle (Abstract), Ticket
-2. **Vehicle Types** — Motorcycle, Car, Bus, ElectricVehicle (inherits Vehicle)
-3. **Spot Types** — Compact, Large, Handicapped, ElectricSpot
-4. **Strategy Pattern** — PricingStrategy for different vehicle/time combinations
-5. **Observer Pattern** — DisplayBoard updates when spots change
-    `,
-    resources: [
-      { label: 'Grokking OOD — Parking Lot', url: 'https://github.com/tssovi/grokking-the-object-oriented-design-interview' },
-      { label: 'LeetCode Discuss', url: 'https://leetcode.com/discuss/interview-question/124565/' },
-    ],
-    solveOptions: [
-      { label: 'Code on LeetCode', url: 'https://leetcode.com/', icon: '💻', desc: 'Write actual OOP code' },
-      { label: 'Design on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Draw class diagrams' },
-      { label: 'Use draw.io for UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'UML class diagrams' },
-    ],
-  },
-  {
-    id: 4,
-    type: 'HLD',
-    title: 'Design WhatsApp',
-    subtitle: 'Real-time messaging at 2B users',
-    difficulty: 'Hard',
-    companies: ['Meta', 'Amazon', 'Google'],
-    tags: ['WebSockets', 'Message Queue', 'End-to-End Encryption', 'Push Notifications'],
-    duration: '60 mins',
-    free: false,
-    description: 'Design a real-time chat application serving 2 billion users with end-to-end encryption.',
-    keyComponents: ['Chat Service', 'Presence Service', 'Notification Service', 'Media Service', 'Group Service'],
-    requirements: {
-      functional: ['1:1 messaging', 'Group chats', 'Media sharing', 'Read receipts', 'Voice/Video calls'],
-      nonFunctional: ['2B users', 'Sub-100ms message delivery', 'E2E encryption', 'Offline message storage'],
-    },
-    approach: `
-1. **Connection** — WebSocket persistent connections for real-time delivery
-2. **Message Flow** — Client → Chat Server → Message Queue (Kafka) → Recipient Server → Client
-3. **Storage** — HBase for messages (time-series), Cassandra for user/group data
-4. **Presence** — Redis pub/sub for online status, heartbeat every 5s
-5. **E2E Encryption** — Signal Protocol, keys stored only on devices
-    `,
-    resources: [
-      { label: 'WhatsApp Architecture', url: 'https://highscalability.com/blog/2014/2/26/the-whatsapp-architecture-facebook-bought-for-19-billion.html' },
-      { label: 'System Design: Chat App', url: 'https://www.youtube.com/watch?v=vvhC64hQZMk' },
-    ],
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Free whiteboard' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Architecture diagrams' },
-    ],
-  },
-  {
-    id: 5,
-    type: 'LLD',
-    title: 'Design Amazon Locker',
-    subtitle: 'Package delivery & pickup system',
-    difficulty: 'Medium',
-    companies: ['Amazon'],
-    tags: ['OOP', 'State Machine', 'Scheduling', 'Notifications'],
-    duration: '40 mins',
-    free: false,
-    description: 'Design the Amazon Locker system where customers can pick up packages from automated lockers.',
-    keyComponents: ['LockerSystem', 'Locker', 'Package', 'Customer', 'OTPService', 'NotificationService'],
-    requirements: {
-      functional: ['Assign locker to package', 'Generate OTP', 'Unlock locker', 'Handle expiry', 'Notify customer'],
-      nonFunctional: ['Thread-safe concurrent access', 'Multiple locker sizes', 'Audit trail'],
-    },
-    approach: `
-1. **Locker States** — Available → Reserved → Locked → Expired (State Pattern)
-2. **Size Matching** — Small/Medium/Large lockers matched to package dimensions
-3. **OTP Flow** — Package arrives → assign locker → generate 6-digit OTP → SMS customer
-4. **Expiry** — Scheduler checks for expired packages (3 days), auto-release locker
-5. **Singleton** — LockerSystem as singleton, thread-safe with synchronized blocks
-    `,
-    resources: [
-      { label: 'Amazon Locker LLD', url: 'https://github.com/tssovi/grokking-the-object-oriented-design-interview' },
-    ],
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Write and run Java/Python code' },
-      { label: 'Design on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Draw class diagrams' },
-    ],
-  },
-  {
-    id: 6,
-    type: 'HLD',
-    title: 'Design Google Search',
-    subtitle: 'Index the entire web',
-    difficulty: 'Hard',
-    companies: ['Google'],
-    tags: ['Web Crawler', 'Inverted Index', 'PageRank', 'Distributed Systems'],
-    duration: '75 mins',
-    free: false,
-    description: 'Design a web search engine that crawls, indexes, and ranks billions of web pages.',
-    keyComponents: ['Web Crawler', 'Document Store', 'Inverted Index', 'Ranking Engine', 'Query Processor'],
-    requirements: {
-      functional: ['Crawl web pages', 'Index content', 'Search queries', 'Rank results', 'Handle updates'],
-      nonFunctional: ['Crawl 10B pages', 'Index freshness', 'Sub-500ms search', 'Spell correction'],
-    },
-    approach: `
-1. **Crawler** — Distributed crawlers with frontier queue (BFS), politeness delay, robots.txt
-2. **Storage** — BigTable for raw pages, GFS for large files
-3. **Inverted Index** — word → [doc1:pos, doc2:pos, ...] for fast lookup
-4. **PageRank** — Link graph analysis, iterative MapReduce computation
-5. **Query Processing** — Tokenize → lookup inverted index → score → rank → return top-k
-    `,
-    resources: [
-      { label: 'Google BigTable Paper', url: 'https://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf' },
-      { label: 'System Design: Search Engine', url: 'https://www.youtube.com/watch?v=CeGtqouT8eA' },
-    ],
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'System architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Detailed component diagrams' },
-    ],
-  },
- {
-    id: 7,
-    type: 'LLD',
-    title: 'Design Chess Game',
-    subtitle: 'Complete OOP chess implementation',
-    difficulty: 'Hard',
-    companies: ['Microsoft', 'Apple', 'Amazon'],
-    tags: ['OOP', 'Strategy Pattern', 'Board Game', 'State Machine'],
-    duration: '50 mins',
-    free: false,
-    description: 'Design a chess game with all pieces, valid moves, check/checkmate detection, and game state management.',
-    keyComponents: ['Board', 'Piece (abstract)', 'Player', 'Game', 'MoveValidator', 'GameHistory'],
-    requirements: {
-      functional: ['All piece movements', 'Check/Checkmate detection', 'Castling/En passant', 'Move history', 'Save/Load game'],
-      nonFunctional: ['Extensible for new game modes', 'Clean separation of concerns'],
-    },
-    approach: `
-1. **Pieces** — Abstract Piece class → King, Queen, Rook, Bishop, Knight, Pawn
-2. **Move Validation** — Each piece implements getValidMoves() with board context
-3. **Check Detection** — After each move, check if King is under attack
-4. **Command Pattern** — Each move is a command object (enables undo/redo)
-5. **Observer Pattern** — GameEventListener for UI updates (check, checkmate, draw)
-    `,
-    resources: [
-      { label: 'Chess LLD GitHub', url: 'https://github.com/tssovi/grokking-the-object-oriented-design-interview/blob/master/object-oriented-design-case-studies/design-chess.md' },
-    ],
-    solveOptions: [
-      { label: 'Code on LeetCode', url: 'https://leetcode.com/', icon: '💻', desc: 'Write OOP implementation' },
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '🔧', desc: 'Run and test your code' },
-      { label: 'Design UML on draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Class diagram' },
-    ],
-  },
-  {
-    id: 8,
-    type: 'HLD',
-    title: 'Design Uber / Ride Sharing',
-    subtitle: 'Real-time matching at global scale',
-    difficulty: 'Hard',
-    companies: ['Uber', 'Amazon', 'Google'],
-    tags: ['Geospatial', 'Real-time Matching', 'WebSockets', 'Surge Pricing'],
-    duration: '60 mins',
-    free: false,
-    description: 'Design a ride-sharing platform that matches riders with drivers in real-time across cities.',
-    keyComponents: ['Location Service', 'Matching Engine', 'Trip Service', 'Payment Service', 'Notification Service'],
-    requirements: {
-      functional: ['Request ride', 'Match driver', 'Real-time tracking', 'Fare calculation', 'Ratings'],
-      nonFunctional: ['< 1min match time', '1M concurrent users', 'Geospatial queries', 'Surge pricing'],
-    },
-    approach: `
-1. **Location** — Drivers send GPS every 5s, store in Redis with geospatial index (GEOSEARCH)
-2. **Matching** — Find drivers within radius → rank by distance + rating → offer to nearest
-3. **WebSockets** — Persistent connections for real-time driver location on map
-4. **Trip State** — State machine: REQUESTED → ACCEPTED → ARRIVED → IN_PROGRESS → COMPLETED
-5. **Surge Pricing** — Lambda architecture: demand/supply ratio per geohash zone
-    `,
-    resources: [
-      { label: 'Uber Engineering Blog', url: 'https://eng.uber.com/' },
-      { label: 'System Design: Uber', url: 'https://www.youtube.com/watch?v=umWABit-wbk' },
-    ],
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'System architecture' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagrams' },
-    ],
-  },
-  {
-    id: 9,
-    type: 'LLD',
-    title: 'Design BookMyShow',
-    subtitle: 'Movie ticket booking system',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Microsoft', 'Google'],
-    tags: ['OOP', 'Concurrency', 'Booking', 'Seat Selection'],
-    duration: '45 mins',
-    free: false,
-    description: 'Design a movie ticket booking system handling concurrent seat selection across multiple cities.',
-    keyComponents: ['Theater', 'Show', 'Seat', 'Booking', 'Payment', 'Notification'],
-    requirements: {
-      functional: ['Search movies/shows', 'Select seats', 'Book tickets', 'Cancellation', 'Seat lock (5 min)'],
-      nonFunctional: ['Concurrent seat locking', 'No double booking', 'Multiple cities/screens'],
-    },
-    approach: `
-1. **Seat Locking** — Optimistic locking with version number, 5-min expiry lock via Redis
-2. **Concurrency** — Distributed lock (Redisson) for seat selection
-3. **Classes** — Theater → Screen → Show → Seat → Booking → Payment
-4. **State** — Seat: AVAILABLE → LOCKED → BOOKED / Booking: INITIATED → CONFIRMED → CANCELLED
-5. **Notification** — Event-driven: BookingConfirmed → Email/SMS via Kafka consumer
-    `,
-    resources: [
-      { label: 'BookMyShow LLD', url: 'https://github.com/tssovi/grokking-the-object-oriented-design-interview' },
-    ],
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Write Java/Python code' },
-      { label: 'Design on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Draw class diagrams' },
-    ],
-  },
-  {
-    id: 10,
-    type: 'HLD',
-    title: 'Design Twitter / X',
-    subtitle: 'Social media at 300M users',
-    difficulty: 'Hard',
-    companies: ['Twitter', 'Meta', 'Google'],
-    tags: ['Fan-out', 'Timeline', 'Trending', 'Notifications'],
-    duration: '60 mins',
-    free: false,
-    description: 'Design a social media platform with tweet posting, following, timeline generation, and trending topics.',
-    keyComponents: ['Tweet Service', 'Timeline Service', 'Follow Service', 'Notification Service', 'Trend Engine'],
-    requirements: {
-      functional: ['Post tweet', 'Follow/unfollow', 'Timeline feed', 'Search tweets', 'Trending hashtags'],
-      nonFunctional: ['300M users', '500M tweets/day', 'Timeline in < 200ms', 'Real-time trends'],
-    },
-    approach: `
-1. **Tweet Storage** — Cassandra (time-series), media in S3 + CDN
-2. **Fan-out** — On write (push model) for regular users, on read (pull) for celebrities
-3. **Timeline** — Redis sorted set per user: timeline:{userId} → [tweetIds by timestamp]
-4. **Trending** — Apache Storm/Flink for real-time hashtag counting with sliding window
-5. **Search** — Elasticsearch for full-text tweet search
-    `,
-    resources: [
-      { label: 'Twitter Engineering Blog', url: 'https://blog.twitter.com/engineering' },
-      { label: 'System Design: Twitter', url: 'https://www.youtube.com/watch?v=wYk0xPP_P_8' },
-    ],
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Detailed design' },
-    ],
-  },
-  
-{
-    id: 11,
-    type: 'HLD',
-    title: 'Design Instagram',
-    subtitle: 'Photo sharing at 1B users',
-    difficulty: 'Hard',
-    companies: ['Meta', 'Amazon'],
-    tags: ['CDN', 'Image Processing', 'Feed Generation'],
-    duration: '60 mins',
-    free: false,
 
-    description: 'Design a social media platform for sharing photos and videos with feed, stories, likes, comments, and follow system.',
-
-    keyComponents: ['Feed Service', 'Media Service', 'Notification Service', 'User Service', 'Comment Service'],
-
-    requirements: {
-      functional: ['Upload photos/videos', 'Like/Comment', 'Stories', 'Follow/Unfollow', 'Search users'],
-      nonFunctional: ['Scale to 1B users', 'Low latency feed (<200ms)', 'Highly available media storage', 'Real-time notifications'],
-    },
-
-    approach: `
-1. **Media Upload** → Store images/videos in object storage (S3) with metadata in NoSQL.
-2. **Feed Generation** → Fan-out/fan-in approach, precompute feed for active users, use Redis for caching.
-3. **Stories** → Short-lived media, stored separately with TTL.
-4. **Notifications** → Kafka for events → push notifications via FCM/APNS.
-5. **Database** → Users (SQL), Media Metadata (NoSQL), Feed cache (Redis/ElasticCache)
-6. **CDN** → Use CDN to serve images/videos efficiently globally.
-`,
-
-    resources: [
-      { label: 'Instagram Engineering Blog', url: 'https://instagram-engineering.com/' },
-      { label: 'System Design: Instagram', url: 'https://www.youtube.com/watch?v=CEe9FJw1q2I' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Draw architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Detailed design diagram' },
-    ],
-  },
-  {
-    id: 12,
-    type: 'LLD',
-    title: 'Design ATM Machine',
-    subtitle: 'Banking OOP design',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Microsoft'],
-    tags: ['OOP', 'State Machine', 'Security'],
-    duration: '40 mins',
-    free: false,
-
-    description: 'Design an ATM machine system supporting multiple accounts, PIN authentication, cash withdrawal/deposit, and transaction history.',
-
-    keyComponents: ['ATM', 'BankAccount', 'Card', 'Transaction', 'CashDispenser', 'BankServer'],
-
-    requirements: {
-      functional: ['Validate PIN', 'Withdraw/Deposit cash', 'Check balance', 'Print transaction receipt', 'Maintain transaction history'],
-      nonFunctional: ['Secure PIN storage', 'Handle multiple ATMs concurrently', 'Extensible for new transaction types'],
-    },
-
-    approach: `
-1. **Classes** → ATM, BankAccount, Card, Transaction.
-2. **Authentication** → Validate card + PIN, connect to BankServer.
-3. **Transaction Handling** → Withdraw/Deposit using strategy pattern.
-4. **State Machine** → ATM: Idle → Authenticated → Transaction → Idle.
-5. **Concurrency** → Handle multiple ATM requests with locks on accounts.
-6. **Logging** → Maintain transaction logs for audit.
-`,
-
-    resources: [
-      { label: 'ATM System Design', url: 'https://leetcode.com/discuss/interview-question/124565/' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement classes and logic' },
-      { label: 'Design UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Draw class/state diagrams' },
-    ],
-  },
-  {
-    id: 13,
-    type: 'HLD',
-    title: 'Design Dropbox',
-    subtitle: 'Cloud file storage and sync',
-    difficulty: 'Hard',
-    companies: ['Amazon', 'Microsoft', 'Apple'],
-    tags: ['File Sync', 'Block Storage', 'Conflict Resolution'],
-    duration: '60 mins',
-    free: false,
-
-    description: 'Design a cloud file storage system that syncs files across devices, handles versioning, and resolves conflicts.',
-
-    keyComponents: ['FileService', 'SyncService', 'MetadataService', 'ConflictResolver', 'StorageService'],
-
-    requirements: {
-      functional: ['Upload/Download files', 'Sync across devices', 'Handle conflicts', 'Share files with users', 'Versioning'],
-      nonFunctional: ['Low latency sync', 'Support millions of files', 'Consistent storage', 'High availability'],
-    },
-
-    approach: `
-1. **File Upload** → Split files into blocks, store in distributed storage.
-2. **Sync** → Client sends changes → SyncService → propagate to other devices.
-3. **Metadata** → Keep file metadata (size, version, last modified) in DB.
-4. **Conflict Resolution** → Detect concurrent edits, merge or alert user.
-5. **Versioning** → Maintain historical versions of files.
-6. **Caching & CDN** → Serve frequently accessed files faster.
-`,
-
-    resources: [
-      { label: 'Dropbox Architecture', url: 'https://dropbox.tech/' },
-      { label: 'System Design: Dropbox', url: 'https://www.youtube.com/watch?v=iyhJ3lVYp1Q' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'System diagrams' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Detailed component diagrams' },
-    ],
-  },
-  {
-    id: 14,
-    type: 'LLD',
-    title: 'Design Snake & Ladder',
-    subtitle: 'Classic board game OOP',
-    difficulty: 'Easy',
-    companies: ['Amazon', 'Google'],
-    tags: ['OOP', 'Game Design', 'Clean Code'],
-    duration: '30 mins',
-    free: false,
-
-    description: 'Design the classic Snake & Ladder board game with multiple players, dice rolls, snakes and ladders, and win condition.',
-
-    keyComponents: ['Board', 'Player', 'Dice', 'Snake', 'Ladder', 'Game'],
-
-    requirements: {
-      functional: ['Roll dice', 'Move player', 'Climb ladders', 'Slide down snakes', 'Detect winner'],
-      nonFunctional: ['Extensible for multiple boards', 'Clean separation of concerns', 'Testable logic'],
-    },
-
-    approach: `
-1. **Classes** → Board, Player, Dice, Snake, Ladder, Game.
-2. **Dice Roll** → Random number generator.
-3. **Movement** → Player moves based on dice roll, check for snakes/ladders.
-4. **Game Loop** → Players take turns until one reaches last cell.
-5. **Win Detection** → Check if player position >= 100.
-`,
-
-    resources: [
-      { label: 'Snake & Ladder LLD', url: 'https://leetcode.com/discuss/interview-question/124565/' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement classes and game logic' },
-      { label: 'Design UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Draw class diagram' },
-    ],
-  },
-
-{
-    id: 15,
-    type: 'HLD',
-    title: 'Design YouTube',
-    subtitle: 'Video platform at 2B users',
-    difficulty: 'Hard',
-    companies: ['Google', 'Amazon', 'Netflix'],
-    tags: ['Video CDN', 'Encoding', 'Recommendations'],
-    duration: '75 mins',
-    free: false,
-
-    description: 'Design a video streaming platform similar to YouTube that supports uploads, streaming, recommendations, and search at massive scale.',
-
-    keyComponents: ['Upload Service', 'Streaming Service', 'Recommendation Engine', 'Search Service', 'CDN'],
-
-    requirements: {
-      functional: ['Upload videos', 'Stream videos in multiple resolutions', 'Search videos', 'Recommend videos', 'Comment & Like system'],
-      nonFunctional: ['Scale to 2B users', 'Low latency streaming (<200ms)', 'Highly available storage', 'Adaptive bitrate streaming'],
-    },
-
-    approach: `
-1. **Upload Pipeline** → Client → Upload Server → Transcoder → Store in object storage.
-2. **Streaming** → Serve via CDN with adaptive bitrate streaming (HLS/DASH).
-3. **Recommendation** → Event collection → ML pipeline → Personalized feed.
-4. **Search** → Index video metadata → Full-text search (Elasticsearch).
-5. **Database** → User DB (SQL), Video Metadata (NoSQL), Analytics logs (BigQuery/S3).
-`,
-
-    resources: [
-      { label: 'YouTube Engineering Blog', url: 'https://www.youtube.com/engineering/' },
-      { label: 'System Design: YouTube', url: 'https://www.youtube.com/watch?v=QE0_3vYtEFA' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagram' },
-    ],
-  },
-  {
-    id: 16,
-    type: 'LLD',
-    title: 'Design Elevator System',
-    subtitle: 'Multi-elevator scheduling',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Microsoft', 'Apple'],
-    tags: ['Scheduling', 'OOP', 'State Machine'],
-    duration: '40 mins',
-    free: false,
-
-    description: 'Design a building elevator system that handles multiple elevators, floor requests, and scheduling efficiently.',
-
-    keyComponents: ['Elevator', 'ElevatorController', 'FloorRequest', 'Button', 'Scheduler'],
-
-    requirements: {
-      functional: ['Call elevator', 'Move elevator', 'Handle multiple requests', 'Stop at floors', 'Emergency handling'],
-      nonFunctional: ['Minimize wait time', 'Concurrent requests', 'Extensible to more elevators'],
-    },
-
-    approach: `
-1. **Classes** → Elevator, ElevatorController, FloorRequest, Scheduler.
-2. **Scheduling** → Assign nearest elevator to request, optimize movement.
-3. **State Machine** → Elevator: IDLE → MOVING_UP/DOWN → DOOR_OPEN → IDLE.
-4. **Concurrency** → Multiple requests handled simultaneously.
-5. **Observer Pattern** → Floor panels updated when elevator arrives.
-`,
-
-    resources: [
-      { label: 'Elevator System Design', url: 'https://leetcode.com/discuss/interview-question/124565/' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement classes and logic' },
-      { label: 'Design UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Draw class diagram' },
-    ],
-  },
-  {
-    id: 17,
-    type: 'HLD',
-    title: 'Design Zoom / Video Call',
-    subtitle: 'Real-time video conferencing',
-    difficulty: 'Hard',
-    companies: ['Google', 'Amazon', 'Apple'],
-    tags: ['WebRTC', 'TURN/STUN', 'Recording'],
-    duration: '60 mins',
-    free: false,
-
-    description: 'Design a video conferencing platform supporting multi-party calls, screen sharing, recording, and chat.',
-
-    keyComponents: ['Signaling Service', 'Media Service', 'Chat Service', 'Recording Service', 'Presence Service'],
-
-    requirements: {
-      functional: ['1:1 & group video calls', 'Screen sharing', 'Recording sessions', 'Chat during call', 'Mute/unmute'],
-      nonFunctional: ['Low latency video/audio', 'Scale to millions of concurrent calls', 'Reliable connectivity across NATs'],
-    },
-
-    approach: `
-1. **Signaling** → Establish WebRTC connections between clients.
-2. **Media Routing** → Use SFU (Selective Forwarding Unit) to forward streams efficiently.
-3. **TURN/STUN** → Handle NAT traversal.
-4. **Recording** → Server-side or client-side recording storage.
-5. **Database** → Users, Meeting metadata, Call logs.
-`,
-
-    resources: [
-      { label: 'Zoom Engineering Blog', url: 'https://blog.zoom.us/' },
-      { label: 'System Design: Zoom', url: 'https://www.youtube.com/watch?v=Y5Z5z08ajO0' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagrams' },
-    ],
-  },
-
-  {
-    id: 18,
-    type: 'LLD',
-    title: 'Design Library System',
-    subtitle: 'Book inventory & lending',
-    difficulty: 'Easy',
-    companies: ['Amazon', 'Microsoft'],
-    tags: ['OOP', 'CRUD', 'Search'],
-    duration: '35 mins',
-    free: false,
-
-    description: 'Design a library management system for tracking books, members, borrowing, and returns.',
-
-    keyComponents: ['Book', 'Member', 'Loan', 'Catalog', 'NotificationService'],
-
-    requirements: {
-      functional: ['Add/remove books', 'Search books', 'Borrow/return books', 'Notify overdue', 'Maintain inventory'],
-      nonFunctional: ['Concurrent borrowing', 'Data consistency', 'Extensible for new features'],
-    },
-
-    approach: `
-1. **Classes** → Book, Member, Loan, Catalog.
-2. **Borrow/Return** → Check availability, update status.
-3. **Search** → Index books by title/author/genre.
-4. **Notifications** → Email/SMS reminders for overdue books.
-5. **Concurrency** → Lock book record during borrow to avoid conflicts.
-`,
-
-    resources: [
-      { label: 'Library System Design', url: 'https://leetcode.com/discuss/interview-question/124565/' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement classes and logic' },
-      { label: 'Design UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Draw class diagram' },
-    ],
-  },
-
-  {
-    id: 19,
-    type: 'HLD',
-    title: 'Design Payment Gateway',
-    subtitle: 'Like Razorpay or Stripe',
-    difficulty: 'Hard',
-    companies: ['Amazon', 'Google'],
-    tags: ['Transaction', 'ACID', 'Security', 'Idempotency'],
-    duration: '60 mins',
-    free: false,
-
-    description: 'Design a payment processing system that handles transactions securely, supports multiple payment methods, and ensures reliability.',
-
-    keyComponents: ['Transaction Service', 'Payment Processor', 'Fraud Detection', 'Ledger Service', 'Notification Service'],
-
-    requirements: {
-      functional: ['Process payments', 'Refunds', 'Transaction history', 'Multi-currency support', 'Webhook notifications'],
-      nonFunctional: ['High availability', 'Idempotent requests', 'Secure (PCI DSS compliance)', 'ACID transactions'],
-    },
-
-    approach: `
-1. **Transaction Flow** → Client → Gateway → Payment Processor → Bank → Callback.
-2. **Ledger Service** → Maintain accurate balances and transaction history.
-3. **Idempotency** → Ensure retries do not duplicate transactions.
-4. **Fraud Detection** → Real-time monitoring of suspicious transactions.
-5. **Database** → Transaction DB (SQL), Metadata (NoSQL), Logs.
-`,
-
-    resources: [
-      { label: 'Payment Gateway Architecture', url: 'https://stripe.com/docs/architecture' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagram' },
-    ],
-  },
-{
-    id: 20,
-    type: 'LLD',
-    title: 'Design Vending Machine',
-    subtitle: 'Automated product dispensing',
-    difficulty: 'Easy',
-    companies: ['Amazon', 'Apple'],
-    tags: ['State Machine', 'OOP', 'Inventory'],
-    duration: '30 mins',
-    free: false,
-
-    description: 'Design a vending machine that dispenses products, handles payments, and manages inventory.',
-
-    keyComponents: ['VendingMachine', 'Product', 'PaymentModule', 'Inventory', 'Display'],
-
-    requirements: {
-      functional: ['Insert money', 'Select product', 'Dispense product', 'Return change', 'Restock inventory'],
-      nonFunctional: ['Handle multiple transactions', 'Extensible for new products', 'Maintain inventory consistency'],
-    },
-
-    approach: `
-1. **Classes** → VendingMachine, Product, Inventory, PaymentModule.
-2. **State Machine** → IDLE → WAITING_FOR_SELECTION → DISPENSE → IDLE.
-3. **Payment** → Accept coins/bills/cards, calculate change.
-4. **Inventory** → Check stock before dispensing.
-5. **Observer Pattern** → Display updated after each action.
-`,
-
-    resources: [
-      { label: 'Vending Machine LLD', url: 'https://leetcode.com/discuss/interview-question/124565/' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement logic in Java/Python' },
-      { label: 'Design UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Draw class diagram' },
-    ],
-  },
-  {
-    id: 21,
-    type: 'HLD',
-    title: 'Design Airbnb',
-    subtitle: 'Home rental marketplace',
-    difficulty: 'Hard',
-    companies: ['Amazon', 'Google'],
-    tags: ['Search', 'Booking', 'Payments', 'Reviews'],
-    duration: '60 mins',
-    free: false,
-
-    description: 'Design a platform where users can list homes and book stays with payment and reviews.',
-
-    keyComponents: ['Listing Service', 'Search Service', 'Booking Service', 'Payment Service', 'Review Service'],
-
-    requirements: {
-      functional: ['List property', 'Search properties', 'Book stay', 'Process payment', 'Add reviews'],
-      nonFunctional: ['Scale to millions of users', 'Low latency search', 'Highly available booking system'],
-    },
-
-    approach: `
-1. **Search & Listing** → Full-text search + filters (location, price, amenities).
-2. **Booking Flow** → Check availability → lock dates → payment → confirmation.
-3. **Payment** → Integration with payment gateway.
-4. **Reviews & Ratings** → Store per property/user, aggregate rating.
-5. **Database** → SQL for bookings, NoSQL for listings & reviews.
-`,
-
-    resources: [
-      { label: 'Airbnb System Design', url: 'https://www.youtube.com/watch?v=F5wFw06qZHE' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagram' },
-    ],
-  },
-  {
-    id: 22,
-    type: 'LLD',
-    title: 'Design Rate Limiter',
-    subtitle: 'API throttling system',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Google', 'Netflix'],
-    tags: ['Token Bucket', 'Sliding Window', 'Redis'],
-    duration: '40 mins',
-    free: false,
-
-    description: 'Design a system to limit API requests per user or service using different throttling algorithms.',
-
-    keyComponents: ['RateLimiter', 'TokenBucket', 'SlidingWindow', 'RedisCache', 'API Gateway'],
-
-    requirements: {
-      functional: ['Limit requests per second/minute', 'Return 429 when limit exceeded', 'Reset limits periodically'],
-      nonFunctional: ['Low latency', 'Support distributed deployment', 'Consistent rate enforcement'],
-    },
-
-    approach: `
-1. **Token Bucket** → Maintain tokens per user; refill at fixed rate.
-2. **Sliding Window** → Track requests in time window.
-3. **Distributed Cache** → Use Redis to store counters across nodes.
-4. **API Gateway Integration** → Intercept requests, check limits.
-5. **Extensibility** → Support multiple algorithms per endpoint.
-`,
-
-    resources: [
-      { label: 'Rate Limiter Design', url: 'https://redis.com/solutions/rate-limiter/' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement rate limiter algorithms' },
-      { label: 'Draw UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Class/flow diagram' },
-    ],
-  },
-  {
-    id: 23,
-    type: 'HLD',
-    title: 'Design Notification System',
-    subtitle: 'Push, SMS, Email at scale',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Meta', 'Google'],
-    tags: ['Push Notifications', 'Kafka', 'Templates'],
-    duration: '45 mins',
-    free: false,
-
-    description: 'Design a system that can send notifications via push, email, and SMS to millions of users reliably.',
-
-    keyComponents: ['Notification Service', 'Message Queue', 'Template Engine', 'Delivery Service', 'Scheduler'],
-
-    requirements: {
-      functional: ['Send notifications', 'Support multiple channels', 'Retry failed messages', 'Schedule notifications'],
-      nonFunctional: ['Scale to millions', 'High availability', 'Low latency delivery'],
-    },
-
-    approach: `
-1. **Queue** → Use Kafka/RabbitMQ for notification events.
-2. **Channel Service** → Push, SMS, Email handlers.
-3. **Template Engine** → Dynamic content per user.
-4. **Scheduler** → Delay/scheduled notifications.
-5. **Database** → Track delivery status, failures.
-`,
-
-    resources: [
-      { label: 'Notification System Design', url: 'https://highscalability.com/blog/2018/2/19/how-facebook-delivers-billions-of-notifications.html' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagram' },
-    ],
-  },
-  {
-    id: 24,
-    type: 'LLD',
-    title: 'Design Logger Framework',
-    subtitle: 'Logging library design',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Google', 'Microsoft'],
-    tags: ['Observer', 'Singleton', 'Strategy'],
-    duration: '35 mins',
-    free: false,
-
-    description: 'Design a logging framework that supports multiple log levels, appenders, and thread-safe operations.',
-
-    keyComponents: ['Logger', 'Appender', 'Formatter', 'LogLevel', 'Configuration'],
-
-    requirements: {
-      functional: ['Log messages', 'Support multiple levels', 'Custom output formats', 'Multiple appenders'],
-      nonFunctional: ['Thread-safe', 'Extensible', 'Minimal performance overhead'],
-    },
-
-    approach: `
-1. **Logger** → Singleton per module.
-2. **Appender** → Console/File/Remote.
-3. **Formatter** → Customizable message formats.
-4. **Observer Pattern** → Appenders listen to logger events.
-5. **Strategy Pattern** → Allow dynamic log formatting.
-`,
-
-    resources: [
-      { label: 'Logging Framework Design', url: 'https://martinfowler.com/articles/enterpriseLogging.html' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement logging classes' },
-      { label: 'Design UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Class diagram' },
-    ],
-  },
-  {
-    id: 25,
-    type: 'HLD',
-    title: 'Design Distributed Cache',
-    subtitle: 'Like Redis/Memcached',
-    difficulty: 'Hard',
-    companies: ['Amazon', 'Google', 'Netflix'],
-    tags: ['Consistent Hashing', 'Eviction', 'Replication'],
-    duration: '60 mins',
-    free: false,
-
-    description: 'Design a distributed caching system with replication, eviction policies, and fault tolerance.',
-
-    keyComponents: ['Cache Node', 'Consistent Hashing', 'Replication', 'Eviction Policy', 'Client Library'],
-
-    requirements: {
-      functional: ['Read/write cache', 'Replication for availability', 'Eviction for memory limit', 'Client API'],
-      nonFunctional: ['High throughput', 'Low latency', 'Fault-tolerant', 'Scalable horizontally'],
-    },
-
-    approach: `
-1. **Sharding** → Consistent hashing to map keys to nodes.
-2. **Replication** → Replicate data across multiple nodes.
-3. **Eviction** → LRU/LFU policies per node.
-4. **Client Library** → Handles node lookup and retries.
-5. **Failure Handling** → Detect node failures, reassign keys.
-`,
-
-    resources: [
-      { label: 'Redis Design', url: 'https://redis.io/topics/cluster-tutorial' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagram' },
-    ],
-  },
-  {
-    id: 26,
-    type: 'LLD',
-    title: 'Design Food Delivery App',
-    subtitle: 'Like Swiggy or Zomato',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Uber'],
-    tags: ['OOP', 'Order Management', 'Tracking'],
-    duration: '45 mins',
-    free: false,
-
-    description: 'Design a food delivery system with restaurants, orders, delivery partners, and real-time tracking.',
-
-    keyComponents: ['Restaurant', 'Menu', 'Order', 'DeliveryPartner', 'TrackingService'],
-
-    requirements: {
-      functional: ['Place order', 'Assign delivery partner', 'Track order', 'Cancel order', 'Payment integration'],
-      nonFunctional: ['Scale to many users', 'Real-time tracking', 'Low latency updates'],
-    },
-
-    approach: `
-1. **Order Flow** → User places order → assign delivery partner → deliver food.
-2. **Tracking** → GPS location updates, estimated time calculation.
-3. **Classes** → Order, Restaurant, DeliveryPartner, Menu.
-4. **Notification** → Notify user of status changes.
-5. **Concurrency** → Handle multiple simultaneous orders and deliveries.
-`,
-
-    resources: [
-      { label: 'Food Delivery System', url: 'https://www.youtube.com/watch?v=uz9TJXc8oiM' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement classes and logic' },
-      { label: 'Draw UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Class diagram' },
-    ],
-  },
-  {
-    id: 27,
-    type: 'HLD',
-    title: 'Design Stock Exchange',
-    subtitle: 'High-frequency trading platform',
-    difficulty: 'Hard',
-    companies: ['Amazon', 'Google', 'Apple'],
-    tags: ['Order Book', 'Matching Engine', 'Low Latency'],
-    duration: '75 mins',
-    free: false,
-
-    description: 'Design a platform for high-frequency trading with order matching, market data streaming, and risk management.',
-
-    keyComponents: ['Order Book', 'Matching Engine', 'Market Data Feed', 'Trade Execution', 'Risk Management'],
-
-    requirements: {
-      functional: ['Place/cancel orders', 'Match orders', 'Stream market data', 'Handle multiple instruments'],
-      nonFunctional: ['Low latency (<1ms), High throughput, Fault-tolerant, Scalable'],
-    },
-
-    approach: `
-1. **Order Book** → Maintain buy/sell orders in priority queues.
-2. **Matching Engine** → Match orders by price-time priority.
-3. **Market Data Feed** → Publish updates to subscribers.
-4. **Risk Checks** → Reject invalid/over-limit orders.
-5. **Database** → Persist trades and orders.
-`,
-
-    resources: [
-      { label: 'Stock Exchange System Design', url: 'https://www.youtube.com/watch?v=BRuM1l0M0Zc' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Architecture diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagram' },
-    ],
-  },
-  {
-    id: 28,
-    type: 'LLD',
-    title: 'Design Car Rental System',
-    subtitle: 'Vehicle booking & management',
-    difficulty: 'Medium',
-    companies: ['Amazon', 'Uber'],
-    tags: ['OOP', 'Booking', 'Availability'],
-    duration: '40 mins',
-    free: false,
-
-    description: 'Design a car rental system with vehicle inventory, booking, and customer management.',
-
-    keyComponents: ['Car', 'Customer', 'Booking', 'Payment', 'InventoryService'],
-
-    requirements: {
-      functional: ['Search cars', 'Book car', 'Cancel booking', 'Track availability'],
-      nonFunctional: ['Prevent double bookings', 'Low latency search', 'Extensible for more vehicles'],
-    },
-
-    approach: `
-1. **Classes** → Car, Customer, Booking, InventoryService.
-2. **Booking Flow** → Check availability → lock vehicle → confirm payment.
-3. **Concurrency** → Handle simultaneous bookings.
-4. **Observer Pattern** → Update availability to users.
-5. **Database** → Persist bookings and car inventory.
-`,
-
-    resources: [
-      { label: 'Car Rental System LLD', url: 'https://leetcode.com/discuss/interview-question/124565/' },
-    ],
-
-    solveOptions: [
-      { label: 'Code on Replit', url: 'https://replit.com/', icon: '💻', desc: 'Implement classes and logic' },
-      { label: 'Draw UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Class diagram' },
-    ],
-  },
-  {
-    id: 29,
-    type: 'HLD',
-    title: 'Design Google Maps',
-    subtitle: 'Navigation & routing at scale',
-    difficulty: 'Hard',
-    companies: ['Google', 'Uber', 'Apple'],
-    tags: ['Graph', 'Dijkstra', 'ETA', 'Traffic'],
-    duration: '75 mins',
-    free: false,
-
-    description: 'Design a navigation platform with real-time routing, traffic updates, and directions.',
-
-    keyComponents: ['Map Service', 'Routing Engine', 'Traffic Service', 'Search Service', 'ETA Calculator'],
-
-    requirements: {
-      functional: ['Route calculation', 'Search locations', 'Traffic updates', 'Provide ETA', 'Turn-by-turn directions'],
-      nonFunctional: ['Scale globally', 'Low-latency routing', 'Highly available'],
-    },
-
-    approach: `
-1. **Graph** → Represent roads and intersections as nodes/edges.
-2. **Routing** → Use Dijkstra/A* for shortest path.
-3. **Traffic** → Dynamic edge weights based on live traffic.
-4. **ETA Calculation** → Predict arrival times using historical + live data.
-5. **Search** → Geocoding: Name → coordinates.
-`,
-
-    resources: [
-      { label: 'Google Maps Architecture', url: 'https://highscalability.com/blog/2014/2/26/google-maps-architecture.html' },
-    ],
-
-    solveOptions: [
-      { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'System diagram' },
-      { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Component diagram' },
-    ],
-  },
-  {
-  id: 30,
-  type: 'LLD',
-  title: 'Design Call Taxi Booking System',
-  subtitle: 'Like Uber / Ola',
-  difficulty: 'Medium',
-  companies: ['Zoho','Uber','Amazon'],
-  tags: ['OOP','Design Patterns','Java','Scheduling'],
-  duration: '45 mins',
-  free: false,
-
-  description: 'Design a taxi booking system where users can book taxis, drivers get assigned automatically, and fares are calculated based on distance.',
-
-  keyComponents: [
-    'TaxiBookingService',
-    'Driver',
-    'Passenger',
-    'Ride',
-    'LocationService',
-    'FareCalculator'
-  ],
-
-  requirements: {
-    functional: [
-      'Book taxi',
-      'Assign nearest driver',
-      'Start and end ride',
-      'Calculate fare',
-      'Show ride history'
-    ],
-    nonFunctional: [
-      'Handle multiple bookings simultaneously',
-      'Driver location updates',
-      'Low latency ride matching'
-    ],
-  },
-
-  approach: `
-1. **Classes**
-   - Passenger
-   - Driver
-   - Ride
-   - Location
-   - TaxiBookingService
-
-2. **Driver Matching**
-   - Find nearest available driver using distance calculation.
-
-3. **Ride Flow**
-   Passenger → request ride → match driver → ride started → ride completed.
-
-4. **Strategy Pattern**
-   Different FareCalculation strategies (Normal, Surge).
-
-5. **Observer Pattern**
-   Notify driver and passenger for ride status updates.
-  `,
-
-  solveOptions: [
-    { label: 'Design UML', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Draw class diagrams' },
-    { label: 'Code on LeetCode', url: 'https://leetcode.com/', icon: '💻', desc: 'Implement classes in Java' },
-  ],
-}
-
-]
-
-// Generate remaining 20 pro problems
-const MORE_PROBLEMS = [
-  
-]
-
-const ALL_PROBLEMS = [
-  ...PROBLEMS,
-  ...MORE_PROBLEMS.map(p => ({ ...p, description: '', keyComponents: [], requirements: { functional: [], nonFunctional: [] }, approach: '', resources: [], solveOptions: [
-    { label: 'Draw on Excalidraw', url: 'https://excalidraw.com/', icon: '✏️', desc: 'Free whiteboard' },
-    { label: 'Use draw.io', url: 'https://app.diagrams.net/', icon: '🗂️', desc: 'Architecture diagrams' },
-  ]}))
-]
+const ALL_PROBLEMS = PROBLEMS
 
 const diffStyle = {
   Easy:   { bg: 'rgba(34,197,94,0.1)',  color: '#4ade80', border: 'rgba(34,197,94,0.2)'  },
@@ -1421,7 +308,7 @@ export default function SystemDesignPage() {
                   ))}
                 </div>
 
-                <Link to="/pricing"
+                <Link to="/dashboard/pricing"
                   className="inline-flex items-center gap-2 font-black px-10 py-4 rounded-2xl text-base transition-all hover:scale-105"
                   style={{ backgroundColor: '#f59e0b', color: '#000' }}>
                   <Crown size={18} /> Unlock All 30 Problems — ₹499/month
@@ -1444,6 +331,8 @@ export default function SystemDesignPage() {
 }
 
 // ── Problem Card ───────────────────────────────────────────────
+// Drop-in replacement for the ProblemCard function in SystemDesignPage.jsx
+
 function ProblemCard({ p, expanded, setExpanded, setSolveModal }) {
   const isOpen = expanded === p.id
   const ds = diffStyle[p.difficulty]
@@ -1455,21 +344,23 @@ function ProblemCard({ p, expanded, setExpanded, setSolveModal }) {
         backgroundColor: '#111827',
       }}>
 
-      {/* Header */}
+      {/* ── Header (always visible) ──────────────────────── */}
       <button onClick={() => setExpanded(isOpen ? null : p.id)}
         className="w-full flex items-center gap-4 px-5 py-4 text-left transition-colors"
         style={{ backgroundColor: isOpen ? 'rgba(34,197,94,0.04)' : 'transparent' }}
         onMouseEnter={e => { if (!isOpen) e.currentTarget.style.backgroundColor = '#1a2030' }}
         onMouseLeave={e => { if (!isOpen) e.currentTarget.style.backgroundColor = 'transparent' }}>
 
-        {/* Type badge */}
         <div className="w-12 h-12 rounded-xl flex flex-col items-center justify-center flex-shrink-0 text-center"
           style={{
             backgroundColor: p.type === 'HLD' ? 'rgba(14,165,233,0.1)' : 'rgba(168,85,247,0.1)',
             border: `1px solid ${p.type === 'HLD' ? 'rgba(14,165,233,0.2)' : 'rgba(168,85,247,0.2)'}`,
           }}>
-          {p.type === 'HLD' ? <Globe size={16} style={{ color: '#38bdf8' }} /> : <Code2 size={16} style={{ color: '#c084fc' }} />}
-          <span className="text-[9px] font-black mt-0.5" style={{ color: p.type === 'HLD' ? '#38bdf8' : '#c084fc' }}>{p.type}</span>
+          {p.type === 'HLD'
+            ? <Globe size={16} style={{ color: '#38bdf8' }} />
+            : <Code2 size={16} style={{ color: '#c084fc' }} />}
+          <span className="text-[9px] font-black mt-0.5"
+            style={{ color: p.type === 'HLD' ? '#38bdf8' : '#c084fc' }}>{p.type}</span>
         </div>
 
         <div className="flex-1 min-w-0">
@@ -1490,8 +381,7 @@ function ProblemCard({ p, expanded, setExpanded, setSolveModal }) {
 
         <div className="flex items-center gap-3 flex-shrink-0">
           <div className="hidden sm:flex items-center gap-1 text-gray-600 text-xs">
-            <BookOpen size={11} />
-            {p.duration}
+            <BookOpen size={11} /> {p.duration}
           </div>
           <span className="text-xs font-bold px-2.5 py-1 rounded-full"
             style={{ backgroundColor: ds.bg, color: ds.color, border: `1px solid ${ds.border}` }}>
@@ -1501,8 +391,8 @@ function ProblemCard({ p, expanded, setExpanded, setSolveModal }) {
         </div>
       </button>
 
-      {/* Expanded Content */}
-      {isOpen && p.description && (
+      {/* ── Expanded Content ─────────────────────────────── */}
+      {isOpen && (
         <div className="px-5 pb-5 pt-1" style={{ borderTop: '1px solid #1f2937' }}>
 
           {/* Tags */}
@@ -1515,10 +405,97 @@ function ProblemCard({ p, expanded, setExpanded, setSolveModal }) {
             ))}
           </div>
 
+          {/* Description */}
           <p className="text-gray-300 text-sm leading-relaxed mb-5">{p.description}</p>
 
+          {/* ── Input / Output ──────────────────────────── */}
+          {p.inputOutput && (
+            <div className="rounded-xl overflow-hidden mb-5"
+              style={{ border: '1px solid #1f2937' }}>
+              <div className="grid grid-cols-2 divide-x divide-gray-800">
+                <div className="p-3">
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Input</p>
+                  <p className="text-green-300 text-xs font-mono leading-relaxed">{p.inputOutput.input}</p>
+                </div>
+                <div className="p-3">
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Output</p>
+                  <p className="text-blue-300 text-xs font-mono leading-relaxed">{p.inputOutput.output}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Core Concepts ───────────────────────────── */}
+          {p.coreConcepts && (
+            <div className="mb-5">
+              <p className="text-white font-bold text-xs uppercase tracking-wider mb-2">Core Concepts</p>
+              <div className="flex flex-wrap gap-2">
+                {p.coreConcepts.map((c, i) => (
+                  <div key={c} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs"
+                    style={{ backgroundColor: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', color: '#93c5fd' }}>
+                    <span className="text-blue-400 font-bold">{i + 1}.</span>{c}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Classes & Functions (LLD only) ──────────── */}
+          {p.classes && (
+            <div className="grid md:grid-cols-2 gap-4 mb-5">
+              <div>
+                <p className="text-white font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <Code2 size={11} className="text-purple-400" /> Classes to Design
+                </p>
+                <div className="flex flex-col gap-1.5">
+                  {p.classes.map(c => (
+                    <div key={c} className="flex items-center gap-2 text-xs px-3 py-1.5 rounded-lg"
+                      style={{ backgroundColor: 'rgba(168,85,247,0.07)', border: '1px solid rgba(168,85,247,0.15)', color: '#d8b4fe' }}>
+                      <span className="text-purple-400">class</span> {c}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {p.expectedFunctions && (
+                <div>
+                  <p className="text-white font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Layers size={11} className="text-green-400" /> Expected Functions
+                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    {p.expectedFunctions.map(f => (
+                      <div key={f} className="flex items-center gap-2 text-xs px-3 py-1.5 rounded-lg font-mono"
+                        style={{ backgroundColor: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.15)', color: '#86efac' }}>
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── How to Solve ────────────────────────────── */}
+          {p.howToSolve && (
+            <div className="rounded-xl p-4 mb-5"
+              style={{ backgroundColor: 'rgba(34,197,94,0.04)', border: '1px solid rgba(34,197,94,0.15)' }}>
+              <p className="text-green-400 font-bold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <Layers size={11} /> How to Solve — Step by Step
+              </p>
+              <div className="flex flex-col gap-2">
+                {p.howToSolve.map((step, i) => (
+                  <div key={i} className="flex items-start gap-3 text-xs text-gray-300">
+                    <span className="w-5 h-5 rounded-full bg-green-500/20 text-green-400 font-bold text-[10px] flex items-center justify-center flex-shrink-0 mt-0.5">
+                      {i + 1}
+                    </span>
+                    {step}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Requirements ────────────────────────────── */}
           <div className="grid md:grid-cols-2 gap-4 mb-5">
-            {/* Requirements */}
             <div>
               <p className="text-white font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 <Database size={11} className="text-green-400" /> Functional Requirements
@@ -1545,30 +522,23 @@ function ProblemCard({ p, expanded, setExpanded, setSolveModal }) {
             </div>
           </div>
 
-          {/* Key Components */}
-          <div className="mb-5">
-            <p className="text-white font-bold text-xs uppercase tracking-wider mb-2">Key Components</p>
-            <div className="flex flex-wrap gap-2">
-              {p.keyComponents.map((c, i) => (
-                <div key={c} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs"
-                  style={{ backgroundColor: '#0f1923', border: '1px solid #1f2937', color: '#e2e8f0' }}>
-                  <span className="text-green-400 font-bold">{i + 1}.</span>{c}
-                </div>
-              ))}
+          {/* ── Constraints ─────────────────────────────── */}
+          {p.constraints && (
+            <div className="mb-5">
+              <p className="text-white font-bold text-xs uppercase tracking-wider mb-2">Constraints</p>
+              <div className="flex flex-wrap gap-2">
+                {p.constraints.map(c => (
+                  <span key={c} className="text-[11px] px-2.5 py-1 rounded-lg"
+                    style={{ backgroundColor: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.15)', color: '#fca5a5' }}>
+                    ⚠ {c}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Approach */}
-          <div className="rounded-xl p-4 mb-5"
-            style={{ backgroundColor: 'rgba(34,197,94,0.04)', border: '1px solid rgba(34,197,94,0.15)' }}>
-            <p className="text-green-400 font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Layers size={11} /> Design Approach
-            </p>
-            <pre className="text-gray-300 text-xs leading-relaxed whitespace-pre-wrap font-sans">{p.approach.trim()}</pre>
-          </div>
-
-          {/* Resources */}
-          {p.resources.length > 0 && (
+          {/* ── Resources ───────────────────────────────── */}
+          {p.resources?.length > 0 && (
             <div className="mb-5">
               <p className="text-white font-bold text-xs uppercase tracking-wider mb-2">📚 Study Resources</p>
               <div className="flex flex-wrap gap-2">
@@ -1583,9 +553,8 @@ function ProblemCard({ p, expanded, setExpanded, setSolveModal }) {
             </div>
           )}
 
-          {/* Solve CTA */}
-          <div className="rounded-xl p-4"
-            style={{ backgroundColor: '#0f1923', border: '1px solid #1f2937' }}>
+          {/* ── Solve Options ───────────────────────────── */}
+          <div className="rounded-xl p-4" style={{ backgroundColor: '#0f1923', border: '1px solid #1f2937' }}>
             <p className="text-white font-bold text-xs mb-3">🛠️ Start Solving</p>
             <div className="flex flex-wrap gap-2">
               {p.solveOptions.map(opt => (
@@ -1609,7 +578,6 @@ function ProblemCard({ p, expanded, setExpanded, setSolveModal }) {
     </div>
   )
 }
-
 // ── Blurred locked card ────────────────────────────────────────
 function BlurredCard({ p }) {
   const ds = diffStyle[p.difficulty]

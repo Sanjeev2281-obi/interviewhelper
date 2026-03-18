@@ -115,7 +115,15 @@ export default function ProblemsPage() {
           </Link>
         )}
       </div>
-
+       <Link to="/dashboard/beginner"
+  style={{
+    display: 'inline-flex', alignItems: 'center', gap: 8,
+    background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)',
+    borderRadius: 12, padding: '10px 18px', color: '#4ade80',
+    fontSize: 13, fontWeight: 700, textDecoration: 'none',
+  }}>
+  🌱 I'm a beginner — start from basics
+</Link>
       {/* Progress */}
       <div className="rounded-2xl p-5" style={{ backgroundColor:'#111827', border:'1px solid #1f2937' }}>
         <div className="flex items-center justify-between mb-2 text-xs text-gray-400">
@@ -259,7 +267,7 @@ export default function ProblemsPage() {
                       : 'Full access to 500 problems from Zoho, Amazon, Google, Microsoft, Walmart, Flipkart, TCS & Infosys'
                     }
                   </p>
-                  <Link to="/pricing"
+                  <Link to="/dashboard/pricing"
                     className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-3 rounded-xl text-sm transition-colors">
                     <Crown size={15} /> Upgrade to Pro — ₹499/month
                   </Link>

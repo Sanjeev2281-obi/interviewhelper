@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import { useAuth } from '../hooks/useAuth'
 import { dashboardService } from '../services/api'
 import MentorCard from '../components/layout/Mentorcard'
+import { PROBLEMS } from '../services/Problem' // or corr
 const ROADMAP = [
   { phase: '1', title: 'Arrays & Strings', weeks: '1–2', done: false, active: true },
   { phase: '2', title: 'Linked Lists & Stacks', weeks: '3–4', done: false },
@@ -15,27 +16,31 @@ const ROADMAP = [
   { phase: '4', title: 'Dynamic Programming', weeks: '7–8', done: false },
   { phase: '5', title: 'System Design', weeks: '9–10', done: false },
 ]
+const getDailyProblem = () => {
+  if (!PROBLEMS.length) return null;
 
-const DAILY_PROBLEM = {
-  id: 1,
-  title: 'Two Sum',
-  difficulty: 'easy',
-  company: 'Amazon',
-  description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.',
-}
+  const startDate = new Date("2026-01-01");
+  const today = new Date();
 
+  const diffDays = Math.floor(
+    (today - startDate) / (1000 * 60 * 60 * 24)
+  );
 
+  const index = diffDays % PROBLEMS.length;
+
+  return PROBLEMS[index];
+};
 export default function DashboardPage() {
   const { user } = useAuth()
   const [dbStats, setDbStats] = useState(null)
-  const [dailyProblem, setDailyProblem] = useState(DAILY_PROBLEM)
+  
 
   useEffect(() => {
     dashboardService.getStats()
       .then(res => setDbStats(res.data))
       .catch(err => console.error('Failed to fetch stats:', err))
   }, [])
-
+const DAILY_PROBLEM = getDailyProblem();
   // ✅ This was accidentally deleted — must be defined before return()
   const stats = {
     streak:         dbStats?.streak         ?? 0,
@@ -77,7 +82,7 @@ export default function DashboardPage() {
           </Link>
         )}
       </div>
-
+      
       {/* New user welcome banner */}
       <div className="rounded-2xl p-5 flex items-center gap-4"
         style={{ backgroundColor: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
@@ -153,16 +158,16 @@ export default function DashboardPage() {
               <span className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full font-semibold">Daily</span>
             </div>
 
-            <h3 className="text-xl font-extrabold text-white mb-2">{DAILY_PROBLEM.title}</h3>
-            <p className="text-gray-400 text-sm mb-4 leading-relaxed line-clamp-2">{DAILY_PROBLEM.description}</p>
+            <h3 className="text-xl font-extrabold text-white mb-2">{DAILY_PROBLEM?.title}</h3>
+            <p className="text-gray-400 text-sm mb-4 leading-relaxed line-clamp-2">{DAILY_PROBLEM?.description}</p>
 
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full">{DAILY_PROBLEM.difficulty}</span>
-              <span className="text-gray-500 text-xs">Asked by {DAILY_PROBLEM.company}</span>
+              <span className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full">{DAILY_PROBLEM?.difficulty}</span>
+              <span className="text-gray-500 text-xs">Asked by {DAILY_PROBLEM?.companies?.[0]}</span>
             </div>
 
             <div className="flex gap-3">
-              <Link to={`/dashboard/problems/${DAILY_PROBLEM.id}`}
+              <Link to={`/dashboard/problems/${DAILY_PROBLEM?.id}`}
                 className="bg-green-500 hover:bg-green-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors flex items-center gap-1.5">
                 Solve Now <ChevronRight size={14} />
               </Link>
@@ -222,9 +227,9 @@ export default function DashboardPage() {
                 {[
                   { text: '1 daily DSA problem', ok: true },
                   { text: '3 mock interviews/month', ok: true },
-                  { text: 'AI interview practice', ok: false },
-                  { text: 'Resume review', ok: false },
-                  { text: 'Company questions', ok: false },
+                  { text: 'Company patterns', ok: false },
+                  { text: 'System design problems (LLD/HLD)', ok: false },
+                  { text: 'Company based Technical Questions', ok: false },
                 ].map(({ text, ok }) => (
                   <div key={text} className="flex items-center gap-2">
                     {ok
