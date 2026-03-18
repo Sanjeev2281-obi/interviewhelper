@@ -131,7 +131,7 @@ export default function ProblemsPage() {
           <span className="text-green-400 font-bold">{solvedCount} / {PROBLEMS.length} solved</span>
         </div>
         <div className="w-full rounded-full h-2 mb-3" style={{ backgroundColor:'#1f2937' }}>
-          <div className="h-2 bg-gradient-to-r from-green-500 to-cyan-400 rounded-full transition-all duration-500"
+          <div className="h-2 bg-linear-to-rrom-green-500 to-cyan-400 rounded-full transition-all duration-500"
             style={{ width:`${Math.min((solvedCount/PROBLEMS.length)*100, 100)}%` }} />
         </div>
         <div className="flex gap-5 flex-wrap">

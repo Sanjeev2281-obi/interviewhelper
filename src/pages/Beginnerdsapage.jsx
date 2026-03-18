@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, ChevronUp, ExternalLink, ArrowLeft, Play, BookOpen, CheckCircle, Lightbulb, Code2, Globe, Brain, Briefcase, AlertTriangle, Zap } from 'lucide-react'
+import { ChevronDown, ChevronUp, ExternalLink, ArrowLeft, Play, BookOpen, CheckCircle, Lightbulb, Code2, Globe, Brain, Briefcase, AlertTriangle, Zap, Lock, Crown } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 
 // ── Programming Language Guide ────────────────────────────────
 function ProgrammingGuide() {
@@ -765,8 +766,48 @@ function ProblemCard({ p }) {
   )
 }
 
+// ── Locked problem card ───────────────────────────────────────
+function LockedProblemCard({ p }) {
+  const dc = diffColors[p.difficulty]
+  return (
+    <div style={{
+      background: '#111827', border: '1px solid rgba(234,179,8,0.15)',
+      borderRadius: 14, marginBottom: 10, overflow: 'hidden',
+      position: 'relative', userSelect: 'none', cursor: 'not-allowed',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 10,
+        backdropFilter: 'blur(3px)', background: 'rgba(10,15,26,0.65)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 14,
+      }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 8,
+          background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.35)',
+          borderRadius: 20, padding: '6px 16px',
+        }}>
+          <Lock size={13} color="#facc15" />
+          <span style={{ fontSize: 12, fontWeight: 700, color: '#facc15' }}>Pro only — ₹299/month</span>
+          <Crown size={12} color="#facc15" />
+        </div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px' }}>
+        <div style={{ width: 26, height: 26, borderRadius: 6, background: dc.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: dc.text }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'white' }}>{p.title}</div>
+          <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{p.description}</div>
+        </div>
+        <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: dc.bg, color: dc.text, border: `1px solid ${dc.border}`, flexShrink: 0 }}>{p.difficulty}</span>
+      </div>
+    </div>
+  )
+}
+
 // ── Main page ─────────────────────────────────────────────────
 export default function BeginnerDSAPage() {
+  const { user } = useAuth()
+  const isPro = user?.role === 'PRO'
   const [activeTopic, setActiveTopic] = useState('arrays')
   const topic = TOPICS.find(t => t.id === activeTopic)
 
@@ -910,10 +951,85 @@ export default function BeginnerDSAPage() {
 
           {/* Problems */}
           <div style={{ marginBottom: '1rem' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#4b5563', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>
-              {topic.problems.length} problems — click any to expand
+            {/* Free problems label */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <CheckCircle size={13} color="#4ade80" />
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#4ade80', textTransform: 'uppercase', letterSpacing: '.07em' }}>
+                Free — first 3 problems
+              </span>
             </div>
-            {topic.problems.map(p => <ProblemCard key={p.id} p={p} />)}
+            {topic.problems.slice(0, 3).map(p => <ProblemCard key={p.id} p={p} />)}
+
+            {/* Pro problems */}
+            {topic.problems.length > 3 && (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '16px 0 10px' }}>
+                  <Crown size={13} color="#facc15" />
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#facc15', textTransform: 'uppercase', letterSpacing: '.07em' }}>
+                    Pro problems — {topic.problems.length - 3} more
+                  </span>
+                </div>
+                {isPro
+                  ? topic.problems.slice(3).map(p => <ProblemCard key={p.id} p={p} />)
+                  : (
+                    <>
+                      {topic.problems.slice(3).map(p => <LockedProblemCard key={p.id} p={p} />)}
+                      {/* Upgrade CTA */}
+                      <div style={{
+                        background: 'linear-gradient(135deg, #0a0f1a, #0d1f0d)',
+                        border: '2px solid rgba(234,179,8,0.3)',
+                        borderRadius: 16, padding: '1.5rem', textAlign: 'center', marginTop: 12,
+                        position: 'relative', overflow: 'hidden',
+                      }}>
+                        <div style={{
+                          position: 'absolute', inset: 0, opacity: .04,
+                          backgroundImage: 'linear-gradient(rgba(234,179,8,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(234,179,8,.5) 1px,transparent 1px)',
+                          backgroundSize: '28px 28px',
+                        }} />
+                        <div style={{ position: 'relative', zIndex: 1 }}>
+                          <div style={{
+                            width: 44, height: 44, borderRadius: 12, margin: '0 auto 12px',
+                            background: 'rgba(234,179,8,0.15)', border: '1px solid rgba(234,179,8,0.3)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            <Crown size={22} color="#facc15" />
+                          </div>
+                          <div style={{ fontSize: 16, fontWeight: 800, color: 'white', marginBottom: 6 }}>
+                            Unlock all {topic.problems.length - 3} more {topic.title} problems
+                          </div>
+                          <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 16, lineHeight: 1.6 }}>
+                            Full explanations, pseudocode, LeetCode links, and Tamil YouTube videos for every problem.
+                          </p>
+                          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 16, flexWrap: 'wrap' }}>
+                            {[
+                              { val: '₹299/mo', label: 'Less than Swiggy' },
+                              { val: '₹10/day', label: 'Less than chai' },
+                              { val: 'All topics', label: 'Full beginner track' },
+                            ].map(({ val, label }) => (
+                              <div key={val} style={{ textAlign: 'center' }}>
+                                <div style={{ fontSize: 16, fontWeight: 900, color: '#facc15' }}>{val}</div>
+                                <div style={{ fontSize: 11, color: '#6b7280' }}>{label}</div>
+                              </div>
+                            ))}
+                          </div>
+                          <Link to="/dashboard/pricing" style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 8,
+                            background: '#f59e0b', color: '#000', fontWeight: 900,
+                            fontSize: 14, padding: '11px 28px', borderRadius: 12,
+                            textDecoration: 'none', transition: 'opacity .15s',
+                          }}>
+                            <Crown size={15} /> Upgrade to Pro — ₹299/month
+                          </Link>
+                          <p style={{ fontSize: 11, color: '#4b5563', marginTop: 8 }}>
+                            Also unlocks 500 DSA problems · AI mock interviews · Resume review · System Design
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )
+                }
+              </>
+            )}
           </div>
 
           {/* Next topic nudge */}
