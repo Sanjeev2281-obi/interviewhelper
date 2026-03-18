@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { Upload, FileText, CheckCircle, AlertCircle, TrendingUp, Star, X, Loader } from 'lucide-react'
 import toast from 'react-hot-toast'
-
+import { resumeService } from '../services/api'  
 const MOCK_RESULT = {
   score: 74,
   sections: [
@@ -40,22 +40,34 @@ export default function ResumeReviewPage() {
     if (f.size > 5 * 1024 * 1024) return toast.error('File too large. Max 5MB.')
     setFile(f)
   }
+   const handleReview = async () => {
+  if (tab === 'upload' && !file) return toast.error('Please upload a file first.')
+  if (tab === 'paste' && !text.trim()) return toast.error('Please paste your resume text.')
 
+  try {
+    setLoading(true)
+
+    // Step 1: Run AI analysis (your mock result or real AI call)
+    // For now using mock — replace with real AI endpoint when ready
+    const analysisResult = MOCK_RESULT  // swap with actual AI call
+
+    setResult(analysisResult)
+
+    // Step 2: Save score to DB via your Spring endpoint (JSON body, NOT FormData)
+    await resumeService.saveScore(analysisResult.score)
+
+    toast.success('Resume reviewed successfully!')
+  } catch (err) {
+    console.error(err)
+    toast.error('Something went wrong!')
+  } finally {
+    setLoading(false)
+  }
+}
   const handleDrop = (e) => {
     e.preventDefault()
     const f = e.dataTransfer.files[0]
     if (f) { setFile(f); toast.success('File dropped!') }
-  }
-
-  const handleReview = async () => {
-    if (tab === 'upload' && !file) return toast.error('Please upload a resume first')
-    if (tab === 'paste' && text.trim().length < 100) return toast.error('Please paste more resume content')
-    setLoading(true)
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 2500))
-    setResult(MOCK_RESULT)
-    setLoading(false)
-    toast.success('Resume reviewed successfully!')
   }
 
   const scoreColor = (s) => s >= 80 ? 'text-brand-400' : s >= 60 ? 'text-yellow-400' : 'text-red-400'

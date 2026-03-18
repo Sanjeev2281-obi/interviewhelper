@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Code2, PlayCircle, FileText, MessageSquare,
-  Building2, LogOut, Menu, Zap, ChevronRight, Shield
+  Building2, LogOut, Menu, Zap, ChevronRight, Shield, MessageCircle
 } from 'lucide-react'
 import { useAuth } from "../../hooks/useAuth";
 import toast from 'react-hot-toast'
@@ -17,6 +17,11 @@ const navItems = [
   { to: '/dashboard/companies', icon: Building2, label: 'Company Questions' },
   { to: '/dashboard/system-design', icon: Cpu, label: 'System Design' },
   { to: '/dashboard/tech-questions', icon: Lightbulb, label: 'Tech Questions' },
+  {
+  to: '/dashboard/discussions',
+  icon: MessageCircle,   // import from lucide-react
+  label: 'Discussions',
+}
 ]
 
 // ✅ FIXED: Moved outside AppLayout so React doesn't recreate it on every render

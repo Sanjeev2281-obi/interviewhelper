@@ -48,11 +48,10 @@ export const problemService = {
 
 // ─── Dashboard ───────────────────────────────────────────
 export const dashboardService = {
-  getStats: () => api.get('/dashboard/stats'),
-  getProgress: () => api.get('/dashboard/progress'),
+  getStats: () => api.get('/progress/stats'),  // ✅ was /dashboard/stats
+  getProgress: () => api.get('/progress/stats'),
   getRoadmap: () => api.get('/dashboard/roadmap'),
 }
-
 // ─── Mock Interview ───────────────────────────────────────
 export const mockInterviewService = {
   start: () => api.post('/mock-interviews/start'),
@@ -64,8 +63,12 @@ export const mockInterviewService = {
 // ─── Resume ───────────────────────────────────────────────
 export const resumeService = {
   review: (formData) => api.post('/resume/review', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: {
+      'Content-Type': 'multipart/form-data', // keeps interceptor headers intact
+      ...api.defaults.headers // merge default headers (incl. Authorization)
+    }
   }),
+  saveScore: (score) => api.post('/resume/review', { score }),
   getHistory: () => api.get('/resume/history'),
 }
 
@@ -93,5 +96,12 @@ export const adminService = {
   getStats: () => api.get('/admin/stats'),
   getUsers: (params) => api.get('/admin/users', { params }),
 }
-
+// ─── Discussions ──────────────────────────────────────────
+export const discussionService = {
+  getAll:     ()         => api.get('/discussions'),
+  getById:    (id)       => api.get(`/discussions/${id}`),
+  create:     (data)     => api.post('/discussions', data),
+  like:       (id)       => api.post(`/discussions/${id}/like`),
+  addComment: (id, body) => api.post(`/discussions/${id}/comments`, { body }),
+}
 export default api

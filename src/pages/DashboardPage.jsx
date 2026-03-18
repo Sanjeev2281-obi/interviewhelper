@@ -5,9 +5,9 @@ import {
   Clock, Target, BookOpen, Zap, Lock
 } from 'lucide-react'
 import { useEffect, useState } from "react"
-import { progressService } from "../services/ProgressService"
 import { useAuth } from '../hooks/useAuth'
-
+import { dashboardService } from '../services/api'
+import MentorCard from '../components/layout/Mentorcard'
 const ROADMAP = [
   { phase: '1', title: 'Arrays & Strings', weeks: '1–2', done: false, active: true },
   { phase: '2', title: 'Linked Lists & Stacks', weeks: '3–4', done: false },
@@ -24,23 +24,28 @@ const DAILY_PROBLEM = {
   description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.',
 }
 
+
 export default function DashboardPage() {
   const { user } = useAuth()
-
   const [dbStats, setDbStats] = useState(null)
+  const [dailyProblem, setDailyProblem] = useState(DAILY_PROBLEM)
 
   useEffect(() => {
-    progressService.getStats()
+    dashboardService.getStats()
       .then(res => setDbStats(res.data))
-      .catch(() => {}) // backend not connected yet
+      .catch(err => console.error('Failed to fetch stats:', err))
   }, [])
 
+  // ✅ This was accidentally deleted — must be defined before return()
   const stats = {
-    streak: dbStats?.streak ?? 0,
-    solved: dbStats?.totalSolved ?? 0,
-    total: 500,
+    streak:         dbStats?.streak         ?? 0,
+    solved:         dbStats?.totalSolved    ?? 0,
+    easySolved:     dbStats?.easySolved     ?? 0,
+    mediumSolved:   dbStats?.mediumSolved   ?? 0,
+    hardSolved:     dbStats?.hardSolved     ?? 0,
+    total:          500,
     mockInterviews: dbStats?.mockInterviews ?? 0,
-    resumeScore: dbStats?.resumeScore ?? null,
+    resumeScore:    dbStats?.resumeScore    ?? null,
   }
 
   const isPro = user?.role === 'PRO'
@@ -66,7 +71,7 @@ export default function DashboardPage() {
           </p>
         </div>
         {!isPro && (
-          <Link to="/dashboard/pricing"
+          <Link to="/pricing"
             className="hidden sm:flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-bold px-4 py-2 rounded-xl transition-colors">
             <Zap size={14} /> Upgrade to Pro
           </Link>
@@ -269,24 +274,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Activity */}
-          <div className="rounded-2xl p-5" style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Clock size={15} className="text-gray-400" />
-              <span className="font-bold text-white text-sm">Recent Activity</span>
-            </div>
-            <div className="py-6 text-center">
-              <Code2 size={28} className="text-gray-700 mx-auto mb-2" />
-              <p className="text-gray-600 text-sm">No activity yet</p>
-              <p className="text-gray-700 text-xs mt-1">Solve your first problem!</p>
-            </div>
-            <Link to="/dashboard/problems"
-              className="block text-center text-gray-400 hover:text-white text-xs py-2 rounded-xl transition-colors"
-              style={{ border: '1px solid #1f2937' }}>
-              Go to Problems →
-            </Link>
-          </div>
-        </div>
-      </div>
+          <MentorCard isPro={isPro} />
+      {/* Mentor guidance */}
+    </div>
+    </div>
     </div>
   )
 }

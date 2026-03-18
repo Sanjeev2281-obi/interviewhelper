@@ -18,6 +18,7 @@ import PricingPage from './pages/PricingPage'
 import AppLayout from './components/layout/AppLayout'
 import SystemDesignPage from './pages/Systemdesignpage'
 import TechQuestionsPage from './pages/TechQuestionsPage'
+import DiscussionPage from './pages/DiscussionPage'
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, loading } = useAuth()
   if (loading) return (
@@ -71,6 +72,7 @@ export default function App() {
             <Route path="ai-interview" element={<AIInterviewPage />} />
             <Route path="companies" element={<CompanyQuestionsPage />} />
             <Route path="tech-questions" element={<TechQuestionsPage />} />
+            <Route path="discussions" element={<DiscussionPage />} />
             {/* ✅ Pricing also accessible from inside dashboard */}
             <Route path="pricing" element={<PricingPage />} />
           </Route>
