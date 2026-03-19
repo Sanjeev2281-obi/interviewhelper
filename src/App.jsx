@@ -21,6 +21,8 @@ import TechQuestionsPage from './pages/TechQuestionsPage'
 import DiscussionPage from './pages/DiscussionPage'
 import ScrollToTop from './components/layout/ScrollToTop'
 import BeginnerDSAPage from './pages/Beginnerdsapage'
+import TechStackPage from './pages/TechStackPage' 
+import YoutubeResourcesPage from './components/layout/YoutubeResourcesPage'
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, loading } = useAuth()
   if (loading) return (
@@ -66,8 +68,11 @@ export default function App() {
 
           {/* Protected dashboard routes */}
           <Route path="/dashboard" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-         
+            
             <Route index element={<DashboardPage />} />
+
+             <Route path="youtube" element={<YoutubeResourcesPage />} /> 
+            <Route path="tech-stack" element={<TechStackPage />} />
              <Route path="beginner" element={<BeginnerDSAPage />} />
             <Route path="system-design" element={<SystemDesignPage />} />
             <Route path="problems" element={<ProblemsPage />} />

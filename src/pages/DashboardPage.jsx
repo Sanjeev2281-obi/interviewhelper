@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import {
   Flame, Code2, PlayCircle, FileText, MessageSquare,
   Building2, ChevronRight, Calendar, CheckCircle,
-  Clock, Target, BookOpen, Zap, Lock
+  Clock, Target, BookOpen, Zap, Lock,Layers
 } from 'lucide-react'
 import { useEffect, useState } from "react"
 import { useAuth } from '../hooks/useAuth'
@@ -210,8 +210,9 @@ const DAILY_PROBLEM = getDailyProblem();
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-4">
             <QuickAction to="/dashboard/mock-interview" icon={PlayCircle} title="Mock Interview" desc="3 free per month" color="#7c3aed" locked={false} />
-            <QuickAction to="/dashboard/ai-interview" icon={MessageSquare} title="AI Practice" desc="Chat with AI interviewer" color="#0891b2" locked={!isPro} />
+            <QuickAction to="/dashboard/ai-interview" icon={MessageSquare} title="AI Practice" desc="Chat with AI interviewer" color="#0891b2" locked={!isPro} />          
             <QuickAction to="/dashboard/resume" icon={FileText} title="Resume Review" desc="Get AI score & feedback" color="#ea580c" locked={!isPro} />
+           <QuickAction to="/dashboard/tech-stack" icon={Layers} title="Tech Stack Guide" desc="Java? React? Which stack?" color="#60a5fa" locked={false} />
             <QuickAction to="/dashboard/companies" icon={Building2} title="Company Questions" desc="Amazon, Microsoft & more" color="#16a34a" locked={!isPro} />
           </div>
         </div>

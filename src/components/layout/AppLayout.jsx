@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Code2, PlayCircle, FileText, MessageSquare,
-  Building2, LogOut, Menu, Zap, ChevronRight, Shield, MessageCircle
+  Building2, LogOut, Menu, Zap, ChevronRight, Shield, MessageCircle,Layers
 } from 'lucide-react'
 import { useAuth } from "../../hooks/useAuth";
 import toast from 'react-hot-toast'
@@ -12,7 +12,8 @@ const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/dashboard/problems', icon: Code2, label: 'DSA Problems' },
   { to: '/dashboard/mock-interview', icon: PlayCircle, label: 'Mock Interview' },
-  { to: '/dashboard/ai-interview', icon: MessageSquare, label: 'AI Interview' },
+  { to: '/dashboard/tech-stack',   icon: Layers,   label: 'Tech Stack Guide' },
+  
   { to: '/dashboard/resume', icon: FileText, label: 'Resume Review' },
   { to: '/dashboard/companies', icon: Building2, label: 'Company Questions' },
   { to: '/dashboard/system-design', icon: Cpu, label: 'System Design' },
@@ -21,7 +22,8 @@ const navItems = [
   to: '/dashboard/discussions',
   icon: MessageCircle,   // import from lucide-react
   label: 'Discussions',
-}
+},
+{ to: '/dashboard/ai-interview', icon: MessageSquare, label: 'AI Interview' },
 ]
 
 // ✅ FIXED: Moved outside AppLayout so React doesn't recreate it on every render

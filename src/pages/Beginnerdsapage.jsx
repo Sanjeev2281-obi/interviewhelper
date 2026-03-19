@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, ChevronUp, ExternalLink, ArrowLeft, Play, BookOpen, CheckCircle, Lightbulb, Code2, Globe, Brain, Briefcase, AlertTriangle, Zap, Lock, Crown } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
-
+import YoutubeTreasure from '../components/layout/YoutubeTreasure'
 // ── Programming Language Guide ────────────────────────────────
 function ProgrammingGuide() {
   const [open, setOpen] = useState(false)
@@ -19,7 +19,7 @@ function ProgrammingGuide() {
     },
     {
       icon: '🌐', title: 'Web development (frontend + full stack)',
-      badge: 'You already know this!', badgeColor: '#60a5fa', badgeBg: 'rgba(59,130,246,0.15)',
+      badge: '', badgeColor: '#60a5fa', badgeBg: 'rgba(59,130,246,0.15)',
       langs: [
         { name: 'JavaScript', tag: 'Must', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' },
         { name: 'React', tag: 'You use it', color: '#60a5fa', bg: 'rgba(59,130,246,0.12)' },
@@ -44,6 +44,7 @@ function ProgrammingGuide() {
       why: 'JavaScript lets you build both frontend and backend. One language, full product. Fastest path to earning.',
     },
   ]
+
 
   return (
     <div style={{ marginBottom: '1.5rem' }}>
@@ -195,10 +196,10 @@ function ProgrammingGuide() {
               border: '1px solid rgba(34,197,94,0.25)', borderRadius: 12, padding: '1rem',
             }}>
               <div style={{ fontSize: 13, fontWeight: 800, color: '#4ade80', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Zap size={13} color="#4ade80" /> Honest advice for you
+                <Zap size={13} color="#4ade80" /> For Product Based Companies (Zoho, etc.)
               </div>
               <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.7, marginBottom: 10 }}>
-                Based on your goal (Zoho + full stack + DSA), you already have the right combo:
+                Based on your goal (Zoho + full stack + DSA)
               </p>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.25)', borderRadius: 10, padding: '8px 14px' }}>
@@ -253,9 +254,9 @@ function ProgrammingGuide() {
 
 // ── Tamil YouTube channels (verified DSA in Tamil) ────────────
 const TAMIL_CHANNELS = [
-  { name: 'Geekific Tamil',      url: 'https://www.youtube.com/@GeekificTamil',          topic: 'All topics' },
-  { name: 'Tamil Coding',        url: 'https://www.youtube.com/@tamilcoding',             topic: 'Arrays & Strings' },
-  { name: 'CS Tamizha',          url: 'https://www.youtube.com/@CSTamizha',               topic: 'DSA in Tamil' },
+  { name: 'EMC',      url: 'https://www.youtube.com/watch?v=IT2durkDCXM&list=PLvepBxfiuao2qCm6QgUay9LUAehVbGlOb',          topic: 'All topics' },
+  { name: 'EMC',        url: 'https://www.youtube.com/watch?v=BtaIHsGv5dA',             topic: 'For Loops' },
+  { name: 'EMC',          url: 'https://www.youtube.com/watch?v=Bs2LH5_vSXE',               topic: 'While Loops' },
   { name: 'Code with Tamizha',   url: 'https://www.youtube.com/@codewithtamizha',         topic: 'Problem solving' },
 ]
 
@@ -858,7 +859,7 @@ export default function BeginnerDSAPage() {
             {[
               { n: TOPICS.reduce((a,t) => a+t.problems.length, 0), label: 'problems' },
               { n: TOPICS.length, label: 'topics' },
-              { n: '100%', label: 'free' },
+             
             ].map(({ n, label }) => (
               <div key={label} style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 22, fontWeight: 900, color: 'white' }}>{n}</div>
@@ -868,27 +869,10 @@ export default function BeginnerDSAPage() {
           </div>
         </div>
       </div>
-
+     
       {/* Tamil channels strip */}
-      <div style={{
-        background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)',
-        borderRadius: 14, padding: '12px 16px', marginBottom: '1.5rem',
-        display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-          <Play size={14} color="#f87171" />
-          <span style={{ fontSize: 12, fontWeight: 700, color: '#f87171' }}>Tamil YouTube channels:</span>
-        </div>
-        {TAMIL_CHANNELS.map(ch => (
-          <a key={ch.name} href={ch.url} target="_blank" rel="noopener noreferrer" style={{
-            fontSize: 12, fontWeight: 600, color: '#fca5a5',
-            background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
-            borderRadius: 8, padding: '3px 10px', textDecoration: 'none',
-          }}>
-            {ch.name}
-          </a>
-        ))}
-      </div>
+     {/* Replace the old Tamil channels strip with: */}
+<YoutubeTreasure />
 
       {/* Programming Language Guide */}
       <ProgrammingGuide />
