@@ -23,6 +23,7 @@ import ScrollToTop from './components/layout/ScrollToTop'
 import BeginnerDSAPage from './pages/Beginnerdsapage'
 import TechStackPage from './pages/TechStackPage' 
 import YoutubeResourcesPage from './components/layout/YoutubeResourcesPage'
+ import ZohoRound3Page from './pages/ZohoRound3Page'
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, loading } = useAuth()
   if (loading) return (
@@ -70,6 +71,8 @@ export default function App() {
           <Route path="/dashboard" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             
             <Route index element={<DashboardPage />} />
+            
+            <Route path="zoho-round3" element={<ZohoRound3Page />} />
 
              <Route path="youtube" element={<YoutubeResourcesPage />} /> 
             <Route path="tech-stack" element={<TechStackPage />} />

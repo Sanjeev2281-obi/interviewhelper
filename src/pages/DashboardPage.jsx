@@ -9,6 +9,7 @@ import { useAuth } from '../hooks/useAuth'
 import { dashboardService } from '../services/api'
 import MentorCard from '../components/layout/Mentorcard'
 import { PROBLEMS } from '../services/Problem' // or corr
+
 const ROADMAP = [
   { phase: '1', title: 'Arrays & Strings', weeks: '1–2', done: false, active: true },
   { phase: '2', title: 'Linked Lists & Stacks', weeks: '3–4', done: false },
@@ -211,9 +212,11 @@ const DAILY_PROBLEM = getDailyProblem();
           <div className="grid grid-cols-2 gap-4">
             <QuickAction to="/dashboard/mock-interview" icon={PlayCircle} title="Mock Interview" desc="3 free per month" color="#7c3aed" locked={false} />
             <QuickAction to="/dashboard/ai-interview" icon={MessageSquare} title="AI Practice" desc="Chat with AI interviewer" color="#0891b2" locked={!isPro} />          
+            <QuickAction to="/dashboard/zoho-round3" icon={Building2} title="Zoho round 3" desc="Mini projects — OOP + LLD" color="#0891b2" locked={!isPro} />          
             <QuickAction to="/dashboard/resume" icon={FileText} title="Resume Review" desc="Get AI score & feedback" color="#ea580c" locked={!isPro} />
            <QuickAction to="/dashboard/tech-stack" icon={Layers} title="Tech Stack Guide" desc="Java? React? Which stack?" color="#60a5fa" locked={false} />
             <QuickAction to="/dashboard/companies" icon={Building2} title="Company Questions" desc="Amazon, Microsoft & more" color="#16a34a" locked={!isPro} />
+         
           </div>
         </div>
 
@@ -243,7 +246,7 @@ const DAILY_PROBLEM = getDailyProblem();
               </div>
               <Link to="/dashboard/pricing"
                 className="block text-center bg-green-500 hover:bg-green-600 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">
-                Upgrade to Pro — ₹499/mo
+                Upgrade to Pro — ₹299/mo
               </Link>
             </div>
           )}
@@ -280,6 +283,7 @@ const DAILY_PROBLEM = getDailyProblem();
           </div>
 
           {/* Recent Activity */}
+        
           <MentorCard isPro={isPro} />
       {/* Mentor guidance */}
     </div>

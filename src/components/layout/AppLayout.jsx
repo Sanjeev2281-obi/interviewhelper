@@ -8,12 +8,13 @@ import { useAuth } from "../../hooks/useAuth";
 import toast from 'react-hot-toast'
 import { Cpu } from 'lucide-react'
 import { Lightbulb } from 'lucide-react'  // add Cpu to existing import
+
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/dashboard/problems', icon: Code2, label: 'DSA Problems' },
   { to: '/dashboard/mock-interview', icon: PlayCircle, label: 'Mock Interview' },
   { to: '/dashboard/tech-stack',   icon: Layers,   label: 'Tech Stack Guide' },
-  
+  { to: '/dashboard/zoho-round3', icon: Building2, label: 'Mini Projects' },
   { to: '/dashboard/resume', icon: FileText, label: 'Resume Review' },
   { to: '/dashboard/companies', icon: Building2, label: 'Company Questions' },
   { to: '/dashboard/system-design', icon: Cpu, label: 'System Design' },

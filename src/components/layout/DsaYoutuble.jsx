@@ -9,9 +9,10 @@ const TAMIL_CHANNELS = [
     desc: 'Best Tamil Java — Loops',
     topics: ['java Playlist', 'For Loops', 'While Loops', 'Functions', 'Parameters'],
     links: [
-      { label: ' Java Basics', url: 'https://www.youtube.com/watch?v=IT2durkDCXM&list=PLvepBxfiuao2qCm6QgUay9LUAehVbGlOb' },
+        { label: 'Must watch ', url: 'https://www.youtube.com/watch?v=2bH09YEDdxE&t=18s' },
+      { label: 'Arrays', url: 'https://www.youtube.com/watch?v=sMI4pXjQBRU' },
       { label: 'Variables & Data Types', url: 'https://www.youtube.com/watch?v=SkKJDwpMdvA&t=191s' },
-      { label: 'Class & objects', url: 'https://www.youtube.com/watch?v=z_QODD8oors' },
+      { label: 'Stack', url: 'https://www.youtube.com/watch?v=FFvQbEXKRdQ' },
       { label: 'Functions', url: 'https://www.youtube.com/watch?v=wUzda_ge-Ak&t=211s' },
       { label: 'Parameters', url: 'https://www.youtube.com/watch?v=YCDkDF8EwFU&t=5s' },
       { label: 'If Else', url: 'https://www.youtube.com/watch?v=HG2C-vd5XLM' },
@@ -34,53 +35,28 @@ const TAMIL_CHANNELS = [
       { label: 'Channel', url: 'https://www.youtube.com/@CSTamizha' },
     ],
   },
-  {
-    name: 'CS Tamizha',
-    avatar: 'CS',
-    avatarBg: '#0369a1',
-    desc: 'Data structures and algorithms in Tamil',
-    topics: ['Arrays', 'Trees', 'Graphs', 'DP'],
-    links: [
-    
-      { label: 'DSA', url: 'https://www.youtube.com/watch?v=93J3Y-dmP3I' },
-      { label: 'BA DSA', url: 'https://www.youtube.com/watch?v=2bH09YEDdxE' },
-    ],
-  },
-  {
-    name: 'Tamil Coding',
-    avatar: 'TC',
-    avatarBg: '#0f766e',
-    desc: 'Beginner-friendly coding tutorials in Tamil',
-    topics: ['Arrays', 'Strings', 'Basics'],
-    links: [
-      { label: 'Channel', url: 'https://www.youtube.com/@tamilcoding' },
-    ],
-  },
+  
 ]
 
 const ENGLISH_CHANNELS = [
   {
-    name: 'NeetCode',
+    name: 'Telusko',
     avatar: 'NC',
     avatarBg: '#2563eb',
-    desc: 'Best structured DSA roadmap with clear code walkthroughs',
-    topics: ['Arrays', 'Two Pointers', 'Sliding Window', 'Trees', 'DP', 'Graphs'],
+    desc: 'basic DSA must know concepts explained in a simple way — good for beginners',
+    topics: ['Arrays', 'Strings','HashSet','HashMap','ArrayList',  'Stack', 'Queue'],
     links: [
-      { label: 'Java Intro', url: 'https://www.youtube.com/watch?v=bm0OyhwFDuY&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=1' },
-      { label: 'Java setup', url: 'https://www.youtube.com/watch?v=WRISYpKhIrc&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=2' },
-      { label: 'Java First code', url: 'https://www.youtube.com/watch?v=tSqNBjGacYk&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=3' },
-        { label: 'Varibles', url: 'https://www.youtube.com/watch?v=9RCuKrze_-k&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=6' },
-      { label: 'Data types', url: 'https://www.youtube.com/watch?v=Le25I331_yU&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=7' },
-      { label: 'Type Conversion', url: 'https://www.youtube.com/watch?v=CPk8pffKV64&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=9' },
-      { label: 'Arithmetic Operations', url: 'https://www.youtube.com/watch?v=flWjzwzgybI&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=10' },
-      { label: 'Logical Operations', url: 'https://www.youtube.com/watch?v=TEJpeRI_NEo&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=13' },
-      { label: 'Conditional Statements', url: 'https://www.youtube.com/watch?v=74Q7POjS7mQ&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=14' },
-     { label: 'Else if', url: 'https://www.youtube.com/watch?v=Tn6BNLD0PmU&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=15' },
-     { label: 'Ternary Operator', url: 'https://www.youtube.com/watch?v=kBdZBbWZ2a4&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=16' },
-    { label: 'Switch Statement', url: 'https://www.youtube.com/watch?v=IrQKDdptiw8&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=17' },
-    { label: 'JVM,JRE,JDK', url: 'https://www.youtube.com/watch?v=s7UgQ7_1KQY&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=26' },
-     { label: 'Packages', url: 'https://www.youtube.com/watch?v=Bua6LQO2vQ8&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=56' }
-  ],
+        { label: 'Arrays', url: 'https://www.youtube.com/watch?v=239ubH043lI&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=31' },
+        { label: 'Multidimensional Arrays', url: 'https://www.youtube.com/watch?v=v4J2bEQF6jk&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=32 '},
+       { label: 'Array Drawbacks', url: 'https://www.youtube.com/watch?v=82z4XJx6y3M&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=35' },
+       { label: 'Array (object)', url: 'https://www.youtube.com/watch?v=2j64wdFNWyE&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=36' },
+        { label: 'Strings', url: 'https://www.youtube.com/watch?v=cV-sOpOgof8&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=37' },
+        { label: 'Stack & Heap', url: 'https://www.youtube.com/watch?v=_GK3WoFFKUE&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=29' },
+       { label: 'Queue', url: 'https://www.youtube.com/watch?v=PvDoT79oHTs' },     
+      { label: 'ArrayList', url: 'https://www.youtube.com/watch?v=BqQ0qR8kmw8&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=95' },
+      { label: 'HashSet', url: 'https://www.youtube.com/watch?v=gMEVx7e5x6A&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=96' },
+        { label: 'HashMap', url: 'https://www.youtube.com/watch?v=VcXYlkICcQU&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=97' },
+],
   },
   {
     name: 'Telusko',
@@ -89,59 +65,27 @@ const ENGLISH_CHANNELS = [
     desc: "Striver's A-Z DSA sheet — most complete free course",
     topics: ['Strings'],
     links: [
-        { label: 'Need for loop in java', url: 'https://www.youtube.com/watch?v=mh3sTmXWMLE&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=19' },
-       { label: 'While loop', url: 'https://www.youtube.com/watch?v=mzt5tmV7wxI&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=20' },
-       { label: 'Do while loop', url: 'https://www.youtube.com/watch?v=zzBVTwpfYr0&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=21' },
-       { label: 'For loop', url: 'https://www.youtube.com/watch?v=gu6Agiy2xBg&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=22' },
-       { label: 'which one to use', url: 'https://www.youtube.com/watch?v=uO5nSTJ9Iz4&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=23' },
-       { label: 'class and objects', url: 'https://www.youtube.com/watch?v=Znmz_WxMxp4&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=24' },
-       { label: 'class and objects pra', url: 'https://www.youtube.com/watch?v=3yOLNV9BF8A&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=25' },
-       { label: 'Methods', url: 'https://www.youtube.com/watch?v=s7UgQ7_1KQY&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=26' },
-       { label: 'Access Modifiers', url: 'https://www.youtube.com/watch?v=Bua6LQO2vQ8&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=56' },
-       { label: 'Why we need Arrays', url: 'https://www.youtube.com/watch?v=uidBSlGLUK4&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=30' },
-        { label: 'Arrays', url: 'https://www.youtube.com/watch?v=239ubH043lI&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=31' },
-       { label: 'Multidimensional Arrays', url: 'https://www.youtube.com/watch?v=v4J2bEQF6jk&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=32 '},
-       { label: 'Array Drawbacks', url: 'https://www.youtube.com/watch?v=82z4XJx6y3M&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=35' },
-       { label: 'Array (object)', url: 'https://www.youtube.com/watch?v=2j64wdFNWyE&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=36' },
-         { label: 'For each loop', url: 'https://www.youtube.com/watch?v=KcJX6XGmB-o&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=36' },   
-    ],
-  },
-  {
-    name: 'Abdul Bari',
-    avatar: 'AB',
-    avatarBg: '#7c3aed',
-    desc: 'Deep theoretical explanations — algorithms made simple',
-    topics: ['Algorithms', 'Recursion', 'Sorting', 'DP'],
-    links: [
-         { label: 'Strings', url: 'https://www.youtube.com/watch?v=cV-sOpOgof8&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=37' },
-          { label: 'Mutable vsImmutable Strings', url: 'https://www.youtube.com/watch?v=JjIewPuyexA&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=38' },
-           { label: 'String buffer & builder', url: 'https://www.youtube.com/watch?v=WQ4aA4-MESE&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=39' },
-          
-        { label: 'Algorithms Playlist', url: 'https://www.youtube.com/watch?v=0IAPZzGSbME&list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O' },
-     
-    ],
-  },
-  {
-    name: 'Back To Back SWE',
-    avatar: 'B2B',
-    avatarBg: '#b45309',
-    desc: 'Very important Java keywords explained with code examples — must watch for Java interviews',
-    topics: ['Keywords'],
-    links: [
-     
-      { label: 'Static variable', url: 'https://www.youtube.com/watch?v=7HYaQOyvw7Q&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=40' },
-     { label: 'Static Method', url: 'https://www.youtube.com/watch?v=zySudOTN05I&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=41'},
-     { label: 'Static Block', url: 'https://www.youtube.com/watch?v=_7q4kMfJPDw&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=42'},
-      { label: 'Final', url: 'https://www.youtube.com/watch?v=OBYeDzgsOxc&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=60'},
-     { label: 'Abstract', url: 'https://www.youtube.com/watch?v=VJh2u7NLLDg&list=PLsyeobzWxl7pe_IiTfNyr55kwJPWbgxB5&index=64'}
-    ],
-  },
+        { label: 'Intro Linked List', url: ' https://www.youtube.com/watch?v=f_AZDdafncE' },
+       
+        { label: 'why Linked List', url: 'https://www.youtube.com/watch?v=48uzKhtyEvI' },
+       { label: 'Linkedlist 1', url: 'https://www.youtube.com/watch?v=f_AZDdafncE' },
+       { label: 'LinkedList 2', url: 'https://www.youtube.com/watch?v=SMIq13-FZSE&t=1228s' },
+       { label: 'LinkedList 3', url: 'https://www.youtube.com/watch?v=AeqXFjCUcQM' },
+       { label: 'LinkedList 4', url: 'https://www.youtube.com/watch?v=tZxPqhkRLiw&t=5s' },
+       { label: 'Linear & Binary search', url: 'https://www.youtube.com/watch?v=5h_wcuRl7kE' },
+       { label: 'Sliding window', url: 'https://www.youtube.com/watch?v=y2d0VHdvfdc' },
+       { label: 'Two pointers', url: 'https://www.youtube.com/watch?v=QzZ7nmouLTI&t=69s' },
+       { label: 'Prefix Sum', url: 'https://www.youtube.com/watch?v=yuws7YK0Yng&t=54s' },
+        { label: 'Graphs', url: 'https://www.youtube.com/watch?v=xN5VGzK9_FQ' },
+    ]
+},
+      
+  
 ]
-
-function ChannelCard({ ch, isActive, onClick }) {
+function ChannelCard({ ch = {}, isActive, onClick }) {
   return (
     <button
-      onClick={onClick}
+      onClick={onClick || (() => {})}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -150,7 +94,9 @@ function ChannelCard({ ch, isActive, onClick }) {
         borderRadius: 12,
         cursor: 'pointer',
         background: isActive ? 'rgba(255,255,255,0.05)' : 'transparent',
-        border: isActive ? '1px solid ' + ch.avatarBg : '1px solid #1f2937',
+        border: isActive 
+          ? `1px solid ${ch.avatarBg || '#4b5563'}`
+          : '1px solid #1f2937',
         transition: 'all .15s',
         textAlign: 'left',
         width: '100%',
@@ -160,8 +106,7 @@ function ChannelCard({ ch, isActive, onClick }) {
         width: 34,
         height: 34,
         borderRadius: '50%',
-        background: ch.avatarBg,
-        flexShrink: 0,
+        background: ch.avatarBg || '#4b5563',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -169,8 +114,9 @@ function ChannelCard({ ch, isActive, onClick }) {
         fontWeight: 800,
         color: 'white',
       }}>
-        {ch.avatar}
+        {ch.avatar || '?'}
       </div>
+
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
           fontSize: 13,
@@ -180,19 +126,20 @@ function ChannelCard({ ch, isActive, onClick }) {
           overflow: 'hidden',
           textOverflow: 'ellipsis',
         }}>
-          {ch.name}
+          {ch.name || 'Unknown'}
         </div>
+
         <div style={{ fontSize: 11, color: '#6b7280', marginTop: 1 }}>
-          {ch.topics.length} topics
+          {(ch.topics?.length || 0)} topics
         </div>
       </div>
+
       <div style={{ fontSize: 10, color: '#4b5563' }}>
         {isActive ? '▲' : '▼'}
       </div>
     </button>
   )
 }
-
 function DetailPanel({ active }) {
   if (!active) return null
   return (
@@ -263,7 +210,7 @@ function DetailPanel({ active }) {
   )
 }
 
-export default function YoutubeTreasure() {
+export default function DsaYoutube() {
   const [open, setOpen] = useState(false)
   const [activeTamil, setActiveTamil] = useState(null)
   const [activeEnglish, setActiveEnglish] = useState(null)
@@ -319,7 +266,7 @@ export default function YoutubeTreasure() {
           </div>
           <div style={{ textAlign: 'left' }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: 'white' }}>
-              YouTube video treasure box
+              Treasure box of DSA videos
               <span style={{
                 marginLeft: 8,
                 fontSize: 10,

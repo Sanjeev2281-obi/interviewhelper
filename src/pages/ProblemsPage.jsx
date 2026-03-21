@@ -5,8 +5,9 @@ import { useAuth } from '../hooks/useAuth'
 import { progressService } from '../services/ProgressService'
 import { PROBLEMS } from '../services/Problem'
 import toast from 'react-hot-toast'
+import DsaYoutube from '../components/layout/DsaYoutuble'
 
-const COMPANIES = ['All','Zoho','Amazon','Microsoft','Google','Walmart','Flipkart','TCS','Infosys']
+const COMPANIES = ['All','Zoho','Amazon','Microsoft','Google','Walmart','Flipkart','TCS','Infosys','Cognizant','Accenture','IBM','Oracle','HCL']
 const TOPICS    = ['All','Arrays','Strings','Linked Lists','Trees','Graphs','Dynamic Programming','Stacks','Heap','Backtracking','Design','Trie','Bit Manipulation','SQL','Math']
 const DIFFS     = ['All','Easy','Medium','Hard']
 
@@ -123,7 +124,132 @@ export default function ProblemsPage() {
     fontSize: 13, fontWeight: 700, textDecoration: 'none',
   }}>
   🌱 I'm a beginner — start from basics
+  <div className="border border-[#89E846] rounded-[100px] px-4 py-2 bg-[#7ED15E] text-black">Click Me</div>
 </Link>
+{/* Trust block */}
+<div style={{
+  background: 'linear-gradient(135deg, rgba(34,197,94,0.06), rgba(96,165,250,0.04))',
+  border: '1px solid rgba(34,197,94,0.2)',
+  borderRadius: 16, padding: '1.25rem 1.5rem',
+  display: 'flex', alignItems: 'flex-start', gap: 14,
+}}>
+  <div style={{
+    width: 42, height: 42, borderRadius: 12, flexShrink: 0,
+    background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+  }}>
+    🎯
+  </div>
+  <div>
+    <div style={{ fontSize: 15, fontWeight: 800, color: 'white', marginBottom: 6 }}>
+      Why this problem set is different
+    </div>
+    <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.8, maxWidth: 620 }}>
+      Every problem here was <span style={{ color: '#4ade80', fontWeight: 700 }}>suggested by working SDE employees</span> and collected directly from real interview rounds at Zoho, Amazon, Microsoft, Google, and Flipkart — then verified using AI pattern analysis.
+      If you complete this full problem set, you will not just memorize solutions — you will <span style={{ color: '#60a5fa', fontWeight: 700 }}>develop your own problem-solving logic</span> and start recognizing patterns before you even finish reading a question.
+    </p>
+    <div style={{ display: 'flex', gap: 10, marginTop: 12, flexWrap: 'wrap' }}>
+      {[
+        
+        { icon: '🧠', text: 'Pattern recognition focused' },
+      ].map(function(b) {
+        return (
+          <div key={b.text} style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            padding: '5px 12px', borderRadius: 20,
+            background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)',
+          }}>
+            <span style={{ fontSize: 13 }}>{b.icon}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#4ade80' }}>{b.text}</span>
+          </div>
+        )
+      })}
+    </div>
+  </div>
+</div>
+
+{/* How to solve block */}
+<div style={{
+  background: '#111827', border: '1px solid #1f2937',
+  borderRadius: 16, overflow: 'hidden',
+}}>
+  <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: 10 }}>
+    <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>
+      💡
+    </div>
+    <div>
+      <div style={{ fontSize: 14, fontWeight: 800, color: 'white' }}>The right way to solve problems</div>
+      <div style={{ fontSize: 12, color: '#6b7280' }}>Follow this process — most students skip steps and never improve</div>
+    </div>
+  </div>
+
+  <div style={{ padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: 0 }}>
+    {[
+      {
+        step: '01',
+        color: '#4ade80',
+        bg: 'rgba(34,197,94,0.1)',
+        border: 'rgba(34,197,94,0.2)',
+        title: 'Try it yourself first — no shortcuts',
+        desc: 'Read the problem carefully. Give yourself 30–40 minutes to think. Try a brute force approach first — even a slow O(n²) solution counts. Write actual code, not just thoughts. This step builds your problem-solving muscle. Do NOT open ChatGPT or look at solutions yet.',
+        tag: '30–40 min',
+      },
+      {
+        step: '02',
+        color: '#fbbf24',
+        bg: 'rgba(251,191,36,0.1)',
+        border: 'rgba(251,191,36,0.2)',
+        title: 'Stuck? Ask for a hint — not the answer',
+        desc: 'If you are stuck after 30–40 minutes, open ChatGPT and paste your problem. But ask: "Give me a hint to solve this — do NOT give me the solution." This trains your brain to think one step ahead instead of just copying code. Hints push you to find the answer yourself.',
+        tag: 'Hint only',
+        code: '"Give me a hint to solve this — do NOT give me the solution yet"',
+      },
+      {
+        step: '03',
+        color: '#f87171',
+        bg: 'rgba(239,68,68,0.1)',
+        border: 'rgba(239,68,68,0.2)',
+        title: 'Still stuck? Now ask for the solution + explanation',
+        desc: 'If you still cannot solve it after using the hint, then ask for the full solution — but always ask it to explain the approach, not just show code. Ask: "Show me the solution and explain the approach step by step." Understand the pattern deeply. Then close it, reopen a blank file, and write the solution yourself from memory.',
+        tag: 'Final step',
+        code: '"Show me the solution and explain the approach step by step"',
+      },
+    ].map(function(s, i) {
+      return (
+        <div key={s.step} style={{ display: 'flex', gap: 16, paddingBottom: i < 2 ? 16 : 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+              background: s.bg, border: '1px solid ' + s.border,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 11, fontWeight: 900, color: s.color,
+            }}>
+              {s.step}
+            </div>
+            {i < 2 && <div style={{ width: 2, flex: 1, background: '#1f2937', margin: '6px 0', minHeight: 20 }} />}
+          </div>
+          <div style={{ flex: 1, paddingTop: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: 'white' }}>{s.title}</span>
+              <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20, background: s.bg, color: s.color, border: '1px solid ' + s.border }}>
+                {s.tag}
+              </span>
+            </div>
+            <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.75, marginBottom: s.code ? 10 : 0 }}>
+              {s.desc}
+            </p>
+            {s.code && (
+              <div style={{ background: '#0d1117', border: '1px solid #1f2937', borderRadius: 8, padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 13, color: '#6b7280' }}>&gt;</span>
+                <span style={{ fontSize: 12, color: '#a5f3fc', fontFamily: 'monospace', fontStyle: 'italic' }}>{s.code}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    })}
+  </div>
+</div>
       {/* Progress */}
       <div className="rounded-2xl p-5" style={{ backgroundColor:'#111827', border:'1px solid #1f2937' }}>
         <div className="flex items-center justify-between mb-2 text-xs text-gray-400">
@@ -193,7 +319,7 @@ export default function ProblemsPage() {
           {TOPICS.map(t => <option key={t}>{t}</option>)}
         </select>
       </div>
-
+     <DsaYoutube/>
       {/* Company banner */}
       {company !== 'All' && companyColor[company] && (
         <div className="rounded-xl px-4 py-3 flex items-center gap-3"
