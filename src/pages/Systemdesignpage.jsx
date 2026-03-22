@@ -7,7 +7,7 @@ import {
   Server, Layers, Database, Globe
 } from 'lucide-react'
 import { PROBLEMS } from '../services/Problemsdata'
-// ── Company logos as SVG ───────────────────────────────────────
+// ── Company logos as SVG ──────────────────────────────────────
 const CompanyLogo = ({ name, size = 32 }) => {
   const logos = {
     Google: (
