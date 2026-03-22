@@ -133,7 +133,7 @@ const SECTIONS = [
         avatar: 'CV', avatarBg: '#0891b2',
         about: 'Node.js in-depth — streams, buffers, event loop, Express REST',
         playlists: [
-          { label: 'Node.js Tutorial', url: 'https://www.youtube.com/watch?v=LAUi8pPlcUM&list=PLC3y8-rFHvwh8shCMHFA5kWxD9PaPwxaY' },
+          { label: 'Node.js ', url: 'https://www.youtube.com/playlist?list=PLC3y8-rFHvwh8shCMHFA5kWxD9PaPwxaY' },
         ],
       },
     ],
@@ -148,24 +148,23 @@ const SECTIONS = [
     desc: 'Python basics, FastAPI, Django, REST APIs',
     channels: [
       {
-        name: 'Tech With Tim',
-        lang: 'English',
+        name: 'JVL Code',
+        lang: 'Tamil',
         avatar: 'TT', avatarBg: '#0f766e',
         about: 'Python from scratch — OOP, projects, Django, Flask',
         playlists: [
-          { label: 'Python Beginner Course', url: 'https://www.youtube.com/watch?v=sxTmJE4k0ho' },
-          { label: 'Django Tutorial', url: 'https://www.youtube.com/watch?v=sm1mokevMWE' },
-          { label: 'Channel', url: 'https://www.youtube.com/@TechWithTim' },
+          { label: 'Fast API', url: 'https://www.youtube.com/watch?v=41bRmKMb464' },
+         
         ],
       },
       {
-        name: 'ArjanCodes',
+        name: 'Telusko',
         lang: 'English',
         avatar: 'AJ', avatarBg: '#7c3aed',
         about: 'FastAPI and clean Python architecture — advanced patterns',
         playlists: [
-          { label: 'FastAPI Tutorial', url: 'https://www.youtube.com/watch?v=sBVb4IB3O_U' },
-          { label: 'Channel', url: 'https://www.youtube.com/@ArjanCodes' },
+          { label: 'FastAPI Tutorial', url: 'https://www.youtube.com/playlist?list=PLsyeobzWxl7qF4ASwCZZDXor_Y0YJ3Qfc' },
+         
         ],
       },
     ],
@@ -180,23 +179,22 @@ const SECTIONS = [
     desc: 'MySQL, PostgreSQL, MongoDB — queries, joins, indexes',
     channels: [
       {
-        name: 'Bro Code',
-        lang: 'English',
+        name: 'Code io',
+        lang: 'Tamil',
         avatar: 'BC', avatarBg: '#0369a1',
         about: 'MySQL full course — SELECT, JOINs, indexes, stored procedures',
         playlists: [
-          { label: 'MySQL Full Course', url: 'https://www.youtube.com/watch?v=5OdVJbNCSso' },
-          { label: 'MongoDB Crash Course', url: 'https://www.youtube.com/watch?v=c2M-rlkkT5o' },
+          { label: 'MySQL Full Course', url: 'https://www.youtube.com/watch?v=-6KHvE78Fv0'},
+        
         ],
       },
       {
-        name: 'Traversy Media',
+        name: 'Data Engineering',
         lang: 'English',
         avatar: 'TM', avatarBg: '#1d4ed8',
-        about: 'SQL and NoSQL — MySQL, PostgreSQL, MongoDB basics',
+        about: 'SQL ',
         playlists: [
-          { label: 'SQL Crash Course', url: 'https://www.youtube.com/watch?v=9ylj9NR0Lcg' },
-          { label: 'MongoDB Crash Course', url: 'https://www.youtube.com/watch?v=-56x56UppqQ' },
+          { label: 'SQL Crash Course', url: 'https://www.youtube.com/watch?v=JtaOmwnR6AM&t=1063s'},
         ],
       },
     ],

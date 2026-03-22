@@ -1,58 +1,38 @@
-import { createContext, useState ,useEffect} from 'react'
+import { createContext, useState, useEffect } from 'react'
 import { authService } from '../services/api'
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(null)
 
-function getInitialUser() {
-  try {
-    const stored = localStorage.getItem('user')
-    const token = localStorage.getItem('token')
-    if (stored && token) return JSON.parse(stored)
-  } catch (err) {
-    console.error("Failed to parse user", err)
-  }
-  return null
-}
 export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)  // ← show nothing until verified
 
-  const [user, setUser] = useState(getInitialUser)
-  const [loading] = useState(false)
-
+  // ✅ On every page load — verify token with backend
   useEffect(() => {
-  const checkUser = async () => {
-    const token = localStorage.getItem("token")
-    if (!token) return
+    const verifyToken = async () => {
+      const token = localStorage.getItem('token')
 
-    try {
-      const res = await authService.me()
-      const updatedUser = res.data
+      if (!token) {
+        setLoading(false)
+        return
+      }
 
-      localStorage.setItem("user", JSON.stringify(updatedUser))
-      setUser(updatedUser)
-
-    // eslint-disable-next-line no-unused-vars
-    } catch (err)
-    {
-      console.error("User refresh failed")
+      try {
+        // Call backend to verify token and get fresh user data
+       const res = await authService.me()
+        setUser(res.data)
+      } catch (err) {
+        // Token is invalid or expired — force logout
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
-  }
 
-  checkUser()
-}, [])
-  // ✅ MOVE refreshUser HERE
-  const refreshUser = async () => {
-    try {
-      const res = await authService.me()
-      const updatedUser = res.data
-
-      localStorage.setItem('user', JSON.stringify(updatedUser))
-      setUser(updatedUser)
-
-    } catch (err) {
-      console.error("Failed to refresh user", err)
-    }
-  }
+    verifyToken()
+  }, [])
 
   const login = async (email, password) => {
     const res = await authService.login(email, password)
@@ -78,13 +58,17 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
+  // ✅ Show nothing until backend verifies the token
+  if (loading) {
+    return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', backgroundColor:'#020408', color:'#4ade80', fontSize:14 }}>Verifying session...</div>
+  }
+
   return (
     <AuthContext.Provider value={{
       user,
       login,
       register,
       logout,
-      refreshUser,
       loading,
       isAdmin: user?.role === 'ADMIN',
       isPro: user?.role === 'PRO'
