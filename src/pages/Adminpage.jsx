@@ -22,7 +22,6 @@ export default function AdminPage() {
   const [form, setForm] = useState(BLANK)
   const [editing, setEditing] = useState(null)
   const [activeTab, setActiveTab] = useState('problems')
-
   const handleAdd = () => {
     if (!form.title.trim()) return toast.error('Title is required')
     const newP = { ...form, id: Date.now() }
