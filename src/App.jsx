@@ -10,10 +10,10 @@ import DashboardPage from './pages/DashboardPage'
 import ProblemsPage from './pages/ProblemsPage'
 import ProblemDetailPage from './pages/ProblemDetailPage'
 import MockInterviewPage from './pages/MockInterviewPage'
-import ResumeReviewPage from './pages/ResumeReviewPage'
+import ResumeReviewPage from "./pages/ResumeReviewPage";
 import AIInterviewPage from './pages/AIInterviewPage'
 import CompanyQuestionsPage from './pages/CompanyQuestions'
-import AdminPage from './pages/AdminPage'
+import AdminPage from "./pages/AdminPage";
 import PricingPage from './pages/PricingPage'
 import AppLayout from './components/layout/AppLayout'
 import SystemDesignPage from './pages/SystemDesignPage'
