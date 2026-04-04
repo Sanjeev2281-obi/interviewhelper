@@ -7,7 +7,7 @@ import { PROBLEMS } from '../services/Problem'
 import toast from 'react-hot-toast'
 import DsaYoutube from '../components/layout/DsaYoutuble'
 
-const COMPANIES = ['All','Zoho','Amazon','Microsoft','Google','Walmart','Flipkart','TCS','Infosys','Cognizant','Accenture','IBM','Oracle','HCL']
+const COMPANIES = ['All','Zoho','Amazon','Microsoft','Google','Walmart','Flipkart','TCS','Infosys','Cognizant','Accenture','HCL']
 const TOPICS    = ['All','Arrays','Strings','Linked Lists','Trees','Graphs','Dynamic Programming','Stacks','Heap','Backtracking','Design','Trie','Bit Manipulation','SQL','Math']
 const DIFFS     = ['All','Easy','Medium','Hard']
 
@@ -37,11 +37,11 @@ export default function ProblemsPage() {
   const [search,     setSearch]     = useState('')
   const [difficulty, setDifficulty] = useState('All')
   const [topic,      setTopic]      = useState('All')
-  const [company,    setCompany]    = useState('All')
-  const [solved,     setSolved]     = useState({})
-  const [stats,      setStats]      = useState(null)
-  const [loading,    setLoading]    = useState(true)
-  const [toggling,   setToggling]   = useState({})
+  const [company,    setCompany]   = useState('All')
+  const [solved,     setSolved]    = useState({})
+  const [stats,      setStats]     = useState(null)
+  const [loading,    setLoading]   = useState(true)
+  const [toggling,   setToggling]  = useState({})
 
   useEffect(() => {
     progressService.getStats()

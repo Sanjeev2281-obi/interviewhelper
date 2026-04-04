@@ -43,7 +43,7 @@ const COMPARE_ROWS = [
 const FAQS = [
   { q: 'Can I cancel anytime?', a: 'Yes. Cancel from your account settings at any time. No questions asked, no lock-in period.' },
   { q: 'Is ₹299 the final price?', a: 'This is a special student offer. The standard price is ₹499/month. Lock in ₹299 now before it changes.' },
-  { q: 'Can the guide speak Tamil?', a: 'Yes! Senthil Kumar, our student guide, is fluent in both English and Tamil (தமிழ்). You can ask questions in whichever language you\'re comfortable with.' },
+  { q: 'Can the guide speak Tamil?', a: 'Yes! Sanjeev s, our student guide, is fluent in both English and Tamil (தமிழ்). You can ask questions in whichever language you\'re comfortable with.' },
   { q: 'What happens to my progress if I cancel?', a: 'Your solved problems, streak, and stats are saved permanently. You just lose access to pro features — nothing is deleted.' },
   { q: 'Is there a free trial?', a: 'Yes — the free plan is a permanent trial. 25 problems, 3 mock interviews/month, and community access forever at no cost.' },
   { q: 'I\'m a fresher. Is this useful for me?', a: 'Absolutely — this is built specifically for students and freshers. The roadmap, community discussions, and mentor guidance are all aimed at people starting their SDE journey.' },
@@ -228,7 +228,7 @@ export default function PricingPage() {
                 <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'rgba(245,158,11,0.15)', color: '#fbbf24', fontWeight: 700 }}>Pro exclusive</span>
                 <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'rgba(16,185,129,0.15)', color: '#10b981', fontWeight: 700 }}>தமிழில் பேசலாம்</span>
               </div>
-              <div style={{ fontSize: 13, color: '#10b981', fontWeight: 600, marginBottom: 8 }}>SDE Explorer · Student Guide</div>
+              <div style={{ fontSize: 13, color: '#10b981', fontWeight: 600, marginBottom: 8 }}>SDE · Freelancer ·Intrusted in Building Saas product</div>
               <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.7, marginBottom: 16, maxWidth: 520 }}>
                 A fellow student who has deeply researched 50+ SDE journeys, interview patterns, and career paths — so you don't have to figure it all out alone. Ask about DSA strategy, which companies to target, what stack to learn, or whether AI will affect your career.
               </p>
