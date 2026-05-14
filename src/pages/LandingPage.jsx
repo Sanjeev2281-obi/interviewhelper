@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import  Aurora  from './../components/Aurora'
 import {
   ArrowRight, Star, CheckCircle, Zap, Github, Linkedin, Twitter,
   Code2, FileText, Building2, Target, TrendingUp,
@@ -178,6 +179,23 @@ export default function LandingPage() {
 
       {/* HERO */}
       <section style={{ position:'relative',minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',padding:'120px 6% 80px',overflow:'hidden' }}>
+        <div
+   style={{
+    position:'absolute',
+    inset:0,
+    zIndex:0,
+    opacity:0.7,
+    transform: window.innerWidth < 768
+      ? 'translateY(-100px)'
+      : 'translateY(-30px)'
+  }}
+  >
+   <Aurora
+    colorStops={["#5227FF","#7cff67","#5227FF"]}
+    amplitude={1}
+    blend={0.5}
+  />
+  </div>
         <div style={{ position:'absolute',inset:0,opacity:0.035,backgroundImage:'linear-gradient(rgba(255,255,255,0.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.6) 1px,transparent 1px)',backgroundSize:'60px 60px',pointerEvents:'none' }}/>
         <div style={{ position:'absolute',top:'20%',left:'50%',transform:'translateX(-50%)',width:900,height:500,borderRadius:'50%',background:'radial-gradient(ellipse,rgba(34,197,94,0.15) 0%,transparent 70%)',filter:'blur(60px)',pointerEvents:'none' }}/>
         <div style={{ position:'relative',zIndex:1,textAlign:'center',maxWidth:900,width:'100%' }}>
